@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.AlignCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.utils.SmartDashboardUtils;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -68,6 +69,9 @@ public class RobotContainer {
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
+
+    new JoystickButton(m_driverController, edu.wpi.first.wpilibj.XboxController.Button.kA.value)
+    .onTrue(new AlignCommand(m_robotDrive));
   }
 
   /**
