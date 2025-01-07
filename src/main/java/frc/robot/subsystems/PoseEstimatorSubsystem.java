@@ -1,3 +1,7 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Inches;
@@ -17,8 +21,10 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -29,7 +35,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     private final SwerveDrivePoseEstimator poseEstimator;
     private AprilTagFieldLayout aprilTagFieldLayout;
 
-    // Arrays hold multiple cameras and their estimators, so we can get data from more than one camera.
+    // Arrays for multiple cameras
     private PhotonCamera[] photonCameras;
     private PhotonPoseEstimator[] photonPoseEstimators;
 
@@ -40,36 +46,37 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     private static final double VISION_STD_DEV_POS = 0.9;
     private static final double VISION_STD_DEV_HEADING = 0.9;
 
-    // If we have multiple cameras, we list their names here.
-    //Add as many cameras we plan to use that season
     private static final String[] CAMERA_NAMES = {"Arducam_1", "Arducam_2", "Arducam_3"};
 
     // Each camera might be mounted differently on the robot.
-    // These transforms describe the camera's position and orientation relative to the robot's center.
+    // These transforms describe the camera’s position/orientation relative to robot center.
     private final Transform3d[] robotToCams = {
-        new Transform3d(Inches.of(-10.5), Inches.of(0), Inches.of(6.5), new Rotation3d(0,2.00713,4.71239)),
-        new Transform3d(Inches.of(0), Inches.of(10.5), Inches.of(6.5), new Rotation3d(0,2.00713,0)),
-        new Transform3d(Inches.of(10.5), Inches.of(0), Inches.of(6.5), new Rotation3d(0,2.00713,1.5708))
-        //Add as many cameras we plan to use that season
+        new Transform3d(Inches.of(-10.5), Inches.of(0), Inches.of(6.5), new Rotation3d(0, 2.00713, 4.71239)),
+        new Transform3d(Inches.of(0), Inches.of(10.5), Inches.of(6.5), new Rotation3d(0, 2.00713, 0)),
+        new Transform3d(Inches.of(10.5), Inches.of(0), Inches.of(6.5), new Rotation3d(0, 2.00713, 1.5708))
     };
 
+    private int lastDetectedTagId = -1;
+    private int lastDetectionCameraIndex = -1;
+    private double lastDetectionTimestamp = -1.0;
+    // Distance from robot center to the tag (in meters)
+    private double distanceToTag = Double.NaN;
+    // Angle difference between robot’s heading (in degrees) and the line from robot center to tag
+    private double angleToTagDegrees = Double.NaN;
+
     public PoseEstimatorSubsystem(Pose2d initialPose) {
-        // Load the known positions of the AprilTags on the field for this season.
-        // If this fails, we can't use vision to correct our pose.
         try {
-            aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+            aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
         } catch (UncheckedIOException e) {
             e.printStackTrace();
             System.err.println("Failed to load AprilTagFieldLayout. We'll run without vision corrections.");
             aprilTagFieldLayout = null;
         }
 
-        // Initialize arrays for multiple cameras
         photonCameras = new PhotonCamera[CAMERA_NAMES.length];
         photonPoseEstimators = new PhotonPoseEstimator[CAMERA_NAMES.length];
 
         if (aprilTagFieldLayout != null) {
-            // For each camera, set it up along with a pose estimator that uses AprilTags.
             for (int i = 0; i < CAMERA_NAMES.length; i++) {
                 photonCameras[i] = new PhotonCamera(CAMERA_NAMES[i]);
                 photonPoseEstimators[i] = new PhotonPoseEstimator(
@@ -77,27 +84,25 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                     PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                     robotToCams[i]
                 );
-                
-
             }
-            
-
         } else {
-            // If no field layout, we still create cameras but won't be able to run the pose estimator from them.
             for (int i = 0; i < CAMERA_NAMES.length; i++) {
                 photonCameras[i] = new PhotonCamera(CAMERA_NAMES[i]);
             }
         }
 
-        // Setup standard deviations (our guesses about how noisy our sensors are).
         var stateStdDevs = VecBuilder.fill(STATE_STD_DEV_POS, STATE_STD_DEV_POS, STATE_STD_DEV_HEADING);
         var visionStdDevs = VecBuilder.fill(VISION_STD_DEV_POS, VISION_STD_DEV_POS, VISION_STD_DEV_HEADING);
 
-        // The SwerveDrivePoseEstimator is our big brains for combining sensor data into a single best guess pose.
         poseEstimator = new SwerveDrivePoseEstimator(
             Constants.DriveConstants.kDriveKinematics,
             new Rotation2d(),
-            new SwerveModulePosition[] {new SwerveModulePosition(),new SwerveModulePosition(),new SwerveModulePosition(),new SwerveModulePosition()},
+            new SwerveModulePosition[] {
+                new SwerveModulePosition(),
+                new SwerveModulePosition(),
+                new SwerveModulePosition(),
+                new SwerveModulePosition()
+            },
             initialPose,
             stateStdDevs,
             visionStdDevs
@@ -105,32 +110,68 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     }
 
     /**
-     * Called periodically by the DriveSubsystem. We give it our current gyro angle and wheel positions,
-     * and it updates its internal estimate of our position. Then we also look at all unread camera results
-     * and see if we got any AprilTag detections that can improve our position guess.
+     * Called periodically by the DriveSubsystem to update our pose from wheel/gyro
+     * and optionally from vision (AprilTags).
      */
     public void update(Rotation2d gyroRotation, SwerveModulePosition[] modulePositions) {
-        // First, update our pose from odometry (wheel + gyro)
+        // 1. Update the pose from odometry
         poseEstimator.update(gyroRotation, modulePositions);
 
-        // If we have the field layout and pose estimators set up, we can try using vision.
+        // 2. Attempt to use each camera's detections
         if (photonPoseEstimators != null && aprilTagFieldLayout != null) {
             for (int i = 0; i < photonCameras.length; i++) {
                 PhotonCamera camera = photonCameras[i];
                 PhotonPoseEstimator estimator = photonPoseEstimators[i];
-                if (estimator == null) continue; // If something failed and we don't have an estimator.
+                if (estimator == null) {
+                    continue;
+                }
 
-                // getAllUnreadResults() gives us all camera frames since last time we called it.
-                // We loop over them all in case multiple frames came in quickly.
                 List<PhotonPipelineResult> results = camera.getAllUnreadResults();
                 for (PhotonPipelineResult result : results) {
                     if (result.hasTargets()) {
-                        // Run the vision estimate. If we see tags, we get a pose estimate.
                         Optional<EstimatedRobotPose> estimatedPose = estimator.update(result);
                         if (estimatedPose.isPresent()) {
-                            // If we got a good pose estimate from vision, feed it into the Kalman filter.
                             EstimatedRobotPose camPose = estimatedPose.get();
-                            poseEstimator.addVisionMeasurement(camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
+                            poseEstimator.addVisionMeasurement(
+                                camPose.estimatedPose.toPose2d(),
+                                camPose.timestampSeconds
+                            );
+
+                            // We’ll just record the FIRST target in this result
+                            var firstTarget = result.getBestTarget();
+                            if (firstTarget != null) {
+                                this.lastDetectedTagId = firstTarget.getFiducialId();
+                                this.lastDetectionCameraIndex = i;
+                                this.lastDetectionTimestamp = camPose.timestampSeconds;
+
+                                // Now we can compute distance & angle from the robot’s pose to the tag’s known field pose:
+                                Pose2d robotPose = poseEstimator.getEstimatedPosition();
+
+                                Optional<Pose3d> tagPose3d = aprilTagFieldLayout.getTagPose(this.lastDetectedTagId);
+                                if (tagPose3d.isPresent()) {
+                                    Pose2d tagPose2d = tagPose3d.get().toPose2d();
+
+                                    // Vector from robot to tag in field coords:
+                                    Translation2d diff = tagPose2d.getTranslation().minus(robotPose.getTranslation());
+                                    // Distance:
+                                    this.distanceToTag = diff.getNorm();
+
+                                    // Robot heading:
+                                    double robotHeadingDeg = robotPose.getRotation().getDegrees();
+                                    // Angle from robot position to tag in field coordinates:
+                                    double angleToTag = Math.toDegrees(Math.atan2(
+                                        diff.getY(),
+                                        diff.getX()
+                                    ));
+
+                                    // We want difference in heading:
+                                    double angleDiff = angleToTag - robotHeadingDeg;
+                                    // Normalize to [-180, 180]:
+                                    angleDiff = (angleDiff + 180) % 360 - 180;
+
+                                    this.angleToTagDegrees = angleDiff;
+                                }
+                            }
                         }
                     }
                 }
@@ -138,24 +179,19 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         }
     }
 
-    /**
-     * Get the best estimate of where we are on the field.
-     */
+    /** Get the best estimate of where we are on the field. */
     public Pose2d getEstimatedPose() {
         return poseEstimator.getEstimatedPosition();
     }
 
     /**
      * Reset the robot pose to a known location if we know exactly where we are.
-     * For example, at the start of a match if we start in a known spot.
      */
     public void resetPose(Pose2d newPose, Rotation2d gyroRotation, SwerveModulePosition[] modulePositions) {
         poseEstimator.resetPosition(gyroRotation, modulePositions, newPose);
     }
 
-    /**
-     * If for some reason the AprilTag field layout changes or we load a new layout, we can update it here.
-     */
+    /** Update the field layout if needed. */
     public void setAprilTagFieldLayout(AprilTagFieldLayout newLayout) {
         aprilTagFieldLayout = newLayout;
         if (photonPoseEstimators != null) {
@@ -167,15 +203,49 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         }
     }
 
-    /**
-     * Check if we are on the red alliance, which might matter for path following (mirroring).
-     */
+    /** Check if we are on the red alliance. */
     public boolean isRedAlliance() {
         return DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
     }
 
     @Override
     public void periodic() {
-        // Nothing to do here since DriveSubsystem calls update() for us.
+        // Nothing to do since DriveSubsystem calls update() for us.
+    }
+
+    /**
+     * @return ID of the last-detected tag (or -1 if none)
+     */
+    public int getLastDetectedTagId() {
+        return lastDetectedTagId;
+    }
+
+    /**
+     * @return Which camera index last saw a tag (or -1 if none)
+     */
+    public int getLastDetectionCameraIndex() {
+        return lastDetectionCameraIndex;
+    }
+
+    /**
+     * @return Time at which the last detection happened
+     */
+    public double getLastDetectionTimestamp() {
+        return lastDetectionTimestamp;
+    }
+
+    /**
+     * @return Distance from the robot’s center to the tag in meters
+     */
+    public double getDistanceToTag() {
+        return distanceToTag;
+    }
+
+    /**
+     * @return Angle difference (deg) between robot heading and direction to tag
+     *         (range ~[-180, 180])
+     */
+    public double getAngleToTagDegrees() {
+        return angleToTagDegrees;
     }
 }
