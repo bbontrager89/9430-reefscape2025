@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+z// Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -174,6 +174,7 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * Lock the robot’s wheels in an "X" shape to help keep it from being pushed
    * around when stopped.
+   * Sets the wheels into an X formation to prevent movement.
    */
   public void setX() {
     m_frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
