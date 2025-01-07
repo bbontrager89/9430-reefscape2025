@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -51,7 +55,7 @@ public final class Constants {
 
     // SPARK MAX CAN IDs
     public static final int pigeon2CanId = 1;
-    
+
     public static final int kFrontLeftDrivingCanId = 11;
     public static final int kRearLeftDrivingCanId = 13;
     public static final int kFrontRightDrivingCanId = 15;
@@ -65,6 +69,10 @@ public final class Constants {
     public static final boolean kGyroReversed = false;
   }
 
+  public static final class VisionConstants {
+   public static final int[] kAlignApriltagIDs = new int[]{6};
+  }
+
   public static final class ModuleConstants {
     // The MAXSwerve module can be configured with one of three pinion gears: 12T,
     // 13T, or 14T. This changes the drive speed of the module (a pinion gear with
@@ -75,8 +83,10 @@ public final class Constants {
     public static final double kDrivingMotorFreeSpeedRps = NeoMotorConstants.kFreeSpeedRpm / 60;
     public static final double kWheelDiameterMeters = 0.0729;
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
-    // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15 teeth on the bevel pinion
-    // TODO bbontrager89 20241107.1742: Need to update values for kDrivingMotorReduction
+    // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
+    // teeth on the bevel pinion
+    // TODO bbontrager89 20241107.1742: Need to update values for
+    // kDrivingMotorReduction
     public static final double kDrivingMotorReduction = (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);
     public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
         / kDrivingMotorReduction;
