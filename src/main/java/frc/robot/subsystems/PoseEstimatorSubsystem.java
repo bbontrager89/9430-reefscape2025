@@ -44,7 +44,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     // If we have multiple cameras, we list their names here.
     //Add as many cameras we plan to use that season
     //TODO: FILL CAMERA NAMES IN PLEASE!!!
-    private static final String[] CAMERA_NAMES = {"Arducam_1", "Arducam_3"/*"CameraFront", "CameraBack" */};
+    private static final String[] CAMERA_NAMES = {"Arducam_1", "Arducam_2", "Arducam_3"/*"CameraFront", "CameraBack" */};
 
     // Each camera might be mounted differently on the robot.
     // These transforms describe the camera's position and orientation relative to the robot's center.
