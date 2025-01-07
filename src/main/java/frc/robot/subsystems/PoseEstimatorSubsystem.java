@@ -14,19 +14,13 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.cscore.VideoSink;
-import edu.wpi.first.cscore.VideoSource;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -48,13 +42,11 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
     // If we have multiple cameras, we list their names here.
     //Add as many cameras we plan to use that season
-    //TODO: FILL CAMERA NAMES IN PLEASE!!!
     private static final String[] CAMERA_NAMES = {"Arducam_1", "Arducam_2", "Arducam_3"};
 
     // Each camera might be mounted differently on the robot.
     // These transforms describe the camera's position and orientation relative to the robot's center.
     private final Transform3d[] robotToCams = {
-        //TODO: FILL CAMERA TRANSFORMS IN PLEASE!!!
         new Transform3d(Inches.of(-10.5), Inches.of(0), Inches.of(6.5), new Rotation3d(0,115,270)),
         new Transform3d(Inches.of(0), Inches.of(10.5), Inches.of(6.5), new Rotation3d(0,115,270)),
         new Transform3d(Inches.of(10.5), Inches.of(0), Inches.of(6.5), new Rotation3d(0,115,270))
