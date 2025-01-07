@@ -48,8 +48,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     // These transforms describe the camera's position and orientation relative to the robot's center.
     private final Transform3d[] robotToCams = {
         new Transform3d(Inches.of(-10.5), Inches.of(0), Inches.of(6.5), new Rotation3d(0,115,270)),
-        new Transform3d(Inches.of(0), Inches.of(10.5), Inches.of(6.5), new Rotation3d(0,115,270)),
-        new Transform3d(Inches.of(10.5), Inches.of(0), Inches.of(6.5), new Rotation3d(0,115,270))
+        new Transform3d(Inches.of(0), Inches.of(10.5), Inches.of(6.5), new Rotation3d(0,115,0)),
+        new Transform3d(Inches.of(10.5), Inches.of(0), Inches.of(6.5), new Rotation3d(0,115,90))
         //Add as many cameras we plan to use that season
     };
 
