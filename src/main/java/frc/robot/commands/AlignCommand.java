@@ -19,10 +19,10 @@ public class AlignCommand extends Command {
 
   // We’ll define a small state machine
   private enum AlignState {
-    WAITING_FOR_TAG,    // No tag (or invalid tag) seen
-    ROTATE_FOR_CAM2,    // If camera 2 is not the one seeing it
-    ALIGN_ANGLE,        // Rotate to match angle
-    DRIVE_FORWARD,      // Drive forward until N distance
+    WAITING_FOR_TAG, // No tag (or invalid tag) seen
+    ROTATE_FOR_CAM2, // If camera 2 is not the one seeing it
+    ALIGN_ANGLE, // Rotate to match angle
+    DRIVE_FORWARD, // Drive forward until N distance
     DONE
   }
 
@@ -60,14 +60,13 @@ public class AlignCommand extends Command {
     if (timeSinceDetect > 0.5 || !allowedTagIds.contains(lastTagId)) {
       currentState = AlignState.WAITING_FOR_TAG;
     }
-
     switch (currentState) {
       case WAITING_FOR_TAG:
         // Check if we see a valid tag
         if (lastCamIndex != -1
             && allowedTagIds.contains(lastTagId)
             && timeSinceDetect <= 0.5) {
-          
+
           // If it’s already camera 2, skip ROTATE_FOR_CAM2
           if (lastCamIndex == 1) {
             currentState = AlignState.ALIGN_ANGLE;
@@ -81,8 +80,6 @@ public class AlignCommand extends Command {
         break;
 
       case ROTATE_FOR_CAM2:
-        // Keep rotating in place until lastDetectionCameraIndex == 1
-        // We'll rotate at a small speed. For simplicity, let's just rotate +0.2 rad/s
         if (lastCamIndex != 1) {
           driveSubsystem.drive(0.0, 0.0, 0.2, false); // robot-relative
         } else {
@@ -97,8 +94,10 @@ public class AlignCommand extends Command {
         double rotationCmd = kP * angleDiff;
 
         // Clip to some max rotational speed, say +/- 0.3
-        if (rotationCmd > 0.3) rotationCmd = 0.3;
-        if (rotationCmd < -0.3) rotationCmd = -0.3;
+        if (rotationCmd > 0.3)
+          rotationCmd = 0.3;
+        if (rotationCmd < -0.3)
+          rotationCmd = -0.3;
 
         // If within threshold, go to DRIVE_FORWARD
         if (Math.abs(angleDiff) < ANGLE_THRESHOLD_DEG) {
