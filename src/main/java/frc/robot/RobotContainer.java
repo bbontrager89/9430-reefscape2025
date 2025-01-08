@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.AlignCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.utils.SmartDashboardUtils;
@@ -15,6 +16,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -27,7 +35,6 @@ import com.pathplanner.lib.path.PathPlannerPath;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
@@ -70,8 +77,12 @@ public class RobotContainer {
             () -> m_robotDrive.setX(),
             m_robotDrive));
 
-    new JoystickButton(m_driverController, edu.wpi.first.wpilibj.XboxController.Button.kA.value)
-    .onTrue(new AlignCommand(m_robotDrive));
+    new JoystickButton(m_driverController, XboxController.Button.kA.value)
+        .onTrue(new AlignCommand(
+            m_robotDrive,
+            Arrays.stream(VisionConstants.kAlignApriltagIDs)
+                .boxed()
+                .collect(Collectors.toSet())));
   }
 
   /**
@@ -80,15 +91,15 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    try{
-    PathPlannerPath selectedPath = smartDashboardUtils.pathChooser.getSelected();
+    try {
+      PathPlannerPath selectedPath = smartDashboardUtils.pathChooser.getSelected();
 
-    m_robotDrive.resetOdometry(selectedPath.getStartingHolonomicPose().get());
-   
-    Command selectedCommand = AutoBuilder.followPath(selectedPath);
+      m_robotDrive.resetOdometry(selectedPath.getStartingHolonomicPose().get());
 
-    return selectedCommand;
-    } catch(Exception e) {
+      Command selectedCommand = AutoBuilder.followPath(selectedPath);
+
+      return selectedCommand;
+    } catch (Exception e) {
       e.printStackTrace();
     }
     return Commands.none();

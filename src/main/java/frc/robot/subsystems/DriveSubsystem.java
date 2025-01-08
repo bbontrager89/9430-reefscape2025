@@ -230,4 +230,8 @@ public class DriveSubsystem extends SubsystemBase {
     };
   }
 
+  public PoseEstimatorSubsystem getPoseEstimatorSubsystem() {
+    return poseEstimatorSubsystem;
+  }
+
 }
