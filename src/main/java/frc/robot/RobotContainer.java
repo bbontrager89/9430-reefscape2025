@@ -14,7 +14,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -37,6 +37,10 @@ public class RobotContainer {
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+
+  // The driver's controller
+  XboxController m_operatorController = new XboxController(OIConstants.kOperatorControllerPort);
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -68,10 +72,30 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverController, Button.kR1.value)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.setX(),
-            m_robotDrive));
+    // Right Trigger - Coral manipulator wheels intake
+    new JoystickButton(m_driverController, edu.wpi.first.wpilibj.PS4Controller.Button.kR1.value)
+        /*.whileTrue(new RunCommand())*/;
+
+    // Left Trigger - Coral manipulator wheels out
+    new JoystickButton(m_driverController, edu.wpi.first.wpilibj.PS4Controller.Button.kL1.value)
+        /*.whileTrue(new RunCommand())*/;
+    
+    // Y button - Coral mode
+    new JoystickButton(m_operatorController, Button.kY.value)
+    /*.onTrue((new RunCommand()))*/;
+
+    // X button - Algae clear from reef mode
+    new JoystickButton(m_operatorController, Button.kX.value)
+    /*.onTrue((new RunCommand()))*/;
+
+    // B button - Algae intake mode
+    new JoystickButton(m_operatorController, Button.kB.value)
+    /*.onTrue((new RunCommand()))*/;
+
+    // Right Stick button - Transit mode
+    new JoystickButton(m_operatorController, Button.kRightStick.value)
+    /*.onTrue((new RunCommand()))*/;
+    
   }
 
   /**
