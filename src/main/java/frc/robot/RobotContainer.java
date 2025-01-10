@@ -20,9 +20,12 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+
 import java.util.List;
 
 /*
@@ -82,19 +85,68 @@ public class RobotContainer {
     
     // Y button - Coral mode
     new JoystickButton(m_operatorController, Button.kY.value)
-    /*.onTrue((new RunCommand()))*/;
+    .onTrue((new InstantCommand()));
 
     // X button - Algae clear from reef mode
     new JoystickButton(m_operatorController, Button.kX.value)
-    /*.onTrue((new RunCommand()))*/;
+    .onTrue((new InstantCommand()));
 
     // B button - Algae intake mode
     new JoystickButton(m_operatorController, Button.kB.value)
-    /*.onTrue((new RunCommand()))*/;
+    .onTrue((new InstantCommand()));
+
+    // A button - Algae intake mode
+    new JoystickButton(m_operatorController, Button.kA.value)
+    .onTrue((new InstantCommand()));
 
     // Right Stick button - Transit mode
     new JoystickButton(m_operatorController, Button.kRightStick.value)
-    /*.onTrue((new RunCommand()))*/;
+    .onTrue((new InstantCommand()));
+
+    // Left Stick button - unbound?
+    new JoystickButton(m_operatorController, Button.kLeftStick.value)
+    .onTrue((new InstantCommand()));
+
+    // Dpad Up button
+    new POVButton(m_operatorController, 0)
+    .onTrue((new InstantCommand()));
+
+    // Dpad Up-Right button
+    new POVButton(m_operatorController, 45)
+    .onTrue((new InstantCommand()));
+
+    // Dpad Right button
+    new POVButton(m_operatorController, 90)
+    .onTrue((new InstantCommand()));
+
+    // Dpad Down-Right button
+    new POVButton(m_operatorController, 135)
+    .onTrue((new InstantCommand()));
+
+    // Dpad Down button
+    new POVButton(m_operatorController, 180)
+    .onTrue((new InstantCommand()));
+
+    // Dpad Down-Left button
+    new POVButton(m_operatorController, 225)
+    .onTrue((new InstantCommand()));
+
+    // Dpad Left button
+    new POVButton(m_operatorController, 270)
+    .onTrue((new InstantCommand()));
+
+    // Dpad Up-Left button
+    new POVButton(m_operatorController, 315)
+    .onTrue((new InstantCommand()));
+
+    // Start Button button - Manual mode
+    new JoystickButton(m_operatorController, Button.kStart.value)
+    .onTrue((new InstantCommand()));
+
+    // Back Button button - 
+    new JoystickButton(m_operatorController, Button.kBack.value)
+    .onTrue((new InstantCommand()));
+
     
   }
 
