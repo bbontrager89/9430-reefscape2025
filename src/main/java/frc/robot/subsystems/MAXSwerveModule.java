@@ -104,7 +104,7 @@ public class MAXSwerveModule {
     m_drivingClosedLoopController.setReference(correctedDesiredState.speedMetersPerSecond, ControlType.kVelocity);
     m_turningClosedLoopController.setReference(correctedDesiredState.angle.getRadians(), ControlType.kPosition);
 
-    m_desiredState = desiredState;
+    m_desiredState = correctedDesiredState;
   }
 
   /** Zeroes all the SwerveModule encoders. */
