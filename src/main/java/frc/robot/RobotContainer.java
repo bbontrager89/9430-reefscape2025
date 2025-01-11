@@ -46,7 +46,8 @@ public class RobotContainer {
     // The driver's controller
     XboxController m_operatorController = new XboxController(OIConstants.kOperatorControllerPort);
 
-    Double povUpPressedRecently = null;
+    Double povPressedRecency = null;
+    int latestPOVButtonPress = -1;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -117,59 +118,141 @@ public class RobotContainer {
 
                     @Override
                     public void run() {
-                        if (povUpPressedRecently != null) {
-                            if (povUpPressedRecently + 0.25 > Timer.getFPGATimestamp()) {
-                                System.out.println("Dpad Up button pressed twice");
-                                SmartDashboard.putBoolean("pressedTwice", true);
-                                SmartDashboard.putBoolean("pressedOnce", false);
-                            } else {
-                                System.out.println("Dpad pressed once");
-                                povUpPressedRecently = Timer.getFPGATimestamp();
-                                SmartDashboard.putBoolean("pressedTwice", false);
-                                SmartDashboard.putBoolean("pressedOnce", true);
-                            }
+                        if (povPressedRecency != null && povPressedRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                // on Double Press
                         } else {
-                            System.out.println("Dpad pressed first");
-                            SmartDashboard.putBoolean("pressedOnce", true);
-                            povUpPressedRecently = Timer.getFPGATimestamp();
+                                // on Single Press
                         }
-                    }
 
+                        povPressedRecency = Timer.getFPGATimestamp();
+                        latestPOVButtonPress = 0;
+                    }
                 })));
 
         // Dpad Up-Right button
         new POVButton(m_operatorController, 45)
-                .onTrue((new InstantCommand()));
+                .onTrue((new InstantCommand(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (povPressedRecency != null && povPressedRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                // on Double Press
+                        } else {
+                                // on Single Press
+                        }
+                        
+                        povPressedRecency = Timer.getFPGATimestamp();
+                        latestPOVButtonPress = 45;
+                    }
+                })));
 
         // Dpad Right button
         new POVButton(m_operatorController, 90)
-                .onTrue((new InstantCommand()));
+        .onTrue((new InstantCommand(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (povPressedRecency != null && povPressedRecency + 0.25 > Timer.getFPGATimestamp()) {
+                            // on Double Press
+                    } else {
+                            // on Single Press
+                    }
+                    
+                    povPressedRecency = Timer.getFPGATimestamp();
+                    latestPOVButtonPress = 90;
+                }
+            })));
 
         // Dpad Down-Right button
         new POVButton(m_operatorController, 135)
-                .onTrue((new InstantCommand()));
+        .onTrue((new InstantCommand(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (povPressedRecency != null && povPressedRecency + 0.25 > Timer.getFPGATimestamp()) {
+                            // on Double Press
+                    } else {
+                            // on Single Press
+                    }
+                    
+                    povPressedRecency = Timer.getFPGATimestamp();
+                    latestPOVButtonPress = 135;
+                }
+            })));
 
         // Dpad Down button
         new POVButton(m_operatorController, 180)
-                .onTrue((new InstantCommand()));
+        .onTrue((new InstantCommand(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (povPressedRecency != null && povPressedRecency + 0.25 > Timer.getFPGATimestamp()) {
+                            // on Double Press
+                    } else {
+                            // on Single Press
+                    }
+                    
+                    povPressedRecency = Timer.getFPGATimestamp();
+                    latestPOVButtonPress = 180;
+                }
+            })));
 
         // Dpad Down-Left button
         new POVButton(m_operatorController, 225)
-                .onTrue((new InstantCommand()));
+        .onTrue((new InstantCommand(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (povPressedRecency != null && povPressedRecency + 0.25 > Timer.getFPGATimestamp()) {
+                            // on Double Press
+                    } else {
+                            // on Single Press
+                    }
+                    
+                    povPressedRecency = Timer.getFPGATimestamp();
+                    latestPOVButtonPress = 225;
+                }
+            })));
 
         // Dpad Left button
         new POVButton(m_operatorController, 270)
-                .onTrue((new InstantCommand()));
+        .onTrue((new InstantCommand(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (povPressedRecency != null && povPressedRecency + 0.25 > Timer.getFPGATimestamp()) {
+                            // on Double Press
+                    } else {
+                            // on Single Press
+                    }
+                    
+                    povPressedRecency = Timer.getFPGATimestamp();
+                    latestPOVButtonPress = 270;
+                }
+            })));
 
         // Dpad Up-Left button
         new POVButton(m_operatorController, 315)
-                .onTrue((new InstantCommand()));
+        .onTrue((new InstantCommand(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (povPressedRecency != null && povPressedRecency + 0.25 > Timer.getFPGATimestamp()) {
+                            // on Double Press
+                    } else {
+                            // on Single Press
+                    }
+                    
+                    povPressedRecency = Timer.getFPGATimestamp();
+                    latestPOVButtonPress = 315;
+                }
+            })));
 
         // Start Button button - Manual mode
         new JoystickButton(m_operatorController, Button.kStart.value)
                 .onTrue((new InstantCommand()));
 
-        // Back Button button -
+        // Back Button button - Cancel all actions?
         new JoystickButton(m_operatorController, Button.kBack.value)
                 .onTrue((new InstantCommand()));
 
