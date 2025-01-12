@@ -45,6 +45,9 @@ public class RobotContainer {
         // The operator's controller
         XboxController m_operatorController = new XboxController(OIConstants.kOperatorControllerPort);
 
+        Double driverPOVRecency = null;
+        int driverLatestPOVButton = -1;
+
         Double operatorPOVRecency = null;
         int operatorLatestPOVButton = -1;
 
@@ -321,15 +324,15 @@ public class RobotContainer {
 
                                         @Override
                                         public void run() {
-                                                if (operatorPOVRecency != null && operatorPOVRecency + 0.25 > Timer
+                                                if (driverPOVRecency != null && driverPOVRecency + 0.25 > Timer
                                                                 .getFPGATimestamp()) {
                                                         // on Double Press
                                                 } else {
                                                         // on Single Press
                                                 }
 
-                                                operatorPOVRecency = Timer.getFPGATimestamp();
-                                                operatorLatestPOVButton = 0;
+                                                driverPOVRecency = Timer.getFPGATimestamp();
+                                                driverLatestPOVButton = 0;
                                         }
                                 })));
 
@@ -339,15 +342,15 @@ public class RobotContainer {
 
                                         @Override
                                         public void run() {
-                                                if (operatorPOVRecency != null && operatorPOVRecency + 0.25 > Timer
+                                                if (driverPOVRecency != null && driverPOVRecency + 0.25 > Timer
                                                                 .getFPGATimestamp()) {
                                                         // on Double Press
                                                 } else {
                                                         // on Single Press
                                                 }
 
-                                                operatorPOVRecency = Timer.getFPGATimestamp();
-                                                operatorLatestPOVButton = 45;
+                                                driverPOVRecency = Timer.getFPGATimestamp();
+                                                driverLatestPOVButton = 45;
                                         }
                                 })));
 
@@ -357,15 +360,15 @@ public class RobotContainer {
 
                                         @Override
                                         public void run() {
-                                                if (operatorPOVRecency != null && operatorPOVRecency + 0.25 > Timer
+                                                if (driverPOVRecency != null && driverPOVRecency + 0.25 > Timer
                                                                 .getFPGATimestamp()) {
                                                         // on Double Press
                                                 } else {
                                                         // on Single Press
                                                 }
 
-                                                operatorPOVRecency = Timer.getFPGATimestamp();
-                                                operatorLatestPOVButton = 90;
+                                                driverPOVRecency = Timer.getFPGATimestamp();
+                                                driverLatestPOVButton = 90;
                                         }
                                 })));
 
@@ -375,15 +378,15 @@ public class RobotContainer {
 
                                         @Override
                                         public void run() {
-                                                if (operatorPOVRecency != null && operatorPOVRecency + 0.25 > Timer
+                                                if (driverPOVRecency != null && driverPOVRecency + 0.25 > Timer
                                                                 .getFPGATimestamp()) {
                                                         // on Double Press
                                                 } else {
                                                         // on Single Press
                                                 }
 
-                                                operatorPOVRecency = Timer.getFPGATimestamp();
-                                                operatorLatestPOVButton = 135;
+                                                driverPOVRecency = Timer.getFPGATimestamp();
+                                                driverLatestPOVButton = 135;
                                         }
                                 })));
 
@@ -393,15 +396,15 @@ public class RobotContainer {
 
                                         @Override
                                         public void run() {
-                                                if (operatorPOVRecency != null && operatorPOVRecency + 0.25 > Timer
+                                                if (driverPOVRecency != null && driverPOVRecency + 0.25 > Timer
                                                                 .getFPGATimestamp()) {
                                                         // on Double Press
                                                 } else {
                                                         // on Single Press
                                                 }
 
-                                                operatorPOVRecency = Timer.getFPGATimestamp();
-                                                operatorLatestPOVButton = 180;
+                                                driverPOVRecency = Timer.getFPGATimestamp();
+                                                driverLatestPOVButton = 180;
                                         }
                                 })));
 
@@ -411,15 +414,15 @@ public class RobotContainer {
 
                                         @Override
                                         public void run() {
-                                                if (operatorPOVRecency != null && operatorPOVRecency + 0.25 > Timer
+                                                if (driverPOVRecency != null && driverPOVRecency + 0.25 > Timer
                                                                 .getFPGATimestamp()) {
                                                         // on Double Press
                                                 } else {
                                                         // on Single Press
                                                 }
 
-                                                operatorPOVRecency = Timer.getFPGATimestamp();
-                                                operatorLatestPOVButton = 225;
+                                                driverPOVRecency = Timer.getFPGATimestamp();
+                                                driverLatestPOVButton = 225;
                                         }
                                 })));
 
@@ -429,15 +432,15 @@ public class RobotContainer {
 
                                         @Override
                                         public void run() {
-                                                if (operatorPOVRecency != null && operatorPOVRecency + 0.25 > Timer
+                                                if (driverPOVRecency != null && driverPOVRecency + 0.25 > Timer
                                                                 .getFPGATimestamp()) {
                                                         // on Double Press
                                                 } else {
                                                         // on Single Press
                                                 }
 
-                                                operatorPOVRecency = Timer.getFPGATimestamp();
-                                                operatorLatestPOVButton = 270;
+                                                driverPOVRecency = Timer.getFPGATimestamp();
+                                                driverLatestPOVButton = 270;
                                         }
                                 })));
 
@@ -447,15 +450,15 @@ public class RobotContainer {
 
                                         @Override
                                         public void run() {
-                                                if (operatorPOVRecency != null && operatorPOVRecency + 0.25 > Timer
+                                                if (driverPOVRecency != null && driverPOVRecency + 0.25 > Timer
                                                                 .getFPGATimestamp()) {
                                                         // on Double Press
                                                 } else {
                                                         // on Single Press
                                                 }
 
-                                                operatorPOVRecency = Timer.getFPGATimestamp();
-                                                operatorLatestPOVButton = 315;
+                                                driverPOVRecency = Timer.getFPGATimestamp();
+                                                driverLatestPOVButton = 315;
                                         }
                                 })));
 
