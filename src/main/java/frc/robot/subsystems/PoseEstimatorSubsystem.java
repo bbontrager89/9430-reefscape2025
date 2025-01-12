@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -192,6 +193,15 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
             }
         }
+
+        SmartDashboard.putNumber("AngleToTagDegrees", angleToTagDegrees);
+        SmartDashboard.putNumber("DistanceToTag", distanceToTag);
+        SmartDashboard.putNumber("LateralOffsetToTag", lateralOffsetToTag);
+        SmartDashboard.putNumber("xOffsetToTag", xOffsetToTag);
+        SmartDashboard.putNumber("LastDetectedTagId", lastDetectedTagId);
+        SmartDashboard.putNumber("LastDetectionCameraIndex", lastDetectionCameraIndex);
+        SmartDashboard.putNumber("LastDetectionTimestamp", lastDetectionTimestamp);
+
     }
 
     // ----------------------------------------------------
