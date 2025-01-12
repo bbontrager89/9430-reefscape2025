@@ -16,17 +16,14 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.Constants.VisionConstants;
-import frc.robot.commands.AlignCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.utils.SmartDashboardUtils;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
@@ -45,7 +42,7 @@ public class RobotContainer {
     // The driver's controller
     XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
-    // The driver's controller
+    // The operator's controller
     XboxController m_operatorController = new XboxController(OIConstants.kOperatorControllerPort);
 
     Double povPressedRecency = null;
@@ -82,15 +79,21 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
 
-        // Right Trigger - Coral manipulator wheels intake
-        new JoystickButton(m_driverController, edu.wpi.first.wpilibj.PS4Controller.Button.kR1.value)
-        /* .whileTrue(new RunCommand()) */;
+        /*
+        *
+        *       OPERATOR BUTTON MAPPING
+        *
+        */
 
-        // Left Trigger - Coral manipulator wheels out
-        new JoystickButton(m_driverController, edu.wpi.first.wpilibj.PS4Controller.Button.kL1.value)
-        /* .whileTrue(new RunCommand()) */;
+        // Right bumper - Coral manipulator wheels intake
+        new JoystickButton(m_operatorController, Button.kRightBumper.value)
+                .onTrue((new InstantCommand()));
 
-        // Y button - Coral mode
+        // Left bumper - Coral manipulator wheels out
+        new JoystickButton(m_operatorController, Button.kLeftBumper.value)
+                .onTrue((new InstantCommand()));
+
+        // Y button - Toggle Coral Mode
         new JoystickButton(m_operatorController, Button.kY.value)
                 .onTrue((new InstantCommand()));
 
@@ -115,7 +118,7 @@ public class RobotContainer {
                 .onTrue((new InstantCommand()));
 
         // Dpad Up button
-        new POVButton(m_driverController, 0)
+        new POVButton(m_operatorController, 0)
                 .onTrue((new InstantCommand(new Runnable() {
 
                     @Override
@@ -257,6 +260,190 @@ public class RobotContainer {
         // Back Button button - Cancel all actions?
         new JoystickButton(m_operatorController, Button.kBack.value)
                 .onTrue((new InstantCommand()));
+
+        /*
+        *
+        *       DRIVER BUTTON MAPPING
+        *
+        */
+
+        
+        // Right bumper - Coral manipulator wheels intake
+        new JoystickButton(m_driverController, Button.kRightBumper.value)
+                .onTrue((new InstantCommand()));
+
+        // Left bumper - Coral manipulator wheels out
+        new JoystickButton(m_driverController, Button.kLeftBumper.value)
+                .onTrue((new InstantCommand()));
+
+        // Y button - Coral mode
+        new JoystickButton(m_driverController, Button.kY.value)
+                .onTrue((new InstantCommand()));
+
+        // X button - Algae clear from reef mode
+        new JoystickButton(m_driverController, Button.kX.value)
+                .onTrue((new InstantCommand()));
+
+        // B button - Algae intake mode
+        new JoystickButton(m_driverController, Button.kB.value)
+                .onTrue((new InstantCommand()));
+
+        // A button - Algae intake mode
+        new JoystickButton(m_driverController, Button.kA.value)
+                .onTrue((new InstantCommand()));
+
+        // Right Stick button - Transit mode
+        new JoystickButton(m_driverController, Button.kRightStick.value)
+                .onTrue((new InstantCommand()));
+
+        // Left Stick button - unbound?
+        new JoystickButton(m_driverController, Button.kLeftStick.value)
+                .onTrue((new InstantCommand()));
+
+        // Dpad Up button
+        new POVButton(m_driverController, 0)
+                .onTrue((new InstantCommand(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (povPressedRecency != null && povPressedRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                // on Double Press
+                        } else {
+                                // on Single Press
+                        }
+
+                        povPressedRecency = Timer.getFPGATimestamp();
+                        latestPOVButtonPress = 0;
+                    }
+                })));
+
+        // Dpad Up-Right button
+        new POVButton(m_driverController, 45)
+                .onTrue((new InstantCommand(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (povPressedRecency != null && povPressedRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                // on Double Press
+                        } else {
+                                // on Single Press
+                        }
+                        
+                        povPressedRecency = Timer.getFPGATimestamp();
+                        latestPOVButtonPress = 45;
+                    }
+                })));
+
+        // Dpad Right button
+        new POVButton(m_driverController, 90)
+                .onTrue((new InstantCommand(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (povPressedRecency != null && povPressedRecency + 0.25 > Timer.getFPGATimestamp()) {
+                            // on Double Press
+                    } else {
+                            // on Single Press
+                    }
+                    
+                    povPressedRecency = Timer.getFPGATimestamp();
+                    latestPOVButtonPress = 90;
+                }
+            })));
+
+        // Dpad Down-Right button
+        new POVButton(m_driverController, 135)
+                .onTrue((new InstantCommand(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (povPressedRecency != null && povPressedRecency + 0.25 > Timer.getFPGATimestamp()) {
+                            // on Double Press
+                    } else {
+                            // on Single Press
+                    }
+                    
+                    povPressedRecency = Timer.getFPGATimestamp();
+                    latestPOVButtonPress = 135;
+                }
+            })));
+
+        // Dpad Down button
+        new POVButton(m_driverController, 180)
+                .onTrue((new InstantCommand(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (povPressedRecency != null && povPressedRecency + 0.25 > Timer.getFPGATimestamp()) {
+                            // on Double Press
+                    } else {
+                            // on Single Press
+                    }
+                    
+                    povPressedRecency = Timer.getFPGATimestamp();
+                    latestPOVButtonPress = 180;
+                }
+            })));
+
+        // Dpad Down-Left button
+        new POVButton(m_driverController, 225)
+                .onTrue((new InstantCommand(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (povPressedRecency != null && povPressedRecency + 0.25 > Timer.getFPGATimestamp()) {
+                            // on Double Press
+                    } else {
+                            // on Single Press
+                    }
+                    
+                    povPressedRecency = Timer.getFPGATimestamp();
+                    latestPOVButtonPress = 225;
+                }
+            })));
+
+        // Dpad Left button
+        new POVButton(m_driverController, 270)
+                .onTrue((new InstantCommand(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (povPressedRecency != null && povPressedRecency + 0.25 > Timer.getFPGATimestamp()) {
+                            // on Double Press
+                    } else {
+                            // on Single Press
+                    }
+                    
+                    povPressedRecency = Timer.getFPGATimestamp();
+                    latestPOVButtonPress = 270;
+                }
+            })));
+
+        // Dpad Up-Left button
+        new POVButton(m_driverController, 315)
+                .onTrue((new InstantCommand(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (povPressedRecency != null && povPressedRecency + 0.25 > Timer.getFPGATimestamp()) {
+                            // on Double Press
+                    } else {
+                            // on Single Press
+                    }
+                    
+                    povPressedRecency = Timer.getFPGATimestamp();
+                    latestPOVButtonPress = 315;
+                }
+            })));
+
+        // Start Button button - Manual mode
+        new JoystickButton(m_driverController, Button.kStart.value)
+                .onTrue((new InstantCommand()));
+
+        // Back Button button - Cancel all actions?
+        new JoystickButton(m_driverController, Button.kBack.value)
+                .onTrue((new InstantCommand()));
+
 
     }
 
