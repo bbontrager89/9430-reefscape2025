@@ -82,11 +82,11 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
 
-                /*
-                 *
-                 * OPERATOR BUTTON MAPPING
-                 *
-                 */
+                /* * * * * * * * * * * * * *\
+                 *                         *
+                 * OPERATOR BUTTON MAPPING *
+                 *                         *
+                \* * * * * * * * * * * * * */
 
                 // Right bumper - Coral manipulator wheels intake
                 new JoystickButton(m_operatorController, Button.kRightBumper.value)
@@ -277,11 +277,11 @@ public class RobotContainer {
                 new JoystickButton(m_operatorController, Button.kBack.value)
                                 .onTrue((new InstantCommand()));
 
-                /*
-                 *
-                 * DRIVER BUTTON MAPPING
-                 *
-                 */
+                /* * * * * * * * * * * * *\
+                 *                       *
+                 * DRIVER BUTTON MAPPING *
+                 *                       *
+                 * * * * * * * * * * * * */
 
                 // Right bumper -
                 new JoystickButton(m_driverController, Button.kRightBumper.value)
