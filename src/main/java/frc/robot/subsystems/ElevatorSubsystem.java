@@ -26,6 +26,28 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorMotor.stopMotor();
   }
 
+  public void moveToScoringPosition(int scoringPosition) {
+    switch (scoringPosition) {
+      case 1:
+
+        break;
+      case 2:
+
+        break;
+      case 3:
+
+        break;
+
+      case 4:
+
+        break;
+
+      default:
+        System.out.println("Invalid Scoring Position requested in ElevatorSubsystem");
+        break;
+    }
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
