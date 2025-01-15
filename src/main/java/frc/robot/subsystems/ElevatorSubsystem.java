@@ -37,11 +37,9 @@ public class ElevatorSubsystem extends SubsystemBase {
       case 3:
 
         break;
-
       case 4:
 
         break;
-
       default:
         System.out.println("Invalid Scoring Position requested in ElevatorSubsystem");
         break;
