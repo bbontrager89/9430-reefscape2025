@@ -10,14 +10,14 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class AlgaeManipulatorSubSystem extends SubsystemBase {
+public class AlgaeManipulatorSubsystem extends SubsystemBase {
 
   private SparkFlex rightAlgaeManipulatorMotor = new SparkFlex(Constants.RightAlgaeManipulatorCANid, MotorType.kBrushless);
   private SparkFlex leftAlgaeManipulatorMotor = new SparkFlex(Constants.LeftAlgaeManipulatorCANid, MotorType.kBrushless);
 
 
   /** Creates a new AlgaeManipulatorSubSystem. */
-  public AlgaeManipulatorSubSystem() {
+  public AlgaeManipulatorSubsystem() {
     
   }
 
