@@ -19,7 +19,16 @@ public class AlgaeManipulatorSubSystem extends SubsystemBase {
   /** Creates a new AlgaeManipulatorSubSystem. */
   public AlgaeManipulatorSubSystem() {
     
+  }
 
+  public void setSpeed(double speed) {
+    rightAlgaeManipulatorMotor.set(speed);
+    leftAlgaeManipulatorMotor.set(speed);
+  }
+
+  public void stop() {
+    rightAlgaeManipulatorMotor.stopMotor();
+    leftAlgaeManipulatorMotor.stopMotor();
   }
 
   @Override
