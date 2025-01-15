@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -13,6 +14,9 @@ import frc.robot.Constants;
 public class ElevatorSubsystem extends SubsystemBase {
 
   private SparkFlex elevatorMotor = new SparkFlex(Constants.elevatorMotorCANid, MotorType.kBrushless);
+  private AbsoluteEncoder absoluteEncoder = elevatorMotor.getAbsoluteEncoder();
+
+  private double position;
 
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
@@ -51,5 +55,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    position = absoluteEncoder.getPosition();
   }
 }
