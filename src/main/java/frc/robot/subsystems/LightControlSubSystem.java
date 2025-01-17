@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LightControlSubSystem extends SubsystemBase {
@@ -16,15 +17,16 @@ public class LightControlSubSystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putBoolean("flickerMode", flickerModeOn);
     // This method will be called once per scheduler run
-    if(flickerModeOn = false){
+    if(!flickerModeOn){
     //stop lights at rquested stop time
     if(Timer.getFPGATimestamp() > requestedStopTime){
       off();
     }
   }
   else{
-    if (isLightOn = false){
+    if (!isLightOn){
       on();
     }
     else {
@@ -39,11 +41,13 @@ public class LightControlSubSystem extends SubsystemBase {
 
   public void off(){
     //Turns off lights
+    SmartDashboard.putBoolean("light", false);
 
     isLightOn = false;
   }
   public void on(){
     //turns on lights
+    SmartDashboard.putBoolean("light", true);
 
     isLightOn = true;
   }
