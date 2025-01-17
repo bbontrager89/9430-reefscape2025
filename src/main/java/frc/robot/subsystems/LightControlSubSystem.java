@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LightControlSubSystem extends SubsystemBase {
   private double requestedStopTime;
+  private boolean flickerModeOn;
   /** Creates a new LightControlSubSystem. */
   public LightControlSubSystem() {}
 
