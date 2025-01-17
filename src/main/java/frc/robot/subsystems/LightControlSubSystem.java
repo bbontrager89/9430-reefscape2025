@@ -15,6 +15,7 @@ public class LightControlSubSystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    time = Timer.getFPGATimestamp();
   }
 
   public void stop(){
