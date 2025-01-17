@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class LightControlSubSystem extends SubsystemBase {
   private double requestedStopTime;
   private boolean flickerModeOn;
+  private boolean isLightOn;
   /** Creates a new LightControlSubSystem. */
   public LightControlSubSystem() {}
 
@@ -23,15 +24,28 @@ public class LightControlSubSystem extends SubsystemBase {
     }
   }
   else{
-
+    if (isLightOn = false){
+      on();
+    }
+    else {
+      off();
+    }
+    if(Timer.getFPGATimestamp() > requestedStopTime){
+      off();
+      flickerModeOn = false;
+    }
   }
   }
 
   public void off(){
     //Turns off lights
+
+    isLightOn = false;
   }
   public void on(){
     //turns on lights
+
+    isLightOn = true;
   }
   public void turnOnFor(double timeOn){
     //set a time for lights to be on
