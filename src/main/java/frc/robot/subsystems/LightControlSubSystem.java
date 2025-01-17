@@ -8,20 +8,30 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LightControlSubSystem extends SubsystemBase {
-  private double time;
+  private double requestedStopTime;
   /** Creates a new LightControlSubSystem. */
   public LightControlSubSystem() {}
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    time = Timer.getFPGATimestamp();
-  }
 
-  public void stop(){
-
-  }
-  public void start(){
+    //stop lights at rquested stop time
+    if(Timer.getFPGATimestamp() > requestedStopTime){
+      off();
+    }
     
+  }
+
+  public void off(){
+    //Turns off lights
+  }
+  public void on(){
+    //turns on lights
+  }
+  public void turnOnFor(double timeOn){
+    //set a time for lights to be on
+    requestedStopTime = Timer.getFPGATimestamp() + timeOn;
+    on();
   }
 }
