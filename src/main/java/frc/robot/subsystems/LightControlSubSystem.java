@@ -4,15 +4,23 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LightControlSubSystem extends SubsystemBase {
-  
+  private double time;
   /** Creates a new LightControlSubSystem. */
   public LightControlSubSystem() {}
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public void stop(){
+
+  }
+  public void start(){
+    
   }
 }
