@@ -16,12 +16,15 @@ public class LightControlSubSystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
+    if(flickerModeOn = false){
     //stop lights at rquested stop time
     if(Timer.getFPGATimestamp() > requestedStopTime){
       off();
     }
-    
+  }
+  else{
+
+  }
   }
 
   public void off(){
@@ -34,5 +37,10 @@ public class LightControlSubSystem extends SubsystemBase {
     //set a time for lights to be on
     requestedStopTime = Timer.getFPGATimestamp() + timeOn;
     on();
+    flickerModeOn = false;
+  }
+  public void flickerFor(double flickerOn){
+    requestedStopTime = Timer.getFPGATimestamp() + flickerOn;
+    flickerModeOn = true;
   }
 }
