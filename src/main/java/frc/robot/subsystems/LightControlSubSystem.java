@@ -26,6 +26,7 @@ public class LightControlSubSystem extends SubsystemBase {
     }
   }
   else{
+    //flicker lights until requested stop time is reached
     if (!isLightOn){
       on();
     }
@@ -58,7 +59,9 @@ public class LightControlSubSystem extends SubsystemBase {
     flickerModeOn = false;
   }
   public void flickerFor(double flickerOn){
+    //set time for how long lights should flicker for
     requestedStopTime = Timer.getFPGATimestamp() + flickerOn;
+    //set that lights will flicker
     flickerModeOn = true;
   }
 }
