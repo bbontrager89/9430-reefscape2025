@@ -10,43 +10,43 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LightControlSubSystem extends SubsystemBase {
   private double requestedStopTime;
-  private boolean flickerModeOn;
+  private boolean isFlickerModeOn;
   private boolean isLightOn;
   /** Creates a new LightControlSubSystem. */
   public LightControlSubSystem() {}
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("flickerMode", flickerModeOn);
+    SmartDashboard.putBoolean("flickerMode", isFlickerModeOn);
     // This method will be called once per scheduler run
-    if(!flickerModeOn){
+    if(!isFlickerModeOn){
     //stop lights at rquested stop time
     if(Timer.getFPGATimestamp() > requestedStopTime){
-      off();
+      setOff();
     }
   }
   else{
     //flicker lights until requested stop time is reached
     if (!isLightOn){
-      on();
+      setOn();
     }
     else {
-      off();
+      setOff();
     }
     if(Timer.getFPGATimestamp() > requestedStopTime){
-      off();
-      flickerModeOn = false;
+      setOff();
+      isFlickerModeOn = false;
     }
   }
   }
 
-  public void off(){
+  public void setOff(){
     //Turns off lights
     SmartDashboard.putBoolean("light", false);
 
     isLightOn = false;
   }
-  public void on(){
+  public void setOn(){
     //turns on lights
     SmartDashboard.putBoolean("light", true);
 
@@ -55,13 +55,13 @@ public class LightControlSubSystem extends SubsystemBase {
   public void turnOnFor(double timeOn){
     //set a time for lights to be on
     requestedStopTime = Timer.getFPGATimestamp() + timeOn;
-    on();
-    flickerModeOn = false;
+    setOn();
+    isFlickerModeOn = false;
   }
   public void flickerFor(double flickerOn){
     //set time for how long lights should flicker for
     requestedStopTime = Timer.getFPGATimestamp() + flickerOn;
     //set that lights will flicker
-    flickerModeOn = true;
+    isFlickerModeOn = true;
   }
 }
