@@ -12,31 +12,31 @@ public class LightControlSubSystem extends SubsystemBase {
   private double requestedStopTime;
   private boolean isFlickerModeOn;
   private boolean isLightOn;
+
   /** Creates a new LightControlSubSystem. */
-  public LightControlSubSystem() {}
+  public LightControlSubSystem() {
+  }
 
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("flickerMode", isFlickerModeOn);
     // This method will be called once per scheduler run
-    if(isFlickerModeOn){
-      //flicker lights until requested stop time is reached
-      if (isLightOn){
+    if (isFlickerModeOn) {
+      // flicker lights until requested stop time is reached
+      if (isLightOn) {
         setOff();
-      }
-      else {
+      } else {
         setOn();
       }
 
-      if(Timer.getFPGATimestamp() >= requestedStopTime){
+      if (Timer.getFPGATimestamp() >= requestedStopTime) {
         setOff();
         isFlickerModeOn = false;
       }
-        
-      }
-    else{
-      //stop lights at rquested stop time
-      if(Timer.getFPGATimestamp() >= requestedStopTime){
+
+    } else {
+      // stop lights at rquested stop time
+      if (Timer.getFPGATimestamp() >= requestedStopTime) {
         setOff();
       }
 
@@ -44,28 +44,31 @@ public class LightControlSubSystem extends SubsystemBase {
 
   }
 
-  public void setOff(){
-    //Turns off lights
+  public void setOff() {
+    // Turns off lights
     SmartDashboard.putBoolean("light", false);
 
     isLightOn = false;
   }
-  public void setOn(){
-    //turns on lights
+
+  public void setOn() {
+    // turns on lights
     SmartDashboard.putBoolean("light", true);
 
     isLightOn = true;
   }
-  public void turnOnFor(double timeOn){
-    //set a time for lights to be on
+
+  public void turnOnFor(double timeOn) {
+    // set a time for lights to be on
     requestedStopTime = Timer.getFPGATimestamp() + timeOn;
     setOn();
     isFlickerModeOn = false;
   }
-  public void flickerFor(double flickerOn){
-    //set time for how long lights should flicker for
-    requestedStopTime = Timer.getFPGATimestamp() + flickerOn;
-    //set that lights will flicker
+
+  public void flickerFor(double timeOn) {
+    // set time for how long lights should flicker for
+    requestedStopTime = Timer.getFPGATimestamp() + timeOn;
+    // set that lights will flicker
     isFlickerModeOn = true;
   }
 }
