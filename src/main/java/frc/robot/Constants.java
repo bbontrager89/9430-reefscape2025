@@ -118,6 +118,11 @@ public final class Constants {
     public static final double kFreeSpeedRpm = 5676;
   }
 
-  //TODO assign constant
-  public static final int elevatorMotorCANid = 0;
+  public static final class ElevatorConstants {
+    //TODO assign constants
+    public static final int elevatorMotorCANid = 0;
+    public static final double levelOneScoringPosition = 0;
+  }
+
+  
 }
