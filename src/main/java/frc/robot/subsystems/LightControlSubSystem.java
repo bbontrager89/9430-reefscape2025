@@ -19,25 +19,29 @@ public class LightControlSubSystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putBoolean("flickerMode", isFlickerModeOn);
     // This method will be called once per scheduler run
-    if(!isFlickerModeOn){
-    //stop lights at rquested stop time
-    if(Timer.getFPGATimestamp() > requestedStopTime){
-      setOff();
+    if(isFlickerModeOn){
+      //flicker lights until requested stop time is reached
+      if (isLightOn){
+        setOff();
+      }
+      else {
+        setOn();
+      }
+
+      if(Timer.getFPGATimestamp() >= requestedStopTime){
+        setOff();
+        isFlickerModeOn = false;
+      }
+        
+      }
+    else{
+      //stop lights at rquested stop time
+      if(Timer.getFPGATimestamp() >= requestedStopTime){
+        setOff();
+      }
+
     }
-  }
-  else{
-    //flicker lights until requested stop time is reached
-    if (!isLightOn){
-      setOn();
-    }
-    else {
-      setOff();
-    }
-    if(Timer.getFPGATimestamp() > requestedStopTime){
-      setOff();
-      isFlickerModeOn = false;
-    }
-  }
+
   }
 
   public void setOff(){
