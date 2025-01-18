@@ -9,12 +9,11 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
-  private SparkFlex elevatorMotor = new SparkFlex(Constants.elevatorMotorCANid, MotorType.kBrushless);
+  private SparkFlex elevatorMotor = new SparkFlex(ElevatorConstants.elevatorMotorCANid, MotorType.kBrushless);
   private AbsoluteEncoder absoluteEncoder;
 
   /** Creates a new ElevatorSubsystem. */
