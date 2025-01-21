@@ -120,8 +120,8 @@ public final class Constants {
 
   public static final class ElevatorConstants {
     //TODO assign constants
-    public static final int elevatorMotorCANid = 0;
-    public static final double levelOneScoringPosition = 0;
+    public static final int elevatorMotorCanId = 27;
+    public static final double levelOneScoringPosition = 0.2;
   }
 
   
