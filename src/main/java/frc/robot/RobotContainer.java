@@ -54,7 +54,7 @@ public class RobotContainer {
         Double operatorPOVRecency = null;
         int operatorLatestPOVButton = -1;
 
-        double elevatorSpeed;
+        double elevatorSpeed = 0.5;
 
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -335,13 +335,14 @@ public class RobotContainer {
 
                         @Override
                         public void run() {
-                                elevatorSubsystem.setMotorSpeed(elevatorSpeed);
+                                elevatorSubsystem.setMotorSpeed(-elevatorSpeed);
                         }
                         
                 }))).onFalse((new InstantCommand(new Runnable() {
 
                         @Override
                         public void run() {
+                                System.out.println("Right Bumper");
                                 elevatorSubsystem.stopMotor();
                         }
                         
@@ -353,7 +354,8 @@ public class RobotContainer {
 
                         @Override
                         public void run() {
-                                elevatorSubsystem.setMotorSpeed(-elevatorSpeed);
+                                System.out.println("Left Bumper");
+                                elevatorSubsystem.setMotorSpeed(elevatorSpeed);
                         }
                         
                 }))).onFalse((new InstantCommand(new Runnable() {
@@ -383,7 +385,7 @@ public class RobotContainer {
 
                                         @Override
                                         public void run() {
-                                                elevatorSubsystem.moveToScoringPosition(1);
+                                                // elevatorSubsystem.moveToScoringPosition(1);
                                         }
                                         
                                 })));
