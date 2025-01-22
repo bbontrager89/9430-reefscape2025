@@ -46,13 +46,15 @@ public class RobotContainer {
         XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
         // The operator's controller
-        XboxController m_operatorController = new XboxController(OIConstants.kOperatorControllerPort);
+        // XboxController m_operatorController = new XboxController(OIConstants.kOperatorControllerPort);
 
         Double driverPOVRecency = null;
         int driverLatestPOVButton = -1;
 
         Double operatorPOVRecency = null;
         int operatorLatestPOVButton = -1;
+
+        double elevatorSpeed;
 
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -93,6 +95,8 @@ public class RobotContainer {
                  * OPERATOR BUTTON MAPPING *
                  *                         *
                 \* * * * * * * * * * * * * */
+
+                /*  
 
                 // Right bumper - Coral manipulator wheels intake
                 new JoystickButton(m_operatorController, Button.kRightBumper.value)
@@ -318,6 +322,7 @@ public class RobotContainer {
                 new JoystickButton(m_operatorController, Button.kBack.value)
                                 .onTrue((new InstantCommand()));
 
+                                */
                 /* * * * * * * * * * * * *\
                  *                       *
                  * DRIVER BUTTON MAPPING *
@@ -326,11 +331,39 @@ public class RobotContainer {
 
                 // Right bumper -
                 new JoystickButton(m_driverController, Button.kRightBumper.value)
-                                .onTrue((new InstantCommand()));
+                .onTrue((new InstantCommand(new Runnable() {
+
+                        @Override
+                        public void run() {
+                                elevatorSubsystem.setMotorSpeed(elevatorSpeed);
+                        }
+                        
+                }))).onFalse((new InstantCommand(new Runnable() {
+
+                        @Override
+                        public void run() {
+                                elevatorSubsystem.stopMotor();
+                        }
+                        
+                })));
 
                 // Left bumper -
                 new JoystickButton(m_driverController, Button.kLeftBumper.value)
-                                .onTrue((new InstantCommand()));
+                .onTrue((new InstantCommand(new Runnable() {
+
+                        @Override
+                        public void run() {
+                                elevatorSubsystem.setMotorSpeed(-elevatorSpeed);
+                        }
+                        
+                }))).onFalse((new InstantCommand(new Runnable() {
+
+                        @Override
+                        public void run() {
+                                elevatorSubsystem.stopMotor();
+                        }
+                        
+                })));
 
                 // Y button -
                 new JoystickButton(m_driverController, Button.kY.value)
@@ -346,7 +379,14 @@ public class RobotContainer {
 
                 // A button -
                 new JoystickButton(m_driverController, Button.kA.value)
-                                .onTrue((new InstantCommand()));
+                                .onTrue((new InstantCommand(new Runnable() {
+
+                                        @Override
+                                        public void run() {
+                                                elevatorSubsystem.moveToScoringPosition(1);
+                                        }
+                                        
+                                })));
 
                 // Right Stick button -
                 new JoystickButton(m_driverController, Button.kRightStick.value)
@@ -371,6 +411,11 @@ public class RobotContainer {
 
                                                 driverPOVRecency = Timer.getFPGATimestamp();
                                                 driverLatestPOVButton = 0;
+
+                                                if (elevatorSpeed <= 0.99)  {
+                                                    elevatorSpeed += 0.01;
+                                                    System.out.println("es: " + elevatorSpeed);
+                                                }
                                         }
                                 })));
 
@@ -407,6 +452,9 @@ public class RobotContainer {
 
                                                 driverPOVRecency = Timer.getFPGATimestamp();
                                                 driverLatestPOVButton = 90;
+
+                                                elevatorSpeed = 0.5;
+                                                System.out.println("es: " + elevatorSpeed);
                                         }
                                 })));
 
@@ -443,6 +491,11 @@ public class RobotContainer {
 
                                                 driverPOVRecency = Timer.getFPGATimestamp();
                                                 driverLatestPOVButton = 180;
+
+                                                if (elevatorSpeed >= 0.02)  {
+                                                    elevatorSpeed -= 0.01;
+                                                    System.out.println("es: " + elevatorSpeed);
+                                                }
                                         }
                                 })));
 
@@ -479,6 +532,9 @@ public class RobotContainer {
 
                                                 driverPOVRecency = Timer.getFPGATimestamp();
                                                 driverLatestPOVButton = 270;
+
+                                                elevatorSpeed = 1.0;
+                                                System.out.println("es: " + elevatorSpeed);
                                         }
                                 })));
 
