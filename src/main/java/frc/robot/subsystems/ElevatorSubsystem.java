@@ -36,21 +36,21 @@ public class ElevatorSubsystem extends SubsystemBase {
     SparkMaxConfig elevatorMotorConfig = new SparkMaxConfig();
 
     SoftLimitConfig softLimitConfig = new SoftLimitConfig()
-        .forwardSoftLimit(50)
-        .reverseSoftLimit(50)
+        .forwardSoftLimit(ElevatorConstants.maximumElevatorHeight)
+        .reverseSoftLimit(ElevatorConstants.minimumElevatorHeight)
         .forwardSoftLimitEnabled(true)
         .reverseSoftLimitEnabled(true);
 
     elevatorMotorConfig.apply(softLimitConfig);
 
-    // elevatorMotor.configure(elevatorMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    elevatorMotor.configure(elevatorMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     elevatorPIDController = new PIDController(
         ElevatorConstants.kP,
         ElevatorConstants.kI,
         ElevatorConstants.kD);
     
-    elevatorPIDController.setIntegratorRange(0.01, 4.7);
+    elevatorPIDController.setIntegratorRange(ElevatorConstants.minimumElevatorHeight, ElevatorConstants.maximumElevatorHeight);
   }
 
   public void setMotorSpeed(double speed) {
@@ -91,7 +91,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     System.out.println(elevatorMotor.getAppliedOutput());
 
-    /* 
+    /* Set PID controller later when I feel like it ig :p
 
     SmartDashboard.putBoolean("mtsp", movingToScoringPosition);
 
