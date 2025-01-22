@@ -121,7 +121,15 @@ public final class Constants {
   public static final class ElevatorConstants {
     //TODO assign constants
     public static final int elevatorMotorCanId = 27;
-    public static final double levelOneScoringPosition = 0.2;
+    
+    public static final double level1ScoringPosition = 0.2;
+    public static final double level2ScoringPosition = 0.25;
+    public static final double level3ScoringPosition = 0.3;
+    public static final double level4ScoringPosition = 0.35;
+
+    public static final double kP = 0;
+    public static final double kI = 0;
+    public static final double kD = 0;
   }
 
   
