@@ -121,6 +121,9 @@ public final class Constants {
   public static final class ElevatorConstants {
     //TODO assign constants
     public static final int elevatorMotorCanId = 27;
+
+    public static final double minimumElevatorHeight = 0.180;
+    public static final double maximumElevatorHeight = 0.680;
     
     public static final double level1ScoringPosition = 0.2;
     public static final double level2ScoringPosition = 0.25;
