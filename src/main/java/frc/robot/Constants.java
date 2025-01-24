@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.revrobotics.spark.config.SoftLimitConfig;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -70,7 +72,7 @@ public final class Constants {
   }
 
   public static final class VisionConstants {
-   public static final int[] kAlignApriltagIDs = new int[]{6};
+    public static final int[] kAlignApriltagIDs = new int[] { 6 };
   }
 
   public static final class ModuleConstants {
@@ -96,7 +98,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
     public static final double kDriveDeadband = 0.05;
-    
+
   }
 
   public static final class AutoConstants {
@@ -119,21 +121,28 @@ public final class Constants {
   }
 
   public static final class ElevatorConstants {
-    //TODO assign constants
+
     public static final int elevatorMotorCanId = 27;
+
+    public static final SoftLimitConfig elevatorSoftLimitConfig = new SoftLimitConfig()
+        .forwardSoftLimit(ElevatorConstants.maximumElevatorHeight)
+        .reverseSoftLimit(ElevatorConstants.minimumElevatorHeight)
+        .forwardSoftLimitEnabled(true)
+        .reverseSoftLimitEnabled(true);
 
     public static final double minimumElevatorHeight = 0.180;
     public static final double maximumElevatorHeight = 0.680;
-    
-    public static final double level1ScoringPosition = 0.2;
-    public static final double level2ScoringPosition = 0.25;
-    public static final double level3ScoringPosition = 0.3;
-    public static final double level4ScoringPosition = 0.35;
+
+    public static final double level1ScoringPosition = 0.3;
+    public static final double level2ScoringPosition = 0.35;
+    public static final double level3ScoringPosition = 0.4;
+    public static final double level4ScoringPosition = 0.45;
 
     public static final double kP = 0;
     public static final double kI = 0;
     public static final double kD = 0;
+
+    public static final boolean elevatorMotorInverted = false;
   }
 
-  
 }

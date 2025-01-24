@@ -35,13 +35,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     SparkMaxConfig elevatorMotorConfig = new SparkMaxConfig();
 
-    SoftLimitConfig softLimitConfig = new SoftLimitConfig()
-        .forwardSoftLimit(ElevatorConstants.maximumElevatorHeight)
-        .reverseSoftLimit(ElevatorConstants.minimumElevatorHeight)
-        .forwardSoftLimitEnabled(true)
-        .reverseSoftLimitEnabled(true);
-
-    elevatorMotorConfig.apply(softLimitConfig);
+    elevatorMotorConfig.apply(ElevatorConstants.elevatorSoftLimitConfig);
+    elevatorMotorConfig.inverted(ElevatorConstants.elevatorMotorInverted);
 
     elevatorMotor.configure(elevatorMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -50,7 +45,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         ElevatorConstants.kI,
         ElevatorConstants.kD);
     
-    elevatorPIDController.setIntegratorRange(ElevatorConstants.minimumElevatorHeight, ElevatorConstants.maximumElevatorHeight);
+
   }
 
   public void setMotorSpeed(double speed) {
@@ -90,50 +85,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
 
     System.out.println(elevatorMotor.getAppliedOutput());
-
-    /* Set PID controller later when I feel like it ig :p
-
-    SmartDashboard.putBoolean("mtsp", movingToScoringPosition);
-
-    if (absoluteEncoder.getPosition() < 0.1 || absoluteEncoder.getPosition() > 0.4) {
-      currentSpeed = initialSpeed / 2.0;
-      if (absoluteEncoder.getPosition() < 0.5 || absoluteEncoder.getPosition() > 0.45) {
-        currentSpeed = initialSpeed / 4.0;
-        if (absoluteEncoder.getPosition() < 0.25 || absoluteEncoder.getPosition() > 0.475) {
-          currentSpeed = 0.0;
-        }
-      }
-    } else {
-      currentSpeed = initialSpeed;
-    }
-
-    if (movingToScoringPosition) {
-
-      if (absoluteEncoder.getPosition() > desiredHeight - 0.5 && absoluteEncoder.getPosition() < desiredHeight + 0.05) {
-
-        stopMotor();
-        movingToScoringPosition = false;
-
-      } else if (absoluteEncoder.getPosition() > desiredHeight) {
-
-        if (currentSpeed > 0) {
-          currentSpeed = -Math.abs(currentSpeed) / 2.0;
-        }
-
-        setMotorSpeed(currentSpeed);
-
-      } else if (absoluteEncoder.getPosition() < desiredHeight) {
-
-        if (currentSpeed < 0) {
-          currentSpeed = Math.abs(currentSpeed) / 2.0;
-        }
-
-        setMotorSpeed(currentSpeed);
-
-      }
-
-    }
-      */
 
   }
 }
