@@ -9,6 +9,7 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -36,15 +37,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     SparkMaxConfig elevatorMotorConfig = new SparkMaxConfig();
 
     elevatorMotorConfig.apply(ElevatorConstants.elevatorSoftLimitConfig);
+    elevatorMotorConfig.apply(ElevatorConstants.closedLoopConfig);
     elevatorMotorConfig.inverted(ElevatorConstants.elevatorMotorInverted);
 
     elevatorMotor.configure(elevatorMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-
-    elevatorPIDController = new PIDController(
-        ElevatorConstants.kP,
-        ElevatorConstants.kI,
-        ElevatorConstants.kD);
-    
 
   }
 
@@ -74,6 +70,11 @@ public class ElevatorSubsystem extends SubsystemBase {
         System.out.println("Invalid Scoring Position requested in ElevatorSubsystem");
         break;
     }
+
+    //;;;;;;;;desiredHeight=(scoringPosition==1)?ElevatorConstants.level1ScoringPosition:(scoringPosition==2)?ElevatorConstants.level3ScoringPosition:(scoringPosition==3)?ElevatorConstants.level3ScoringPosition/*IWouldNotRecommend-Titus(ButItIsFunny)*/:(scoringPosition==4)?ElevatorConstants.level4ScoringPosition:-1.0;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    
+
+    elevatorPIDController.setSetpoint(desiredHeight);
 
     currentSpeed = initialSpeed;
     movingToScoringPosition = true;

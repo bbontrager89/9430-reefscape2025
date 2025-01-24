@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SoftLimitConfig;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -130,6 +131,16 @@ public final class Constants {
         .forwardSoftLimitEnabled(true)
         .reverseSoftLimitEnabled(true);
 
+        
+    public static final double kP = 0;
+    public static final double kI = 0;
+    public static final double kD = 0;
+
+    public static final ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig()
+      .pid(ElevatorConstants.kP,
+            ElevatorConstants.kI,
+            ElevatorConstants.kD);
+
     public static final double minimumElevatorHeight = 0.180;
     public static final double maximumElevatorHeight = 0.680;
 
@@ -137,10 +148,6 @@ public final class Constants {
     public static final double level2ScoringPosition = 0.35;
     public static final double level3ScoringPosition = 0.4;
     public static final double level4ScoringPosition = 0.45;
-
-    public static final double kP = 0;
-    public static final double kI = 0;
-    public static final double kD = 0;
 
     public static final boolean elevatorMotorInverted = false;
   }
