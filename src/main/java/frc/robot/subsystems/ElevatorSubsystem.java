@@ -5,7 +5,9 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -22,25 +24,39 @@ import frc.robot.Constants.ElevatorConstants;
 public class ElevatorSubsystem extends SubsystemBase {
 
   private SparkFlex elevatorMotor = new SparkFlex(ElevatorConstants.elevatorMotorCanId, MotorType.kBrushless);
-  private AbsoluteEncoder absoluteEncoder;
-  private PIDController elevatorPIDController;
+  private AbsoluteEncoder absoluteEncoder = elevatorMotor.getAbsoluteEncoder();
+  private SparkClosedLoopController closedLoopController;
+  private SparkMaxConfig elevatorMotorConfig = new SparkMaxConfig();
 
   private double desiredHeight;
-  private double initialSpeed = 0.5;
+  private double initialSpeed = 0.1;
   private double currentSpeed = 0.0;
   private boolean movingToScoringPosition = false;
 
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
-    absoluteEncoder = elevatorMotor.getAbsoluteEncoder();
 
-    SparkMaxConfig elevatorMotorConfig = new SparkMaxConfig();
+    // Calculates the soft limits in revolutions based on
+    // the initial reading of the absolute encoder
+    double lowerSoftLimit = (absoluteEncoder.getPosition() - ElevatorConstants.minimumElevatorHeight)
+        * ElevatorConstants.encoderToRevolutionRatio;
 
-    elevatorMotorConfig.apply(ElevatorConstants.elevatorSoftLimitConfig);
+    // Upper limit by the range of revolutions from the lower limit
+    double upperSoftLimit = (lowerSoftLimit + ElevatorConstants.rangeInRevolutions);
+
+    SoftLimitConfig softLimitConfig = new SoftLimitConfig()
+        .forwardSoftLimit(lowerSoftLimit)
+        .reverseSoftLimit(upperSoftLimit)
+        .forwardSoftLimitEnabled(true)
+        .reverseSoftLimitEnabled(true);
+
     elevatorMotorConfig.apply(ElevatorConstants.closedLoopConfig);
     elevatorMotorConfig.inverted(ElevatorConstants.elevatorMotorInverted);
+    elevatorMotorConfig.apply(softLimitConfig);
 
     elevatorMotor.configure(elevatorMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+
+    closedLoopController = elevatorMotor.getClosedLoopController();
 
   }
 
@@ -71,10 +87,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         break;
     }
 
-    //;;;;;;;;desiredHeight=(scoringPosition==1)?ElevatorConstants.level1ScoringPosition:(scoringPosition==2)?ElevatorConstants.level3ScoringPosition:(scoringPosition==3)?ElevatorConstants.level3ScoringPosition/*IWouldNotRecommend-Titus(ButItIsFunny)*/:(scoringPosition==4)?ElevatorConstants.level4ScoringPosition:-1.0;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    
+    // ;;;;;;;;desiredHeight=(scoringPosition==1)?ElevatorConstants.level1ScoringPosition:(scoringPosition==2)?ElevatorConstants.level3ScoringPosition:(scoringPosition==3)?ElevatorConstants.level3ScoringPosition/*IWouldNotRecommend-Titus(ButItIsFunny)*/:(scoringPosition==4)?ElevatorConstants.level4ScoringPosition:-1.0;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-    elevatorPIDController.setSetpoint(desiredHeight);
+    closedLoopController.setReference(desiredHeight, ControlType.kPosition);
 
     currentSpeed = initialSpeed;
     movingToScoringPosition = true;
@@ -85,7 +100,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    System.out.println(elevatorMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Elevator Position", absoluteEncoder.getPosition());
 
   }
 }
