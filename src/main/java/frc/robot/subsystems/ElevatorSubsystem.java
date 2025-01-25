@@ -102,7 +102,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     // closedLoopController.setReference(desiredHeight, ControlType.kPosition);
 
     autoMode = true;
-    autoSpeed = 0.2 * ((absoluteEncoder.getPosition() > desiredHeight) ? 1.0 : -1.0);
+    autoSpeed = 1.0 * ((absoluteEncoder.getPosition() > desiredHeight) ? 1.0 : -1.0);
 
   }
 
