@@ -13,10 +13,25 @@ import frc.robot.Constants.CoralManipulatorConstants;
 public class CoralManipulatorSubsystem extends SubsystemBase {
 
   private SparkFlex pivotMotor = new SparkFlex(CoralManipulatorConstants.coralManipulatorPivotMotorCanid, MotorType.kBrushless);
-  private SparkFlex wheelsMotor = new SparkFlex(CoralManipulatorConstants.coralManipulatorWheelsMotorCanid, MotorType.kBrushless);
+  private SparkFlex intakeMotor = new SparkFlex(CoralManipulatorConstants.coralManipulatorIntakeMotorCanid, MotorType.kBrushless);
   /** Creates a new CoralManipulatorSubsystem. */
   public CoralManipulatorSubsystem() {}
 
+  public void setPivotMotorSpeed(double speed){
+    pivotMotor.set(speed);
+  }
+
+  public void setIntakeMotorSpeed(double speed){
+    intakeMotor.set(speed);
+  }
+
+  public void stopPivotMotor(){
+    pivotMotor.stopMotor();
+  }
+
+  public void stopIntakeMotor(){
+    intakeMotor.stopMotor();
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
