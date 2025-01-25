@@ -139,6 +139,9 @@ public final class Constants {
 
     public static final boolean elevatorMotorInverted = false;
 
+    public static final double elevatorKp = -20;
+    public static final double positionTolerence = 0.01;
+
     public static final double encoderToRevolutionRatio = 200.0;
 
     public static final double rangeInRevolutions = (maximumElevatorHeight - minimumElevatorHeight) * encoderToRevolutionRatio;

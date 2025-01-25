@@ -116,28 +116,28 @@ public class ElevatorSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
 
     SmartDashboard.putNumber("Elevator Position", absoluteEncoder.getPosition());
-
+    SmartDashboard.putNumber("Elevator Velocity", absoluteEncoder.getVelocity());
+    // Lower soft limit
     if (absoluteEncoder.getPosition() > ElevatorConstants.maximumElevatorHeight) {
       if (currentSpeed < 0) {
         stopMotor();
       }
       if (autoSpeed < 0 && autoMode) {
-        autoMode = false;
-        stopMotor();
+        turnOffAutoMode();
       }
       aboveMaxHeight = true;
     } else {
       aboveMaxHeight = false;
     }
-
+    
+    // Upper soft limit
     if (absoluteEncoder.getPosition() < ElevatorConstants.minimumElevatorHeight) {
       if (currentSpeed > 0) {
         stopMotor();
       }
 
       if (autoSpeed > 0 && autoMode) {
-        autoMode = false;
-        stopMotor();
+        turnOffAutoMode();
       }
 
       belowMinHeight = true;
@@ -145,6 +145,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       belowMinHeight = false;
     }
 
+    /********************************************************************************************************************
     if (autoMode) {
 
       if ((desiredHeight + 0.005) >= absoluteEncoder.getPosition() && absoluteEncoder.getPosition() >= desiredHeight) {
@@ -165,6 +166,21 @@ public class ElevatorSubsystem extends SubsystemBase {
           }
           setMotorSpeed(autoSpeed);
         }
+      }
+
+    }
+    **********************************************************************************************************************/
+
+    if (autoMode) {
+
+
+      double elevatorError = (desiredHeight - absoluteEncoder.getPosition());
+
+      if (Math.abs(elevatorError) < ElevatorConstants.positionTolerence) {
+        turnOffAutoMode();
+      } else {
+        SmartDashboard.putNumber("AutoSpeed", ElevatorConstants.elevatorKp * elevatorError);
+        setMotorSpeed(ElevatorConstants.elevatorKp * elevatorError);
       }
 
     }

@@ -380,6 +380,8 @@ public class RobotContainer {
                                                         // on Single Press
                                                 }
 
+                                                elevatorSubsystem.moveToScoringPosition(2);
+
                                                 driverPOVRecency = Timer.getFPGATimestamp();
                                                 driverLatestPOVButton = 0;
                                         }
@@ -415,6 +417,8 @@ public class RobotContainer {
                                                 } else {
                                                         // on Single Press
                                                 }
+
+                                                elevatorSubsystem.moveToScoringPosition(3);
 
                                                 driverPOVRecency = Timer.getFPGATimestamp();
                                                 driverLatestPOVButton = 90;
@@ -452,6 +456,8 @@ public class RobotContainer {
                                                         // on Single Press
                                                 }
 
+                                                elevatorSubsystem.moveToScoringPosition(5);
+
                                                 driverPOVRecency = Timer.getFPGATimestamp();
                                                 driverLatestPOVButton = 180;
                                         }
@@ -487,6 +493,8 @@ public class RobotContainer {
                                                 } else {
                                                         // on Single Press
                                                 }
+
+                                                elevatorSubsystem.moveToScoringPosition(4);
 
                                                 driverPOVRecency = Timer.getFPGATimestamp();
                                                 driverLatestPOVButton = 270;
