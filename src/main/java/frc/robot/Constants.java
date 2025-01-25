@@ -125,13 +125,6 @@ public final class Constants {
 
     public static final int elevatorMotorCanId = 27;
 
-    public static final SoftLimitConfig elevatorSoftLimitConfig = new SoftLimitConfig()
-        .forwardSoftLimit(ElevatorConstants.maximumElevatorHeight)
-        .reverseSoftLimit(ElevatorConstants.minimumElevatorHeight)
-        .forwardSoftLimitEnabled(true)
-        .reverseSoftLimitEnabled(true);
-
-        
     public static final double kP = 0;
     public static final double kI = 0;
     public static final double kD = 0;
@@ -141,8 +134,8 @@ public final class Constants {
               ElevatorConstants.kI,
               ElevatorConstants.kD);
 
-    public static final double minimumElevatorHeight = 0.180;
-    public static final double maximumElevatorHeight = 0.680;
+    public static final double minimumElevatorHeight = 0.172;
+    public static final double maximumElevatorHeight = 0.675;
 
     public static final double level1ScoringPosition = 0.3;
     public static final double level2ScoringPosition = 0.35;
@@ -150,6 +143,10 @@ public final class Constants {
     public static final double level4ScoringPosition = 0.45;
 
     public static final boolean elevatorMotorInverted = false;
+
+    public static final double encoderToRevolutionRatio = 200.0;
+
+    public static final double rangeInRevolutions = -100;
   }
 
 }
