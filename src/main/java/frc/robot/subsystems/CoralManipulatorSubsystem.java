@@ -14,6 +14,8 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
   private SparkMax pivotMotor = new SparkMax(CoralManipulatorConstants.coralManipulatorPivotMotorCanid, MotorType.kBrushless);
   private SparkMax intakeMotor = new SparkMax(CoralManipulatorConstants.coralManipulatorIntakeMotorCanid, MotorType.kBrushless);
+
+  
   /** Creates a new CoralManipulatorSubsystem. */
   public CoralManipulatorSubsystem() {}
 
@@ -41,6 +43,6 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   }
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    
   }
 }

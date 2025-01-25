@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.CoralManipulatorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,6 +42,8 @@ public class RobotContainer {
         private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
         private ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+
+        private CoralManipulatorSubsystem coralManipulatorSubsystem = new CoralManipulatorSubsystem();
 
         // The driver's controller
         XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -99,11 +102,21 @@ public class RobotContainer {
 
                 // Right bumper - Coral manipulator wheels intake
                 new JoystickButton(m_operatorController, Button.kRightBumper.value)
-                                .onTrue((new InstantCommand()));
+                                .onTrue((new InstantCommand(new Runnable() {
+                                        @Override
+                                        public void run(){
+                                                coralManipulatorSubsystem.outtake();
+                                        }
+                                })));
 
                 // Left bumper - Coral manipulator wheels out
                 new JoystickButton(m_operatorController, Button.kLeftBumper.value)
-                                .onTrue((new InstantCommand()));
+                .onTrue((new InstantCommand(new Runnable() {
+                        @Override
+                        public void run(){
+                                coralManipulatorSubsystem.intake();
+                        }
+                })));
 
                 // Y button - Toggle Coral Mode
                 new JoystickButton(m_operatorController, Button.kY.value)
@@ -115,7 +128,12 @@ public class RobotContainer {
 
                 // B button - Algae intake mode
                 new JoystickButton(m_operatorController, Button.kB.value)
-                                .onTrue((new InstantCommand()));
+                .onTrue((new InstantCommand(new Runnable() {
+                        @Override
+                        public void run(){
+                                coralManipulatorSubsystem.stopIntakeMotor();
+                        }
+                })));
 
                 // A button - Algae intake mode
                 new JoystickButton(m_operatorController, Button.kA.value)
