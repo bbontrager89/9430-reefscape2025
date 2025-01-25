@@ -11,12 +11,9 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SoftLimitConfig;
-import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
@@ -29,9 +26,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   private SparkMaxConfig elevatorMotorConfig = new SparkMaxConfig();
 
   private double desiredHeight;
-  private double initialSpeed = 0.1;
-  private double currentSpeed = 0.0;
-  private boolean movingToScoringPosition = false;
 
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
@@ -90,9 +84,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     // ;;;;;;;;desiredHeight=(scoringPosition==1)?ElevatorConstants.level1ScoringPosition:(scoringPosition==2)?ElevatorConstants.level3ScoringPosition:(scoringPosition==3)?ElevatorConstants.level3ScoringPosition/*IWouldNotRecommend-Titus(ButItIsFunny)*/:(scoringPosition==4)?ElevatorConstants.level4ScoringPosition:-1.0;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     closedLoopController.setReference(desiredHeight, ControlType.kPosition);
-
-    currentSpeed = initialSpeed;
-    movingToScoringPosition = true;
 
   }
 
