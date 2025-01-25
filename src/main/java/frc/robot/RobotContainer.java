@@ -339,7 +339,14 @@ public class RobotContainer {
 
                 // B button -
                 new JoystickButton(m_driverController, Button.kB.value)
-                                .onTrue((new InstantCommand()));
+                                .onTrue((new InstantCommand(new Runnable() {
+
+                                        @Override
+                                        public void run() {
+                                                elevatorSubsystem.turnOffAutoMode();
+                                        }
+                                        
+                                })));
 
                 // A button -
                 new JoystickButton(m_driverController, Button.kA.value)
