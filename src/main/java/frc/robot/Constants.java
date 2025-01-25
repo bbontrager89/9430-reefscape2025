@@ -129,11 +129,6 @@ public final class Constants {
     public static final double kI = 0;
     public static final double kD = 0;
 
-    public static final ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig()
-        .pid (ElevatorConstants.kP,
-              ElevatorConstants.kI,
-              ElevatorConstants.kD);
-
     public static final double minimumElevatorHeight = 0.172;
     public static final double maximumElevatorHeight = 0.675;
 

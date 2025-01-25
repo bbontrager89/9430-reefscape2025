@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -43,8 +44,13 @@ public class ElevatorSubsystem extends SubsystemBase {
         .reverseSoftLimit(upperSoftLimit)
         .forwardSoftLimitEnabled(true)
         .reverseSoftLimitEnabled(true);
+    
+    ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig()
+        .pid (ElevatorConstants.kP,
+              ElevatorConstants.kI,
+              ElevatorConstants.kD);
 
-    elevatorMotorConfig.apply(ElevatorConstants.closedLoopConfig);
+    elevatorMotorConfig.apply(closedLoopConfig);
     elevatorMotorConfig.inverted(ElevatorConstants.elevatorMotorInverted);
     elevatorMotorConfig.apply(softLimitConfig);
 
