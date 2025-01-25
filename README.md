@@ -1,11 +1,22 @@
-# Repository Summary
+# MAXSwerve Java Template v2025.1
 
-This repository contains code for 9430's 2025 Competition robot. Readme is WIP.
+See [the online changelog](https://github.com/REVrobotics/MAXSwerve-Java-Template/blob/main/CHANGELOG.md) for information about updates to the template that may have been released since you created your project.
 
-# Resources
+## Description
 
-See our [Off Season README](https://github.com/Auth-Xero/9430-offseasonSwerve/blob/main/README.md) for style guides and other resources.
+A template project for an FRC swerve drivetrain that uses REV MAXSwerve Modules.
 
-# Operator Guide
+Note that this is meant to be used with a drivetrain composed of four MAXSwerve Modules, each configured with two SPARKS MAX, a NEO as the driving motor, a NEO 550 as the turning motor, and a REV Through Bore Encoder as the absolute turning encoder.
 
-TBD; this section is to be filled out as a quick-reference field operation guide for Drive team. 
+To get started, make sure you have calibrated the zero offsets for the absolute encoders in the Hardware Client using the `Absolute Encoder` tab under the associated turning SPARK MAX devices.
+
+## Prerequisites
+
+* SPARK MAX Firmware v25.0.0
+* REVLib v2025.0.0
+
+## Configuration
+
+It is possible that this project will not work for your robot right out of the box. Various things like the CAN IDs, PIDF gains, chassis configuration, etc. must be determined for your own robot!
+
+These values can be adjusted in the `Configs.java` and `Constants.java` files.
