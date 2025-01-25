@@ -57,6 +57,8 @@ public class RobotContainer {
         Double operatorPOVRecency = null;
         int operatorLatestPOVButton = -1;
 
+        double ts = 0.3;
+
 
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -101,11 +103,11 @@ public class RobotContainer {
                 
 
                 // Right bumper - Coral manipulator wheels intake
-                new JoystickButton(m_operatorController, Button.kRightBumper.value)
+                new JoystickButton(m_driverController, Button.kRightBumper.value)
                 .onTrue((new InstantCommand(new Runnable() {
                         @Override
                         public void run(){
-                                coralManipulatorSubsystem.outtake();
+                                coralManipulatorSubsystem.setIntakeMotorSpeed(ts);
                         }
                 }))).onFalse(new InstantCommand(new Runnable() {
                         @Override
@@ -115,11 +117,11 @@ public class RobotContainer {
                 }));
 
                 // Left bumper - Coral manipulator wheels out
-                new JoystickButton(m_operatorController, Button.kLeftBumper.value)
+                new JoystickButton(m_driverController, Button.kLeftBumper.value)
                 .onTrue((new InstantCommand(new Runnable() {
                         @Override
                         public void run(){
-                                coralManipulatorSubsystem.intake();
+                                coralManipulatorSubsystem.setIntakeMotorSpeed(-ts);
                         }
                 }))).onFalse((new InstantCommand(new Runnable() {
                         @Override
@@ -129,20 +131,40 @@ public class RobotContainer {
                 })));
 
                 // Y button - Toggle Coral Mode
-                new JoystickButton(m_operatorController, Button.kY.value)
-                                .onTrue((new InstantCommand()));
+                new JoystickButton(m_driverController, Button.kY.value)
+                        .onTrue((new InstantCommand(new Runnable() {
+                                @Override
+                                public void run(){
+                                        ts = 1;
+                                }
+                        })));
 
                 // X button - Algae Reef Clear Mode
-                new JoystickButton(m_operatorController, Button.kX.value)
-                                .onTrue((new InstantCommand()));
+                new JoystickButton(m_driverController, Button.kX.value)
+                .onTrue((new InstantCommand(new Runnable() {
+                        @Override
+                        public void run(){
+                                ts = .5;
+                        }
+                })));
 
                 // B button - Algae intake mode
-                new JoystickButton(m_operatorController, Button.kB.value)
-                .onTrue((new InstantCommand()));
+                new JoystickButton(m_driverController, Button.kB.value)
+                .onTrue((new InstantCommand(new Runnable() {
+                        @Override
+                        public void run(){
+                                ts = .3;
+                        }
+                })));
 
                 // A button - Algae intake mode
-                new JoystickButton(m_operatorController, Button.kA.value)
-                                .onTrue((new InstantCommand()));
+                new JoystickButton(m_driverController, Button.kA.value)
+                .onTrue((new InstantCommand(new Runnable() {
+                        @Override
+                        public void run(){
+                                ts = .1;
+                        }
+                })));
 
                 // Right Stick button - Transit mode
                 new JoystickButton(m_operatorController, Button.kRightStick.value)
