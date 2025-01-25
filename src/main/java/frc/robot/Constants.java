@@ -152,7 +152,7 @@ public final class Constants {
   public static final class CoralManipulatorConstants {
     //Change Canids from placeholder values to actual Canids
     public static final int coralManipulatorPivotMotorCanid = 0;
-    public static final int coralManipulatorWheelsMotorCanid = 0;
+    public static final int coralManipulatorIntakeMotorCanid = 0;
   }
 
 }
