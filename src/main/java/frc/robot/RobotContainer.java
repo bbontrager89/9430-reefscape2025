@@ -102,12 +102,17 @@ public class RobotContainer {
 
                 // Right bumper - Coral manipulator wheels intake
                 new JoystickButton(m_operatorController, Button.kRightBumper.value)
-                                .onTrue((new InstantCommand(new Runnable() {
-                                        @Override
-                                        public void run(){
-                                                coralManipulatorSubsystem.outtake();
-                                        }
-                                })));
+                .onTrue((new InstantCommand(new Runnable() {
+                        @Override
+                        public void run(){
+                                coralManipulatorSubsystem.outtake();
+                        }
+                }))).onFalse(new InstantCommand(new Runnable() {
+                        @Override
+                        public void run(){
+                                coralManipulatorSubsystem.stopIntakeMotor();
+                        }
+                }));
 
                 // Left bumper - Coral manipulator wheels out
                 new JoystickButton(m_operatorController, Button.kLeftBumper.value)
@@ -115,6 +120,11 @@ public class RobotContainer {
                         @Override
                         public void run(){
                                 coralManipulatorSubsystem.intake();
+                        }
+                }))).onFalse((new InstantCommand(new Runnable() {
+                        @Override
+                        public void run(){
+                                coralManipulatorSubsystem.stopIntakeMotor();
                         }
                 })));
 
@@ -128,12 +138,7 @@ public class RobotContainer {
 
                 // B button - Algae intake mode
                 new JoystickButton(m_operatorController, Button.kB.value)
-                .onTrue((new InstantCommand(new Runnable() {
-                        @Override
-                        public void run(){
-                                coralManipulatorSubsystem.stopIntakeMotor();
-                        }
-                })));
+                .onTrue((new InstantCommand()));
 
                 // A button - Algae intake mode
                 new JoystickButton(m_operatorController, Button.kA.value)
