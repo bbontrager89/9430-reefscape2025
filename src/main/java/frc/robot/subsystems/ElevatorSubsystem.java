@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -26,6 +27,12 @@ public class ElevatorSubsystem extends SubsystemBase {
   private SparkMaxConfig elevatorMotorConfig = new SparkMaxConfig();
 
   private double desiredHeight;
+  private double autoSpeed = 0.0;
+  private boolean autoMode = false;
+
+  private boolean aboveMaxHeight = false;
+  private boolean belowMinHeight = false;
+  private double currentSpeed = 0.0;
 
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
@@ -36,29 +43,38 @@ public class ElevatorSubsystem extends SubsystemBase {
         * ElevatorConstants.encoderToRevolutionRatio;
 
     // Upper limit by the range of revolutions from the lower limit
-    double upperSoftLimit = (lowerSoftLimit + ElevatorConstants.rangeInRevolutions);
+    double upperSoftLimit = (lowerSoftLimit - ElevatorConstants.rangeInRevolutions);
 
     SoftLimitConfig softLimitConfig = new SoftLimitConfig()
         .forwardSoftLimit(lowerSoftLimit)
         .reverseSoftLimit(upperSoftLimit)
-        .forwardSoftLimitEnabled(true)
-        .reverseSoftLimitEnabled(true);
+        .forwardSoftLimitEnabled(false)
+        .reverseSoftLimitEnabled(false);
 
-    elevatorMotorConfig.apply(ElevatorConstants.closedLoopConfig);
+    ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig()
+        .pid(ElevatorConstants.kP,
+            ElevatorConstants.kI,
+            ElevatorConstants.kD);
+
+    elevatorMotorConfig.apply(closedLoopConfig);
     elevatorMotorConfig.inverted(ElevatorConstants.elevatorMotorInverted);
     elevatorMotorConfig.apply(softLimitConfig);
 
     elevatorMotor.configure(elevatorMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
-    closedLoopController = elevatorMotor.getClosedLoopController();
+    // closedLoopController = elevatorMotor.getClosedLoopController();
 
   }
 
   public void setMotorSpeed(double speed) {
-    elevatorMotor.set(speed);
+    currentSpeed = speed;
+    if (!(aboveMaxHeight && (speed < 0)) && !(belowMinHeight && (speed > 0))) {
+      elevatorMotor.set(speed);
+    }
   }
 
   public void stopMotor() {
+    currentSpeed = 0.0;
     elevatorMotor.stopMotor();
   }
 
@@ -83,8 +99,16 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     // ;;;;;;;;desiredHeight=(scoringPosition==1)?ElevatorConstants.level1ScoringPosition:(scoringPosition==2)?ElevatorConstants.level3ScoringPosition:(scoringPosition==3)?ElevatorConstants.level3ScoringPosition/*IWouldNotRecommend-Titus(ButItIsFunny)*/:(scoringPosition==4)?ElevatorConstants.level4ScoringPosition:-1.0;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-    closedLoopController.setReference(desiredHeight, ControlType.kPosition);
+    // closedLoopController.setReference(desiredHeight, ControlType.kPosition);
 
+    autoMode = true;
+    autoSpeed = 1.0 * ((absoluteEncoder.getPosition() > desiredHeight) ? 1.0 : -1.0);
+
+  }
+
+  public void turnOffAutoMode() {
+    autoMode = false;
+    stopMotor();
   }
 
   @Override
@@ -92,6 +116,58 @@ public class ElevatorSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
 
     SmartDashboard.putNumber("Elevator Position", absoluteEncoder.getPosition());
+
+    if (absoluteEncoder.getPosition() > ElevatorConstants.maximumElevatorHeight) {
+      if (currentSpeed < 0) {
+        stopMotor();
+      }
+      if (autoSpeed < 0 && autoMode) {
+        autoMode = false;
+        stopMotor();
+      }
+      aboveMaxHeight = true;
+    } else {
+      aboveMaxHeight = false;
+    }
+
+    if (absoluteEncoder.getPosition() < ElevatorConstants.minimumElevatorHeight) {
+      if (currentSpeed > 0) {
+        stopMotor();
+      }
+
+      if (autoSpeed > 0 && autoMode) {
+        autoMode = false;
+        stopMotor();
+      }
+
+      belowMinHeight = true;
+    } else {
+      belowMinHeight = false;
+    }
+
+    if (autoMode) {
+
+      if ((desiredHeight + 0.005) >= absoluteEncoder.getPosition() && absoluteEncoder.getPosition() >= desiredHeight) {
+        stopMotor();
+        autoMode = false;
+
+      } else {
+
+        if (absoluteEncoder.getPosition() > desiredHeight) {
+          if (autoSpeed < 0) {
+            autoSpeed /= -2.0;
+          }
+          setMotorSpeed(autoSpeed);
+
+        } else if (absoluteEncoder.getPosition() < desiredHeight) {
+          if (autoSpeed > 0) {
+            autoSpeed /= -2.0;
+          }
+          setMotorSpeed(autoSpeed);
+        }
+      }
+
+    }
 
   }
 }
