@@ -56,7 +56,6 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   public void periodic() {
     if(isIntakeMotorOn){
     double dm = getIntakeMotorPosition() - lastKnownPosition;
-
     if(Math.abs(dm) > 0.005) {
       lastKnownPosition = getIntakeMotorPosition();
     }
