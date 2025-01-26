@@ -16,6 +16,8 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -350,14 +352,7 @@ public class RobotContainer {
 
                 // A button -
                 new JoystickButton(m_driverController, Button.kA.value)
-                                .onTrue((new InstantCommand(new Runnable() {
-
-                                        @Override
-                                        public void run() {
-                                                elevatorSubsystem.moveToScoringPosition(1);
-                                        }
-                                        
-                                })));
+                                .onTrue((new InstantCommand()));
 
                 // Right Stick button -
                 new JoystickButton(m_driverController, Button.kRightStick.value)
@@ -379,8 +374,6 @@ public class RobotContainer {
                                                 } else {
                                                         // on Single Press
                                                 }
-
-                                                elevatorSubsystem.moveToScoringPosition(2);
 
                                                 driverPOVRecency = Timer.getFPGATimestamp();
                                                 driverLatestPOVButton = 0;
@@ -418,8 +411,6 @@ public class RobotContainer {
                                                         // on Single Press
                                                 }
 
-                                                elevatorSubsystem.moveToScoringPosition(3);
-
                                                 driverPOVRecency = Timer.getFPGATimestamp();
                                                 driverLatestPOVButton = 90;
                                         }
@@ -455,8 +446,6 @@ public class RobotContainer {
                                                 } else {
                                                         // on Single Press
                                                 }
-
-                                                elevatorSubsystem.moveToScoringPosition(5);
 
                                                 driverPOVRecency = Timer.getFPGATimestamp();
                                                 driverLatestPOVButton = 180;
@@ -494,8 +483,6 @@ public class RobotContainer {
                                                         // on Single Press
                                                 }
 
-                                                elevatorSubsystem.moveToScoringPosition(4);
-
                                                 driverPOVRecency = Timer.getFPGATimestamp();
                                                 driverLatestPOVButton = 270;
                                         }
@@ -526,7 +513,6 @@ public class RobotContainer {
                 // Back Button button -
                 new JoystickButton(m_driverController, Button.kBack.value)
                                 .onTrue((new InstantCommand()));
-
         }
 
         /**
