@@ -101,6 +101,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     stopMotor();
   }
 
+  public double getElevatorHeight() {
+    return absoluteEncoder.getPosition();
+  }
+
   @Override
   public void periodic() {
 
