@@ -348,19 +348,61 @@ public class RobotContainer {
 
                 // Y button -
                 new JoystickButton(m_driverController, Button.kY.value)
-                                .onTrue((new InstantCommand()));
+                                .onTrue((new InstantCommand(new Runnable() {
+
+                                        @Override
+                                        public void run() {
+                                                elevatorSubsystem.setMotorSpeed(-0.2);
+                                        }
+                                        
+                                }))).onFalse((new InstantCommand(new Runnable() {
+
+                                        @Override
+                                        public void run() {
+                                                elevatorSubsystem.stopMotor();
+                                        }
+                                        
+                                })));
 
                 // X button -
                 new JoystickButton(m_driverController, Button.kX.value)
-                                .onTrue((new InstantCommand()));
+                                .onTrue((new InstantCommand(new Runnable() {
+
+                                        @Override
+                                        public void run() {
+                                                elevatorSubsystem.setMotorSpeed(0.2);
+                                        }
+                                        
+                                }))).onFalse((new InstantCommand(new Runnable() {
+
+                                        @Override
+                                        public void run() {
+                                                elevatorSubsystem.stopMotor();
+                                        }
+                                        
+                                })));
 
                 // B button -
                 new JoystickButton(m_driverController, Button.kB.value)
-                                .onTrue((new InstantCommand()));
+                                .onTrue((new InstantCommand(new Runnable() {
+
+                                        @Override
+                                        public void run() {
+                                                elevatorSubsystem.turnOffAutoMode();
+                                        }
+                                        
+                                })));
 
                 // A button -
                 new JoystickButton(m_driverController, Button.kA.value)
-                                .onTrue((new InstantCommand()));
+                                .onTrue((new InstantCommand(new Runnable() {
+
+                                        @Override
+                                        public void run() {
+                                                elevatorSubsystem.moveToScoringPosition(1);
+                                        }
+                                        
+                                })));
 
                 // Right Stick button -
                 new JoystickButton(m_driverController, Button.kRightStick.value)
