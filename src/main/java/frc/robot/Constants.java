@@ -125,12 +125,14 @@ public final class Constants {
 
     public static final int elevatorMotorCanId = 27;
 
-    public static final double kP = 0;
+    public static final double kP = -20;
     public static final double kI = 0;
     public static final double kD = 0;
 
-    public static final double minimumElevatorHeight = 0.2; // Furthest possible is 0.166
-    public static final double maximumElevatorHeight = 0.6; // Furthest possible is 0.683
+    public static final double positionTolerence = 0.01;
+
+    public static final double minimumElevatorHeight = 0.175; // Furthest possible is 0.166
+    public static final double maximumElevatorHeight = 0.675; // Furthest possible is 0.683
 
     public static final double level1ScoringPosition = 0.3;
     public static final double level2ScoringPosition = 0.35;
@@ -139,9 +141,6 @@ public final class Constants {
     public static final double level5ScoringPosition = maximumElevatorHeight;
 
     public static final boolean elevatorMotorInverted = false;
-
-    public static final double elevatorKp = -20;
-    public static final double positionTolerence = 0.01;
 
     public static final double encoderToRevolutionRatio = 200.0;
 
