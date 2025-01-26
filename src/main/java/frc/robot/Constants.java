@@ -135,7 +135,8 @@ public final class Constants {
     public static final double level1ScoringPosition = 0.3;
     public static final double level2ScoringPosition = 0.35;
     public static final double level3ScoringPosition = 0.4;
-    public static final double level4ScoringPosition = 0.45;
+    public static final double level4ScoringPosition = minimumElevatorHeight;
+    public static final double level5ScoringPosition = maximumElevatorHeight;
 
     public static final boolean elevatorMotorInverted = false;
 

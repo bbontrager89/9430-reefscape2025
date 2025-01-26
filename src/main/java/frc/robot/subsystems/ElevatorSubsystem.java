@@ -89,9 +89,12 @@ public class ElevatorSubsystem extends SubsystemBase {
       case 3:
         desiredHeight = ElevatorConstants.level3ScoringPosition;
         break;
-      case 4:
-        desiredHeight = ElevatorConstants.level4ScoringPosition;
-        break;
+        case 4:
+          desiredHeight = ElevatorConstants.level4ScoringPosition;
+          break;
+        case 5:
+          desiredHeight = ElevatorConstants.level5ScoringPosition;
+          break;
       default:
         System.out.println("Invalid Scoring Position requested in ElevatorSubsystem");
         break;
@@ -115,8 +118,10 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
+    // Log data
     SmartDashboard.putNumber("Elevator Position", absoluteEncoder.getPosition());
     SmartDashboard.putNumber("Elevator Velocity", absoluteEncoder.getVelocity());
+
     // Lower soft limit
     if (absoluteEncoder.getPosition() > ElevatorConstants.maximumElevatorHeight) {
       if (currentSpeed < 0) {
@@ -173,14 +178,21 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     if (autoMode) {
 
-
+      // Calculate error
       double elevatorError = (desiredHeight - absoluteEncoder.getPosition());
 
+      // Adjust speed to error
+      double autoSpeed = ElevatorConstants.elevatorKp * elevatorError;
+      autoSpeed = (autoSpeed > 1)? 1 : (autoSpeed < -1)? -1 : autoSpeed;
+
+      // Log data
+      SmartDashboard.putNumber("AutoSpeed", autoSpeed);
+
+      // Run or don't run
       if (Math.abs(elevatorError) < ElevatorConstants.positionTolerence) {
         turnOffAutoMode();
       } else {
-        SmartDashboard.putNumber("AutoSpeed", ElevatorConstants.elevatorKp * elevatorError);
-        setMotorSpeed(ElevatorConstants.elevatorKp * elevatorError);
+        setMotorSpeed(autoSpeed);
       }
 
     }
