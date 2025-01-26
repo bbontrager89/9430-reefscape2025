@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -15,6 +16,9 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
   // private SparkMax pivotMotor = new SparkMax(CoralManipulatorConstants.coralManipulatorPivotMotorCanid, MotorType.kBrushless);
   private SparkMax intakeMotor = new SparkMax(CoralManipulatorConstants.coralManipulatorIntakeMotorCanid, MotorType.kBrushless);
+  private RelativeEncoder intakePosEncoder = intakeMotor.getEncoder();
+  private double lastKnownPosition;
+  private boolean isIntakeMotorOn;
 
   /** Creates a new CoralManipulatorSubsystem. */
   public CoralManipulatorSubsystem() {}
@@ -25,6 +29,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
   public void setIntakeMotorSpeed(double speed){
     intakeMotor.set(speed);
+    isIntakeMotorOn = true;
   }
 
   public void stopPivotMotor(){
@@ -33,15 +38,32 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
   public void stopIntakeMotor(){
     intakeMotor.stopMotor();
+    isIntakeMotorOn = false;
+  }
+
+  public double getIntakeMotorPosition(){
+    return intakePosEncoder.getPosition();   
   }
 
   public void runIntakeFor(double speed, double time){
     setIntakeMotorSpeed(speed);
+    isIntakeMotorOn = true;
     Timer.delay(time);
     stopIntakeMotor();
+    isIntakeMotorOn = false;
   }
   @Override
   public void periodic() {
-    
+    if(isIntakeMotorOn){
+    double dm = getIntakeMotorPosition() - lastKnownPosition;
+
+    if(Math.abs(dm) > 0.005) {
+      lastKnownPosition = getIntakeMotorPosition();
+    }
+    else{
+      stopIntakeMotor();
+    }
+  }
+
   }
 }
