@@ -35,9 +35,10 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     intakeMotor.stopMotor();
   }
 
-  public void runFor(double speed, double time){
+  public void runIntakeFor(double speed, double time){
     setIntakeMotorSpeed(speed);
     Timer.delay(time);
+    stopIntakeMotor();
   }
   @Override
   public void periodic() {
