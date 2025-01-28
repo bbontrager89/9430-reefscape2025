@@ -90,10 +90,18 @@ public class ElevatorSubsystem extends SubsystemBase {
         moveToScoringPosition(5);
       }
     }));
+    elevatorCommands.addOption("Custom", new InstantCommand(new Runnable() {
+      @Override
+      public void run() {
+        moveToPosition(SmartDashboard.getNumber("Custom Elevator Height", ElevatorConstants.level1ScoringPosition));
+      }
+    }));
 
     SmartDashboard.putData("Elevator Commands", elevatorCommands);
-
+    SmartDashboard.putNumber("Custom Elevator Height", ElevatorConstants.level1ScoringPosition);
+    
     SmartDashboard.putBoolean("Run Elevator Command", false);
+    SmartDashboard.putNumber("Desired Height", 0.0);
 
   }
 
@@ -132,7 +140,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         break;
     }
 
-    SmartDashboard.putNumber("desiredHeight", desiredHeight);
+    SmartDashboard.putNumber("Desired Height", desiredHeight);
 
     // ;;;;;;;;desiredHeight=(scoringPosition==1)?ElevatorConstants.level1ScoringPosition:(scoringPosition==2)?ElevatorConstants.level3ScoringPosition:(scoringPosition==3)?ElevatorConstants.level3ScoringPosition/*IWouldNotRecommend-Titus(ButItIsFunny)*/:(scoringPosition==4)?ElevatorConstants.level4ScoringPosition:-1.0;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -144,6 +152,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     desiredHeight = position;
     autoMode = true;
+    SmartDashboard.putNumber("Desired Height", desiredHeight);
 
   }
 
