@@ -7,7 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CoralManipulatorConstants;
@@ -19,12 +19,14 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   private RelativeEncoder intakePosEncoder = intakeMotor.getEncoder();
   private double lastKnownPosition;
   private boolean isIntakeMotorOn;
+  private boolean isPivotMotorOn;
 
   /** Creates a new CoralManipulatorSubsystem. */
   public CoralManipulatorSubsystem() {}
 
   public void setPivotMotorSpeed(double speed){
     // pivotMotor.set(speed);
+    isPivotMotorOn = true;
   }
 
   public void setIntakeMotorSpeed(double speed){
@@ -34,6 +36,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
   public void stopPivotMotor(){
     // pivotMotor.stopMotor();
+    isPivotMotorOn = false;
   }
 
   public void stopIntakeMotor(){
@@ -54,7 +57,10 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   }
   @Override
   public void periodic() {
-   //This is as of yet untested, don't trust it
+   SmartDashboard.putBoolean("Intake Motor", isIntakeMotorOn);
+   SmartDashboard.putBoolean("Pivot Motor", isPivotMotorOn);
+   
+    //This is as of yet untested, don't trust it
     if(isIntakeMotorOn){
     double dm = getIntakeMotorPosition() - lastKnownPosition;
 
