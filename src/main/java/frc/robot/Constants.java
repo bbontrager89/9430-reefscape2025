@@ -145,6 +145,8 @@ public final class Constants {
     public static final double encoderToRevolutionRatio = 200.0;
 
     public static final double rangeInRevolutions = (maximumElevatorHeight - minimumElevatorHeight) * encoderToRevolutionRatio;
+
+    public static final int maximumAutoSpeed = 1; // Range: 0 to 1
   }
 
 }

@@ -61,9 +61,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         .reverseSoftLimitEnabled(true);
 
     ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig()
-        .pid( ElevatorConstants.kP, 
-              ElevatorConstants.kI,
-              ElevatorConstants.kD);
+        .pid(ElevatorConstants.kP,
+            ElevatorConstants.kI,
+            ElevatorConstants.kD);
 
     elevatorMotorConfig.inverted(ElevatorConstants.elevatorMotorInverted);
     elevatorMotorConfig.apply(softLimitConfig);
@@ -73,7 +73,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     // closedLoopController = elevatorMotor.getClosedLoopController();
 
-    
     elevatorCommands = new SendableChooser<Command>();
 
     elevatorCommands.addOption("SP 1", new InstantCommand(new Runnable() {
@@ -119,7 +118,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Run Elevator Command", false);
     SmartDashboard.putNumber("Desired Height", 0.0);
 
-    
   }
 
   public void setMotorSpeed(double speed) {
@@ -163,7 +161,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     autoMode = true;
 
-    // closedLoopController.setReference(desiredHeight, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    // closedLoopController.setReference(desiredHeight, ControlType.kPosition,
+    // ClosedLoopSlot.kSlot0);
 
   }
 
@@ -228,7 +227,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
       // Adjust speed to error
       double autoSpeed = ElevatorConstants.kP * elevatorError;
-      autoSpeed = (autoSpeed > 1) ? 1 : (autoSpeed < -1) ? -1 : autoSpeed;
+      autoSpeed = (autoSpeed > ElevatorConstants.maximumAutoSpeed) ? ElevatorConstants.maximumAutoSpeed
+          : (autoSpeed < -ElevatorConstants.maximumAutoSpeed) ? -ElevatorConstants.maximumAutoSpeed : autoSpeed;
 
       // Log data
       SmartDashboard.putNumber("AutoSpeed", autoSpeed);
