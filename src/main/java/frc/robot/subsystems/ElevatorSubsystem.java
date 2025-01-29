@@ -70,13 +70,13 @@ public class ElevatorSubsystem extends SubsystemBase {
         moveToScoringPosition(3);
       }
     }));
-    elevatorCommands.addOption("SP 4", new InstantCommand(new Runnable() {
+    elevatorCommands.addOption("min", new InstantCommand(new Runnable() {
       @Override
       public void run() {
         moveToScoringPosition(4);
       }
     }));
-    elevatorCommands.addOption("SP 5", new InstantCommand(new Runnable() {
+    elevatorCommands.addOption("max", new InstantCommand(new Runnable() {
       @Override
       public void run() {
         moveToScoringPosition(5);
