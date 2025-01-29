@@ -5,12 +5,17 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,6 +30,8 @@ public class ElevatorSubsystem extends SubsystemBase {
   private AbsoluteEncoder absoluteEncoder = elevatorMotor.getAbsoluteEncoder();
 
   private SparkMaxConfig elevatorMotorConfig = new SparkMaxConfig();
+
+  private SparkClosedLoopController closedLoopController;
 
   private double desiredHeight;
   private double autoSpeed = 0.0;
@@ -50,14 +57,23 @@ public class ElevatorSubsystem extends SubsystemBase {
     SoftLimitConfig softLimitConfig = new SoftLimitConfig()
         .forwardSoftLimit(lowerSoftLimit)
         .reverseSoftLimit(upperSoftLimit)
-        .forwardSoftLimitEnabled(false)
-        .reverseSoftLimitEnabled(false);
+        .forwardSoftLimitEnabled(true)
+        .reverseSoftLimitEnabled(true);
+
+    ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig()
+        .pid( ElevatorConstants.kP, 
+              ElevatorConstants.kI,
+              ElevatorConstants.kD);
 
     elevatorMotorConfig.inverted(ElevatorConstants.elevatorMotorInverted);
     elevatorMotorConfig.apply(softLimitConfig);
+    // elevatorMotorConfig.apply(closedLoopConfig);
 
     elevatorMotor.configure(elevatorMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
+    // closedLoopController = elevatorMotor.getClosedLoopController();
+
+    
     elevatorCommands = new SendableChooser<Command>();
 
     elevatorCommands.addOption("SP 1", new InstantCommand(new Runnable() {
@@ -99,10 +115,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     SmartDashboard.putData("Elevator Commands", elevatorCommands);
     SmartDashboard.putNumber("Custom Elevator Height", ElevatorConstants.level1ScoringPosition);
-    
+
     SmartDashboard.putBoolean("Run Elevator Command", false);
     SmartDashboard.putNumber("Desired Height", 0.0);
 
+    
   }
 
   public void setMotorSpeed(double speed) {
@@ -145,6 +162,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     // ;;;;;;;;desiredHeight=(scoringPosition==1)?ElevatorConstants.level1ScoringPosition:(scoringPosition==2)?ElevatorConstants.level3ScoringPosition:(scoringPosition==3)?ElevatorConstants.level3ScoringPosition/*IWouldNotRecommend-Titus(ButItIsFunny)*/:(scoringPosition==4)?ElevatorConstants.level4ScoringPosition:-1.0;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     autoMode = true;
+
+    // closedLoopController.setReference(desiredHeight, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
   }
 
