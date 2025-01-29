@@ -31,8 +31,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private SparkMaxConfig elevatorMotorConfig = new SparkMaxConfig();
 
-  private SparkClosedLoopController closedLoopController;
-
   private double desiredHeight;
   private double autoSpeed = 0.0;
   private boolean autoMode = false;
@@ -46,28 +44,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
 
-    // Calculates the soft limits in revolutions based on
-    // the initial reading of the absolute encoder
-    double lowerSoftLimit = (absoluteEncoder.getPosition() - ElevatorConstants.minimumElevatorHeight)
-        * ElevatorConstants.encoderToRevolutionRatio;
-
-    // Upper limit by the range of revolutions from the lower limit
-    double upperSoftLimit = (lowerSoftLimit - ElevatorConstants.rangeInRevolutions);
-
-    SoftLimitConfig softLimitConfig = new SoftLimitConfig()
-        .forwardSoftLimit(lowerSoftLimit)
-        .reverseSoftLimit(upperSoftLimit)
-        .forwardSoftLimitEnabled(true)
-        .reverseSoftLimitEnabled(true);
-
-    ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig()
-        .pid(ElevatorConstants.kP,
-            ElevatorConstants.kI,
-            ElevatorConstants.kD);
-
     elevatorMotorConfig.inverted(ElevatorConstants.elevatorMotorInverted);
-    elevatorMotorConfig.apply(softLimitConfig);
-    // elevatorMotorConfig.apply(closedLoopConfig);
 
     elevatorMotor.configure(elevatorMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -161,9 +138,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     autoMode = true;
 
-    // closedLoopController.setReference(desiredHeight, ControlType.kPosition,
-    // ClosedLoopSlot.kSlot0);
-
   }
 
   public void moveToPosition(double position) {
@@ -190,6 +164,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Position", absoluteEncoder.getPosition());
     SmartDashboard.putNumber("Elevator Velocity", absoluteEncoder.getVelocity());
 
+     
     // Lower soft limit check
     if (absoluteEncoder.getPosition() > ElevatorConstants.maximumElevatorHeight) {
       if (currentSpeed < 0) {
@@ -218,6 +193,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     } else {
       belowMinHeight = false;
     }
+    
 
     // Run auto movement
     if (autoMode) {
