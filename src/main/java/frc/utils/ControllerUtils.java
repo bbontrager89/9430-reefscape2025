@@ -6,23 +6,22 @@ package frc.utils;
 
 /** Add your docs here. */
 public class ControllerUtils {
-   public enum POV {
-    Up(0),
-    UpRight(45),
-    Right(90),
-    DownRight(135),
-    Down(180),
-    DownLeft(210),
-    Left(270),
-    UpLeft(315),
-    None(-1);
+    public enum POV {
+        Up(0),
+        UpRight(45),
+        Right(90),
+        DownRight(135),
+        Down(180),
+        DownLeft(210),
+        Left(270),
+        UpLeft(315),
+        None(-1);
 
-    public final int value;
+        public final int value;
 
-    POV(int value) {
+        POV(int value) {
             this.value = value;
+        }
     }
-}
- 
-}
 
+}
