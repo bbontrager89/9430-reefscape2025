@@ -153,6 +153,8 @@ public final class Constants {
     //TODO Assign CAN ids
     public static final int PivotMotorCanId = 42;
     public static final int IntakeMotorCanId = 41;
+
+    public static final double autoStopTolerance = 0.005;
   }
 
 }
