@@ -105,35 +105,35 @@ public class RobotContainer {
                 
 
                 // Right bumper - Coral manipulator wheels intake
-                new JoystickButton(m_driverController, Button.kRightBumper.value)
-                .onTrue((new InstantCommand(new Runnable() {
-                        @Override
-                        public void run(){
-                                coralManipulatorSubsystem.setIntakeMotorSpeed(intakeMotorSpeed);
-                        }
-                }))).onFalse(new InstantCommand(new Runnable() {
-                        @Override
-                        public void run(){
-                                coralManipulatorSubsystem.stopIntakeMotor();
-                        }
-                }));
+                new JoystickButton(m_operatorController, Button.kRightBumper.value)
+                        .onTrue((new InstantCommand(new Runnable() {
+                                @Override
+                                public void run(){
+                                        coralManipulatorSubsystem.setIntakeMotorSpeed(intakeMotorSpeed);
+                                }
+                        }))).onFalse(new InstantCommand(new Runnable() {
+                                @Override
+                                public void run(){
+                                        coralManipulatorSubsystem.stopIntakeMotor();
+                                }
+                        }));
 
                 // Left bumper - Coral manipulator wheels out
-                new JoystickButton(m_driverController, Button.kLeftBumper.value)
-                .onTrue((new InstantCommand(new Runnable() {
-                        @Override
-                        public void run(){
-                                coralManipulatorSubsystem.setIntakeMotorSpeed(-intakeMotorSpeed);
-                        }
-                }))).onFalse((new InstantCommand(new Runnable() {
-                        @Override
-                        public void run(){
-                                coralManipulatorSubsystem.stopIntakeMotor();
-                        }
-                })));
+                new JoystickButton(m_operatorController, Button.kLeftBumper.value)
+                        .onTrue((new InstantCommand(new Runnable() {
+                                @Override
+                                public void run(){
+                                        coralManipulatorSubsystem.setIntakeMotorSpeed(-intakeMotorSpeed);
+                                }
+                        }))).onFalse((new InstantCommand(new Runnable() {
+                                @Override
+                                public void run(){
+                                        coralManipulatorSubsystem.stopIntakeMotor();
+                                }
+                        })));
 
                 // Y button - Toggle Coral Mode
-                new JoystickButton(m_driverController, Button.kY.value)
+                new JoystickButton(m_operatorController, Button.kY.value)
                         .onTrue((new InstantCommand(new Runnable() {
                                 @Override
                                 public void run(){
@@ -142,31 +142,31 @@ public class RobotContainer {
                         })));
 
                 // X button - Algae Reef Clear Mode
-                new JoystickButton(m_driverController, Button.kX.value)
-                .onTrue((new InstantCommand(new Runnable() {
-                        @Override
-                        public void run(){
-                                intakeMotorSpeed = .5;
-                        }
-                })));
+                new JoystickButton(m_operatorController, Button.kX.value)
+                        .onTrue((new InstantCommand(new Runnable() {
+                                @Override
+                                public void run(){
+                                        intakeMotorSpeed = .5;
+                                }
+                        })));
 
                 // B button - Algae intake mode
-                new JoystickButton(m_driverController, Button.kB.value)
-                .onTrue((new InstantCommand(new Runnable() {
-                        @Override
-                        public void run(){
-                                intakeMotorSpeed = .3;
-                        }
-                })));
+                new JoystickButton(m_operatorController, Button.kB.value)
+                        .onTrue((new InstantCommand(new Runnable() {
+                                @Override
+                                public void run(){
+                                        intakeMotorSpeed = .3;
+                                }
+                        })));
 
                 // A button - Algae intake mode
-                new JoystickButton(m_driverController, Button.kA.value)
-                .onTrue((new InstantCommand(new Runnable() {
-                        @Override
-                        public void run(){
-                                intakeMotorSpeed = .1;
-                        }
-                })));
+                new JoystickButton(m_operatorController, Button.kA.value)
+                        .onTrue((new InstantCommand(new Runnable() {
+                                @Override
+                                public void run(){
+                                        intakeMotorSpeed = .1;
+                                }
+                        })));
 
                 // Right Stick button - Transit mode
                 new JoystickButton(m_operatorController, Button.kRightStick.value)
