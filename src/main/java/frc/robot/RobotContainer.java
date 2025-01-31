@@ -132,7 +132,7 @@ public class RobotContainer {
                                 .onTrue((new InstantCommand()));
 
                 // Dpad Up button -
-                new POVButton(m_operatorController, 0)
+                new POVButton(m_operatorController, POV.Up.value)
                                 .onTrue((new InstantCommand(new Runnable() {
 
                                         @Override
@@ -151,7 +151,7 @@ public class RobotContainer {
                                 })));
 
                 // Dpad Up-Right button -
-                new POVButton(m_operatorController, 45)
+                new POVButton(m_operatorController, POV.UpRight.value)
                                 .onTrue((new InstantCommand(new Runnable() {
 
                                         @Override
@@ -169,7 +169,7 @@ public class RobotContainer {
                                 })));
 
                 // Dpad Right button -
-                new POVButton(m_operatorController, 90)
+                new POVButton(m_operatorController, POV.Right.value)
                                 .onTrue((new InstantCommand(new Runnable() {
 
                                         @Override
@@ -189,7 +189,7 @@ public class RobotContainer {
                                 })));
 
                 // Dpad Down-Right button -
-                new POVButton(m_operatorController, 135)
+                new POVButton(m_operatorController, POV.DownRight.value)
                                 .onTrue((new InstantCommand(new Runnable() {
 
                                         @Override
@@ -207,7 +207,7 @@ public class RobotContainer {
                                 })));
 
                 // Dpad Down button -
-                new POVButton(m_operatorController, 180)
+                new POVButton(m_operatorController, POV.Down.value)
                                 .onTrue((new InstantCommand(new Runnable() {
 
                                         @Override
@@ -225,7 +225,7 @@ public class RobotContainer {
                                 })));
 
                 // Dpad Down-Left button -
-                new POVButton(m_operatorController, 225)
+                new POVButton(m_operatorController, POV.UpLeft.value)
                                 .onTrue((new InstantCommand(new Runnable() {
 
                                         @Override
@@ -243,7 +243,7 @@ public class RobotContainer {
                                 })));
 
                 // Dpad Left button -
-                new POVButton(m_operatorController, 270)
+                new POVButton(m_operatorController, POV.Left.value)
                                 .onTrue((new InstantCommand(new Runnable() {
 
                                         @Override
@@ -263,7 +263,7 @@ public class RobotContainer {
                                 })));
 
                 // Dpad Up-Left button -
-                new POVButton(m_operatorController, 315)
+                new POVButton(m_operatorController, POV.UpLeft.value)
                                 .onTrue((new InstantCommand(new Runnable() {
 
                                         @Override
@@ -328,7 +328,7 @@ public class RobotContainer {
                                 .onTrue((new InstantCommand()));
 
                 // Dpad Up button -
-                new POVButton(m_driverController, 0)
+                new POVButton(m_driverController, POV.Up.value)
                                 .onTrue((new InstantCommand(new Runnable() {
 
                                         @Override
@@ -346,7 +346,7 @@ public class RobotContainer {
                                 })));
 
                 // Dpad Up-Right button -
-                new POVButton(m_driverController, 45)
+                new POVButton(m_driverController, POV.UpRight.value)
                                 .onTrue((new InstantCommand(new Runnable() {
 
                                         @Override
@@ -364,7 +364,7 @@ public class RobotContainer {
                                 })));
 
                 // Dpad Right button -
-                new POVButton(m_driverController, 90)
+                new POVButton(m_driverController, POV.Right.value)
                                 .onTrue((new InstantCommand(new Runnable() {
 
                                         @Override
@@ -382,7 +382,7 @@ public class RobotContainer {
                                 })));
 
                 // Dpad Down-Right button -
-                new POVButton(m_driverController, 135)
+                new POVButton(m_driverController, POV.DownRight.value)
                                 .onTrue((new InstantCommand(new Runnable() {
 
                                         @Override
@@ -400,7 +400,7 @@ public class RobotContainer {
                                 })));
 
                 // Dpad Down button -
-                new POVButton(m_driverController, 180)
+                new POVButton(m_driverController, POV.Down.value)
                                 .onTrue((new InstantCommand(new Runnable() {
 
                                         @Override
@@ -418,7 +418,7 @@ public class RobotContainer {
                                 })));
 
                 // Dpad Down-Left button -
-                new POVButton(m_driverController, 225)
+                new POVButton(m_driverController, POV.DownLeft.value)
                                 .onTrue((new InstantCommand(new Runnable() {
 
                                         @Override
@@ -436,7 +436,7 @@ public class RobotContainer {
                                 })));
 
                 // Dpad Left button -
-                new POVButton(m_driverController, 270)
+                new POVButton(m_driverController, POV.Left.value)
                                 .onTrue((new InstantCommand(new Runnable() {
 
                                         @Override
@@ -454,7 +454,7 @@ public class RobotContainer {
                                 })));
 
                 // Dpad Up-Left button -
-                new POVButton(m_driverController, 315)
+                new POVButton(m_driverController, POV.UpLeft.value)
                                 .onTrue((new InstantCommand(new Runnable() {
 
                                         @Override
