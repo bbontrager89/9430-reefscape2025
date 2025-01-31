@@ -20,6 +20,7 @@ public class LightControlSubSystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("flickerMode", isFlickerModeOn);
+    SmartDashboard.putBoolean("light", isLightOn);
     // This method will be called once per scheduler run
     if (isFlickerModeOn) {
       // flicker lights until requested stop time is reached
@@ -46,14 +47,12 @@ public class LightControlSubSystem extends SubsystemBase {
 
   public void setOff() {
     // Turns off lights
-    SmartDashboard.putBoolean("light", false);
 
     isLightOn = false;
   }
 
   public void setOn() {
     // turns on lights
-    SmartDashboard.putBoolean("light", true);
 
     isLightOn = true;
   }
