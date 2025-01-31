@@ -46,10 +46,10 @@ public class RobotContainer {
         XboxController m_operatorController = new XboxController(OIConstants.kOperatorControllerPort);
 
         Double driverPOVRecency = null;
-        int driverLatestPOVButton = -1;
+        POV driverLatestPOVButton = POV.None;
 
         Double operatorPOVRecency = null;
-        int operatorLatestPOVButton = -1;
+        POV operatorLatestPOVButton = POV.None;
 
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -138,7 +138,7 @@ public class RobotContainer {
                                                 }
 
                                                 operatorPOVRecency = Timer.getFPGATimestamp();
-                                                operatorLatestPOVButton = 0;
+                                                operatorLatestPOVButton = POV.Up;
                                         }
                                 })));
 
@@ -156,7 +156,7 @@ public class RobotContainer {
                                                 }
 
                                                 operatorPOVRecency = Timer.getFPGATimestamp();
-                                                operatorLatestPOVButton = 45;
+                                                operatorLatestPOVButton = POV.UpRight;
                                         }
                                 })));
 
@@ -176,7 +176,7 @@ public class RobotContainer {
                                                 }
 
                                                 operatorPOVRecency = Timer.getFPGATimestamp();
-                                                operatorLatestPOVButton = 90;
+                                                operatorLatestPOVButton = POV.Right;
                                         }
                                 })));
 
@@ -194,7 +194,7 @@ public class RobotContainer {
                                                 }
 
                                                 operatorPOVRecency = Timer.getFPGATimestamp();
-                                                operatorLatestPOVButton = 135;
+                                                operatorLatestPOVButton = POV.DownRight;
                                         }
                                 })));
 
@@ -212,7 +212,7 @@ public class RobotContainer {
                                                 }
 
                                                 operatorPOVRecency = Timer.getFPGATimestamp();
-                                                operatorLatestPOVButton = 180;
+                                                operatorLatestPOVButton = POV.Down;
                                         }
                                 })));
 
@@ -230,7 +230,7 @@ public class RobotContainer {
                                                 }
 
                                                 operatorPOVRecency = Timer.getFPGATimestamp();
-                                                operatorLatestPOVButton = 225;
+                                                operatorLatestPOVButton = POV.DownLeft;
                                         }
                                 })));
 
@@ -250,7 +250,7 @@ public class RobotContainer {
                                                 }
 
                                                 operatorPOVRecency = Timer.getFPGATimestamp();
-                                                operatorLatestPOVButton = 270;
+                                                operatorLatestPOVButton = POV.Left;
                                         }
                                 })));
 
@@ -268,7 +268,7 @@ public class RobotContainer {
                                                 }
 
                                                 operatorPOVRecency = Timer.getFPGATimestamp();
-                                                operatorLatestPOVButton = 315;
+                                                operatorLatestPOVButton = POV.UpLeft;
                                         }
                                 })));
 
@@ -332,7 +332,7 @@ public class RobotContainer {
                                                 }
 
                                                 driverPOVRecency = Timer.getFPGATimestamp();
-                                                driverLatestPOVButton = 0;
+                                                driverLatestPOVButton = POV.Up;
                                         }
                                 })));
 
@@ -350,7 +350,7 @@ public class RobotContainer {
                                                 }
 
                                                 driverPOVRecency = Timer.getFPGATimestamp();
-                                                driverLatestPOVButton = 45;
+                                                driverLatestPOVButton = POV.UpRight;
                                         }
                                 })));
 
@@ -368,7 +368,7 @@ public class RobotContainer {
                                                 }
 
                                                 driverPOVRecency = Timer.getFPGATimestamp();
-                                                driverLatestPOVButton = 90;
+                                                driverLatestPOVButton = POV.Right;
                                         }
                                 })));
 
@@ -386,7 +386,7 @@ public class RobotContainer {
                                                 }
 
                                                 driverPOVRecency = Timer.getFPGATimestamp();
-                                                driverLatestPOVButton = 135;
+                                                driverLatestPOVButton = POV.DownRight;
                                         }
                                 })));
 
@@ -404,7 +404,7 @@ public class RobotContainer {
                                                 }
 
                                                 driverPOVRecency = Timer.getFPGATimestamp();
-                                                driverLatestPOVButton = 180;
+                                                driverLatestPOVButton = POV.Down;
                                         }
                                 })));
 
@@ -422,7 +422,7 @@ public class RobotContainer {
                                                 }
 
                                                 driverPOVRecency = Timer.getFPGATimestamp();
-                                                driverLatestPOVButton = 225;
+                                                driverLatestPOVButton = POV.DownLeft;
                                         }
                                 })));
 
@@ -440,7 +440,7 @@ public class RobotContainer {
                                                 }
 
                                                 driverPOVRecency = Timer.getFPGATimestamp();
-                                                driverLatestPOVButton = 270;
+                                                driverLatestPOVButton = POV.Left;
                                         }
                                 })));
 
@@ -458,7 +458,7 @@ public class RobotContainer {
                                                 }
 
                                                 driverPOVRecency = Timer.getFPGATimestamp();
-                                                driverLatestPOVButton = 315;
+                                                driverLatestPOVButton = POV.UpLeft;
                                         }
                                 })));
 
@@ -517,4 +517,16 @@ public class RobotContainer {
                 // Run path following command, then stop at the end.
                 return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
         }
+}
+
+enum POV {
+        Up,
+        UpRight,
+        Right,
+        DownRight,
+        Down,
+        DownLeft,
+        Left,
+        UpLeft,
+        None
 }
