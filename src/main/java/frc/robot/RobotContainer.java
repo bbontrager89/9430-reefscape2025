@@ -59,7 +59,7 @@ public class RobotContainer {
         Double operatorPOVRecency = null;
         int operatorLatestPOVButton = -1;
 
-        double ts = 0.3;
+        double intakeMotorSpeed = 0.3;
 
 
         /**
@@ -109,7 +109,7 @@ public class RobotContainer {
                 .onTrue((new InstantCommand(new Runnable() {
                         @Override
                         public void run(){
-                                coralManipulatorSubsystem.setIntakeMotorSpeed(ts);
+                                coralManipulatorSubsystem.setIntakeMotorSpeed(intakeMotorSpeed);
                         }
                 }))).onFalse(new InstantCommand(new Runnable() {
                         @Override
@@ -123,7 +123,7 @@ public class RobotContainer {
                 .onTrue((new InstantCommand(new Runnable() {
                         @Override
                         public void run(){
-                                coralManipulatorSubsystem.setIntakeMotorSpeed(-ts);
+                                coralManipulatorSubsystem.setIntakeMotorSpeed(-intakeMotorSpeed);
                         }
                 }))).onFalse((new InstantCommand(new Runnable() {
                         @Override
@@ -137,7 +137,7 @@ public class RobotContainer {
                         .onTrue((new InstantCommand(new Runnable() {
                                 @Override
                                 public void run(){
-                                        ts = 1;
+                                        intakeMotorSpeed = 1;
                                 }
                         })));
 
@@ -146,7 +146,7 @@ public class RobotContainer {
                 .onTrue((new InstantCommand(new Runnable() {
                         @Override
                         public void run(){
-                                ts = .5;
+                                intakeMotorSpeed = .5;
                         }
                 })));
 
@@ -155,7 +155,7 @@ public class RobotContainer {
                 .onTrue((new InstantCommand(new Runnable() {
                         @Override
                         public void run(){
-                                ts = .3;
+                                intakeMotorSpeed = .3;
                         }
                 })));
 
@@ -164,7 +164,7 @@ public class RobotContainer {
                 .onTrue((new InstantCommand(new Runnable() {
                         @Override
                         public void run(){
-                                ts = .1;
+                                intakeMotorSpeed = .1;
                         }
                 })));
 
