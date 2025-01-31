@@ -16,6 +16,8 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -340,69 +342,27 @@ public class RobotContainer {
 
                 // Right bumper -
                 new JoystickButton(m_driverController, Button.kRightBumper.value)
-                .onTrue((new InstantCommand()));
+                                .onTrue((new InstantCommand()));
 
                 // Left bumper -
                 new JoystickButton(m_driverController, Button.kLeftBumper.value)
-                .onTrue((new InstantCommand()));
+                                .onTrue((new InstantCommand()));
 
                 // Y button -
                 new JoystickButton(m_driverController, Button.kY.value)
-                                .onTrue((new InstantCommand(new Runnable() {
-
-                                        @Override
-                                        public void run() {
-                                                elevatorSubsystem.setMotorSpeed(-0.2);
-                                        }
-                                        
-                                }))).onFalse((new InstantCommand(new Runnable() {
-
-                                        @Override
-                                        public void run() {
-                                                elevatorSubsystem.stopMotor();
-                                        }
-                                        
-                                })));
+                                .onTrue((new InstantCommand()));
 
                 // X button -
                 new JoystickButton(m_driverController, Button.kX.value)
-                                .onTrue((new InstantCommand(new Runnable() {
-
-                                        @Override
-                                        public void run() {
-                                                elevatorSubsystem.setMotorSpeed(0.2);
-                                        }
-                                        
-                                }))).onFalse((new InstantCommand(new Runnable() {
-
-                                        @Override
-                                        public void run() {
-                                                elevatorSubsystem.stopMotor();
-                                        }
-                                        
-                                })));
+                                .onTrue((new InstantCommand()));
 
                 // B button -
                 new JoystickButton(m_driverController, Button.kB.value)
-                                .onTrue((new InstantCommand(new Runnable() {
-
-                                        @Override
-                                        public void run() {
-                                                elevatorSubsystem.turnOffAutoMode();
-                                        }
-                                        
-                                })));
+                                .onTrue((new InstantCommand()));
 
                 // A button -
                 new JoystickButton(m_driverController, Button.kA.value)
-                                .onTrue((new InstantCommand(new Runnable() {
-
-                                        @Override
-                                        public void run() {
-                                                elevatorSubsystem.moveToScoringPosition(1);
-                                        }
-                                        
-                                })));
+                                .onTrue((new InstantCommand()));
 
                 // Right Stick button -
                 new JoystickButton(m_driverController, Button.kRightStick.value)
@@ -563,7 +523,6 @@ public class RobotContainer {
                 // Back Button button -
                 new JoystickButton(m_driverController, Button.kBack.value)
                                 .onTrue((new InstantCommand()));
-
         }
 
         /**

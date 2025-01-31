@@ -125,23 +125,28 @@ public final class Constants {
 
     public static final int elevatorMotorCanId = 27;
 
-    public static final double kP = 0;
+    public static final double kP = -20;
     public static final double kI = 0;
     public static final double kD = 0;
 
-    public static final double minimumElevatorHeight = 0.2; // Furthest possible is 0.166
-    public static final double maximumElevatorHeight = 0.6; // Furthest possible is 0.683
+    public static final double positionTolerence = 0.01;
+
+    public static final double minimumElevatorHeight = 0.175; // Furthest possible is 0.166
+    public static final double maximumElevatorHeight = 0.675; // Furthest possible is 0.683
 
     public static final double level1ScoringPosition = 0.3;
     public static final double level2ScoringPosition = 0.35;
     public static final double level3ScoringPosition = 0.4;
-    public static final double level4ScoringPosition = 0.45;
+    public static final double level4ScoringPosition = minimumElevatorHeight;
+    public static final double level5ScoringPosition = maximumElevatorHeight;
 
     public static final boolean elevatorMotorInverted = false;
 
     public static final double encoderToRevolutionRatio = 200.0;
 
     public static final double rangeInRevolutions = (maximumElevatorHeight - minimumElevatorHeight) * encoderToRevolutionRatio;
+
+    public static final int maximumAutoSpeed = 1; // Range: 0 to 1
   }
 
   public static final class CoralManipulatorConstants {
