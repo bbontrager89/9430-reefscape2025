@@ -151,8 +151,8 @@ public final class Constants {
 
   public static final class CoralManipulatorConstants {
     //TODO Assign CAN ids
-    public static final int coralManipulatorPivotMotorCanid = 42;
-    public static final int coralManipulatorIntakeMotorCanid = 41;
+    public static final int PivotMotorCanId = 42;
+    public static final int IntakeMotorCanId = 41;
   }
 
 }
