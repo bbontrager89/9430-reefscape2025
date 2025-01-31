@@ -80,4 +80,24 @@ switch (lightStatus) {
       }
     }); lightStatus = LightStatus.OFF;
   }
+
+  public void flickerFor(double timeOn) {
+    lightStatus = LightStatus.FLICKER;
+    new Thread(() ->  {
+      try{
+        Timer.delay(timeOn);
+      } catch (Exception e){
+      }
+    }); lightStatus = LightStatus.OFF;
+  }
+
+  public void slowFlickerFor(double timeOn) {
+    lightStatus = LightStatus.SLOWFLICKER;
+    new Thread(() ->  {
+      try{
+        Timer.delay(timeOn);
+      } catch (Exception e){
+      }
+    }); lightStatus = LightStatus.OFF;
+  }
 }
