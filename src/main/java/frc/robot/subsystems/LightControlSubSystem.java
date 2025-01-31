@@ -14,6 +14,7 @@ public class LightControlSubSystem extends SubsystemBase {
   private double requestedStopTime;
   private boolean isFlickerModeOn;
   private boolean isLightOn;
+  private LightStatus lightStatus = LightStatus.OFF;
 
   /** Creates a new LightControlSubSystem. */
   public LightControlSubSystem() {
@@ -21,55 +22,64 @@ public class LightControlSubSystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("flickerMode", isFlickerModeOn);
+    //SmartDashboard.putBoolean("flickerMode", isFlickerModeOn);
     SmartDashboard.putBoolean("light", isLightOn);
-    // This method will be called once per scheduler run
-    if (isFlickerModeOn) {
-      // flicker lights until requested stop time is reached
-      if (isLightOn) {
-        setOff();
-      } else {
-        setOn();
-      }
+    
+switch (lightStatus) {
+  case OFF :
+  setOff();
+  break;
+  
+  case SOLIDLIGHT :
+  setOn();
+  break;
 
-      if (Timer.getFPGATimestamp() >= requestedStopTime) {
-        setOff();
-        isFlickerModeOn = false;
-      }
+  case FASTFLICKER :
+  if (isLightOn) {
+    setOff();
+  } else {
+    setOn();
+  }
+  break;
+  case FLICKER :
+  //add logic here
+  break;
 
-    } else {
-      // stop lights at rquested stop time
-      if (Timer.getFPGATimestamp() >= requestedStopTime) {
-        setOff();
-      }
-
-    }
-
+  case SLOWFLICKER :
+  //add logic here
+  break;
+}
   }
 
   public void setOff() {
     // Turns off lights
-
     isLightOn = false;
   }
 
   public void setOn() {
     // turns on lights
-
     isLightOn = true;
   }
 
   public void turnOnFor(double timeOn) {
-    // set a time for lights to be on
-    requestedStopTime = Timer.getFPGATimestamp() + timeOn;
-    setOn();
-    isFlickerModeOn = false;
+    lightStatus = LightStatus.SOLIDLIGHT;
+    new Thread(() ->  {
+      try{
+        Timer.delay(timeOn);
+        lightStatus = LightStatus.OFF;
+      } catch (Exception e){
+      }
+    });
   }
 
-  public void flickerFor(double timeOn) {
-    // set time for how long lights should flicker for
-    requestedStopTime = Timer.getFPGATimestamp() + timeOn;
-    // set that lights will flicker
-    isFlickerModeOn = true;
+  public void fastFlickerFor(double timeOn) {
+    lightStatus = LightStatus.FASTFLICKER;
+    new Thread(() ->  {
+      try{
+        Timer.delay(timeOn);
+        lightStatus = LightStatus.OFF;
+      } catch (Exception e){
+      }
+    }); 
   }
 }
