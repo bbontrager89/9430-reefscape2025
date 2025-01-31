@@ -66,10 +66,9 @@ switch (lightStatus) {
     new Thread(() ->  {
       try{
         Timer.delay(timeOn);
-        lightStatus = LightStatus.OFF;
       } catch (Exception e){
       }
-    });
+    }); lightStatus = LightStatus.OFF;
   }
 
   public void fastFlickerFor(double timeOn) {
@@ -77,9 +76,8 @@ switch (lightStatus) {
     new Thread(() ->  {
       try{
         Timer.delay(timeOn);
-        lightStatus = LightStatus.OFF;
       } catch (Exception e){
       }
-    }); 
+    }); lightStatus = LightStatus.OFF;
   }
 }
