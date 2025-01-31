@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LightControlSubSystem extends SubsystemBase {
+
+  public enum LightStatus{OFF, SOLIDLIGHT, FASTFLICKER, FLICKER, SLOWFLICKER}
   private double requestedStopTime;
   private boolean isFlickerModeOn;
   private boolean isLightOn;
