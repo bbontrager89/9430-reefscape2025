@@ -65,6 +65,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     // Log Data
     SmartDashboard.putBoolean("Intake Motor Active", isIntakeMotorOn);
     SmartDashboard.putBoolean("Pivot Motor Active", isPivotMotorOn);
+    SmartDashboard.putNumber("Intake Motor Position", getIntakeMotorPosition());
 
     // Check if motor is stuck to prevent over straining it
     if (isIntakeMotorOn && autoStop) {
