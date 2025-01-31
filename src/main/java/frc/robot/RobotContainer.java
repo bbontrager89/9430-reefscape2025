@@ -20,6 +20,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.LightControlSubSystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -38,6 +39,8 @@ import java.util.List;
 public class RobotContainer {
         // The robot's subsystems
         private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+
+        private final LightControlSubSystem lightControlSubSystem = new LightControlSubSystem();
 
         // The driver's controller
         XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -109,11 +112,21 @@ public class RobotContainer {
 
                 // B button - Algae intake mode
                 new JoystickButton(m_operatorController, Button.kB.value)
-                                .onTrue((new InstantCommand()));
+                                .onTrue((new InstantCommand(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                                lightControlSubSystem.fastFlickerFor(2.5);
+                                        }
+                                })));
 
                 // A button - Algae intake mode
                 new JoystickButton(m_operatorController, Button.kA.value)
-                                .onTrue((new InstantCommand()));
+                                .onTrue((new InstantCommand(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                                lightControlSubSystem.turnOnFor(2.5);
+                                        }
+                                })));
 
                 // Right Stick button - Transit mode
                 new JoystickButton(m_operatorController, Button.kRightStick.value)
