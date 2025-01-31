@@ -48,7 +48,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     elevatorMotor.configure(elevatorMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
-    // closedLoopController = elevatorMotor.getClosedLoopController();
+    configureDashboardControls();
+
+  }
+
+  public void configureDashboardControls() {
 
     elevatorCommands = new SendableChooser<Command>();
 
