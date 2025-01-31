@@ -27,6 +27,8 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
+import frc.utils.ControllerUtils.POV;
+
 import java.util.List;
 
 /*
@@ -519,20 +521,4 @@ public class RobotContainer {
         }
 }
 
-enum POV {
-        Up(0),
-        UpRight(45),
-        Right(90),
-        DownRight(135),
-        Down(180),
-        DownLeft(210),
-        Left(270),
-        UpLeft(315),
-        None(-1);
 
-        public final int value;
-
-        POV(int value) {
-                this.value = value;
-        }
-}
