@@ -17,10 +17,12 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   // private SparkMax pivotMotor = new SparkMax(CoralManipulatorConstants.PivotMotorCanId, MotorType.kBrushless);
   private SparkMax intakeMotor = new SparkMax(CoralManipulatorConstants.IntakeMotorCanId, MotorType.kBrushless);
   private RelativeEncoder intakePosEncoder = intakeMotor.getEncoder();
+
   private double lastKnownPosition;
+  private boolean autoStop = false;
+
   private boolean isIntakeMotorOn;
   private boolean isPivotMotorOn;
-  private boolean autoStop = false;
 
   /** Creates a new CoralManipulatorSubsystem. */
   public CoralManipulatorSubsystem() {
@@ -70,11 +72,16 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
       // Change in motor position
       double dm = getIntakeMotorPosition() - lastKnownPosition;
 
-      if (Math.abs(dm) > CoralManipulatorConstants.autoStopTolerance) {
-        lastKnownPosition = getIntakeMotorPosition();
-      } else {
+      if (Math.abs(dm) < CoralManipulatorConstants.autoStopTolerance) {
+
         stopIntakeMotor();
+
+      } else {
+
+        lastKnownPosition = getIntakeMotorPosition();
+
       }
+
     }
 
   }
