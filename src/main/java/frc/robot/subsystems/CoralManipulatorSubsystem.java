@@ -14,15 +14,13 @@ import frc.robot.Constants.CoralManipulatorConstants;
 
 public class CoralManipulatorSubsystem extends SubsystemBase {
 
-  // private SparkMax pivotMotor = new
-  // SparkMax(CoralManipulatorConstants.coralManipulatorPivotMotorCanid,
-  // MotorType.kBrushless);
-  private SparkMax intakeMotor = new SparkMax(CoralManipulatorConstants.coralManipulatorIntakeMotorCanid,
-      MotorType.kBrushless);
+  // private SparkMax pivotMotor = new SparkMax(CoralManipulatorConstants.PivotMotorCanId, MotorType.kBrushless);
+  private SparkMax intakeMotor = new SparkMax(CoralManipulatorConstants.IntakeMotorCanId, MotorType.kBrushless);
   private RelativeEncoder intakePosEncoder = intakeMotor.getEncoder();
   private double lastKnownPosition;
   private boolean isIntakeMotorOn;
   private boolean isPivotMotorOn;
+  private boolean autoStop = false;
 
   /** Creates a new CoralManipulatorSubsystem. */
   public CoralManipulatorSubsystem() {
@@ -54,7 +52,6 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
   public void runIntakeFor(double speed, double time) {
     setIntakeMotorSpeed(speed);
-    isIntakeMotorOn = true;
     Timer.delay(time);
     stopIntakeMotor();
     isIntakeMotorOn = false;
@@ -65,8 +62,8 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Intake Motor Active", isIntakeMotorOn);
     SmartDashboard.putBoolean("Pivot Motor Active", isPivotMotorOn);
 
-    // This is as of yet untested, don't trust it
-    if (isIntakeMotorOn) {
+    // Check if motor is stuck to prevent over straining it
+    if (isIntakeMotorOn && autoStop) {
       double dm = getIntakeMotorPosition() - lastKnownPosition;
 
       if (Math.abs(dm) > 0.005) {
