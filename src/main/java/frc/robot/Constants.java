@@ -150,9 +150,9 @@ public final class Constants {
   }
 
   public static final class CoralManipulatorConstants {
-    //Change Canids from placeholder values to actual Canids
-    public static final int coralManipulatorPivotMotorCanid = 80;
-    public static final int coralManipulatorIntakeMotorCanid = 9;
+    //TODO Assign CAN ids
+    public static final int coralManipulatorPivotMotorCanid = 42;
+    public static final int coralManipulatorIntakeMotorCanid = 41;
   }
 
 }

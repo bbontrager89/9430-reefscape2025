@@ -14,63 +14,67 @@ import frc.robot.Constants.CoralManipulatorConstants;
 
 public class CoralManipulatorSubsystem extends SubsystemBase {
 
-  // private SparkMax pivotMotor = new SparkMax(CoralManipulatorConstants.coralManipulatorPivotMotorCanid, MotorType.kBrushless);
-  private SparkMax intakeMotor = new SparkMax(CoralManipulatorConstants.coralManipulatorIntakeMotorCanid, MotorType.kBrushless);
+  // private SparkMax pivotMotor = new
+  // SparkMax(CoralManipulatorConstants.coralManipulatorPivotMotorCanid,
+  // MotorType.kBrushless);
+  private SparkMax intakeMotor = new SparkMax(CoralManipulatorConstants.coralManipulatorIntakeMotorCanid,
+      MotorType.kBrushless);
   private RelativeEncoder intakePosEncoder = intakeMotor.getEncoder();
   private double lastKnownPosition;
   private boolean isIntakeMotorOn;
   private boolean isPivotMotorOn;
 
   /** Creates a new CoralManipulatorSubsystem. */
-  public CoralManipulatorSubsystem() {}
+  public CoralManipulatorSubsystem() {
+  }
 
-  public void setPivotMotorSpeed(double speed){
+  public void setPivotMotorSpeed(double speed) {
     // pivotMotor.set(speed);
     isPivotMotorOn = true;
   }
 
-  public void setIntakeMotorSpeed(double speed){
+  public void setIntakeMotorSpeed(double speed) {
     intakeMotor.set(speed);
     isIntakeMotorOn = true;
   }
 
-  public void stopPivotMotor(){
+  public void stopPivotMotor() {
     // pivotMotor.stopMotor();
     isPivotMotorOn = false;
   }
 
-  public void stopIntakeMotor(){
+  public void stopIntakeMotor() {
     intakeMotor.stopMotor();
     isIntakeMotorOn = false;
   }
 
-  public double getIntakeMotorPosition(){
-    return intakePosEncoder.getPosition();   
+  public double getIntakeMotorPosition() {
+    return intakePosEncoder.getPosition();
   }
 
-  public void runIntakeFor(double speed, double time){
+  public void runIntakeFor(double speed, double time) {
     setIntakeMotorSpeed(speed);
     isIntakeMotorOn = true;
     Timer.delay(time);
     stopIntakeMotor();
     isIntakeMotorOn = false;
   }
+
   @Override
   public void periodic() {
-   SmartDashboard.putBoolean("Intake Motor", isIntakeMotorOn);
-   SmartDashboard.putBoolean("Pivot Motor", isPivotMotorOn);
-   
-    //This is as of yet untested, don't trust it
-    if(isIntakeMotorOn){
-    double dm = getIntakeMotorPosition() - lastKnownPosition;
+    SmartDashboard.putBoolean("Intake Motor Active", isIntakeMotorOn);
+    SmartDashboard.putBoolean("Pivot Motor Active", isPivotMotorOn);
 
-    if(Math.abs(dm) > 0.005) {
-      lastKnownPosition = getIntakeMotorPosition();
+    // This is as of yet untested, don't trust it
+    if (isIntakeMotorOn) {
+      double dm = getIntakeMotorPosition() - lastKnownPosition;
+
+      if (Math.abs(dm) > 0.005) {
+        lastKnownPosition = getIntakeMotorPosition();
+      } else {
+        stopIntakeMotor();
+      }
     }
-    else{
-      stopIntakeMotor();
-    }
-  }
 
   }
 }
