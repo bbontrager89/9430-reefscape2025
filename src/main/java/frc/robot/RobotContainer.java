@@ -155,6 +155,11 @@ public class RobotContainer {
                                 public void run() {
                                         coralManipulatorSubsystem.runIntakeFor(1, 2);
                                 }
+                        })).onFalse(new InstantCommand(new Runnable() {
+                                @Override
+                                public void run() {
+                                        coralManipulatorSubsystem.stopIntakeMotor();
+                                }
                         }));
 
                 // Left bumper - Coral manipulator wheels out
@@ -163,7 +168,17 @@ public class RobotContainer {
 
                 // Left trigger -
                 c_operatorController.leftTrigger(OIConstants.kTriggerThreshold)
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand(new Runnable() {
+                                @Override
+                                public void run() {
+                                        coralManipulatorSubsystem.runIntakeFor(-1, 2);
+                                }
+                        })).onFalse(new InstantCommand(new Runnable() {
+                                @Override
+                                public void run() {
+                                        coralManipulatorSubsystem.stopIntakeMotor();
+                                }
+                        }));
 
                 // Y button - Toggle Coral Mode
                 c_operatorController.y()
