@@ -47,6 +47,7 @@ switch (lightStatus) {
       try{
         Timer.delay(0.125);
       } catch (Exception e){
+        e.printStackTrace();
       }
     }); 
     isFlickerTimerOn = false;
@@ -57,6 +58,7 @@ switch (lightStatus) {
       try{
         Timer.delay(0.125);
       } catch (Exception e){
+        e.printStackTrace();
       }
     });
     isFlickerTimerOn = false;
@@ -71,6 +73,7 @@ switch (lightStatus) {
       try{
         Timer.delay(0.25);
       } catch (Exception e){
+        e.printStackTrace();
       }
     }); 
     isFlickerTimerOn = false;
@@ -81,6 +84,7 @@ switch (lightStatus) {
       try{
         Timer.delay(0.25);
       } catch (Exception e){
+        e.printStackTrace();
       }
     });
     isFlickerTimerOn = false;
@@ -106,6 +110,7 @@ switch (lightStatus) {
       try{
         Timer.delay(timeOn);
       } catch (Exception e){
+        e.printStackTrace();
       }
     }); lightStatus = LightStatus.OFF;
   }
@@ -116,6 +121,7 @@ switch (lightStatus) {
       try{
         Timer.delay(timeOn);
       } catch (Exception e){
+        e.printStackTrace();
       }
     }); lightStatus = LightStatus.OFF;
   }
@@ -126,6 +132,7 @@ switch (lightStatus) {
       try{
         Timer.delay(timeOn);
       } catch (Exception e){
+        e.printStackTrace();
       }
     }); lightStatus = LightStatus.OFF;
   }
@@ -136,6 +143,7 @@ switch (lightStatus) {
       try{
         Timer.delay(timeOn);
       } catch (Exception e){
+        e.printStackTrace();
       }
     }); lightStatus = LightStatus.OFF;
   }
