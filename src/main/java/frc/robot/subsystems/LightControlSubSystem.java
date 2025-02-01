@@ -26,7 +26,7 @@ public class LightControlSubSystem extends SubsystemBase {
   private boolean isFlickerTimerOn = false;
   private double flickerInterval;
   private boolean isLightOn;
-  private LightStatus lightStatus = LightStatus.OFF;
+  private LightStatus lightStatus;
 
   /** Creates a new LightControlSubSystem. */
   public LightControlSubSystem() {
