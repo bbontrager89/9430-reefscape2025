@@ -106,39 +106,19 @@ public class RobotContainer {
 
                 // Y button - Toggle Coral Mode
                 new JoystickButton(m_operatorController, Button.kY.value)
-                                .onTrue((new InstantCommand(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                                lightControlSubSystem.slowFlickerFor(2.5);
-                                        }
-                                })));
+                                .onTrue((new InstantCommand()));
 
                 // X button - Algae Reef Clear Mode
                 new JoystickButton(m_operatorController, Button.kX.value)
-                                .onTrue((new InstantCommand(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                                lightControlSubSystem.flickerFor(2.5);
-                                        }
-                                })));
+                                .onTrue((new InstantCommand()));
 
                 // B button - Algae intake mode
                 new JoystickButton(m_operatorController, Button.kB.value)
-                                .onTrue((new InstantCommand(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                                lightControlSubSystem.fastFlickerFor(2.5);
-                                        }
-                                })));
+                                .onTrue((new InstantCommand()));
 
                 // A button - Algae intake mode
                 new JoystickButton(m_operatorController, Button.kA.value)
-                                .onTrue((new InstantCommand(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                                lightControlSubSystem.turnOnFor(2.5);
-                                        }
-                                })));
+                                .onTrue((new InstantCommand()));
 
                 // Right Stick button - Transit mode
                 new JoystickButton(m_operatorController, Button.kRightStick.value)
