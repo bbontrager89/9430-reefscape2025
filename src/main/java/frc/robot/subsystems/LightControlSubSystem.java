@@ -45,7 +45,7 @@ public class LightControlSubSystem extends SubsystemBase {
 
       case TIMEDSOLIDLIGHT:
       if(requestedStopTime < Timer.getFPGATimestamp())  {
-        lightStatus =LightStatus.OFF;
+        lightStatus = LightStatus.OFF;
       }
       if(!isLightOn){
       setOn();
@@ -53,7 +53,9 @@ public class LightControlSubSystem extends SubsystemBase {
         break;
 
         case SOLIDLIGHT:
+        if(!isLightOn){
         setOn();
+        }
         break;
 
       case TIMEDFASTFLICKER:
@@ -101,7 +103,7 @@ public class LightControlSubSystem extends SubsystemBase {
 
       case TIMEDFLICKER:
       if(requestedStopTime < Timer.getFPGATimestamp())  {
-        lightStatus =LightStatus.OFF;
+        lightStatus = LightStatus.OFF;
       }
         if (isLightOn && !isFlickerTimerOn) {
           //sets how long the light should be on before switching
@@ -146,7 +148,7 @@ public class LightControlSubSystem extends SubsystemBase {
 
       case TIMEDSLOWFLICKER:
       if(requestedStopTime < Timer.getFPGATimestamp())  {
-        lightStatus =LightStatus.OFF;
+        lightStatus = LightStatus.OFF;
       }
         if (isLightOn && !isFlickerTimerOn) {
           //sets how long the light should be on before switching
