@@ -54,8 +54,6 @@ public class RobotContainer {
 
         ControlMode activeMode = ControlMode.Manual;
 
-        EventLoop triggerEvents = new EventLoop();
-
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
          */
@@ -181,8 +179,8 @@ public class RobotContainer {
 
                                 @Override
                                 public void run() {
-                                        if (operatorPOVRecency != null && operatorPOVRecency + 0.25 > Timer
-                                                        .getFPGATimestamp()) {
+                                        if (operatorPOVRecency != null && 
+                                                operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
                                                 // on Double Press -
                                                 // Coral mode: intake from Coral station
                                         } else {
@@ -200,8 +198,8 @@ public class RobotContainer {
 
                                 @Override
                                 public void run() {
-                                        if (operatorPOVRecency != null && operatorPOVRecency + 0.25 > Timer
-                                                        .getFPGATimestamp()) {
+                                        if (operatorPOVRecency != null && 
+                                                operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
                                                 // on Double Press
                                         } else {
                                                 // on Single Press
@@ -218,8 +216,8 @@ public class RobotContainer {
 
                                 @Override
                                 public void run() {
-                                        if (operatorPOVRecency != null && operatorPOVRecency + 0.25 > Timer
-                                                        .getFPGATimestamp()) {
+                                        if (operatorPOVRecency != null && 
+                                                operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
                                                 // on Double Press -
                                                 // Coral mode: after down press: score L2 right
                                                 // Coral mode: after up press: score L3 right
@@ -238,8 +236,8 @@ public class RobotContainer {
 
                                 @Override
                                 public void run() {
-                                        if (operatorPOVRecency != null && operatorPOVRecency + 0.25 > Timer
-                                                        .getFPGATimestamp()) {
+                                        if (operatorPOVRecency != null && 
+                                                operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
                                                 // on Double Press
                                         } else {
                                                 // on Single Press
@@ -256,8 +254,8 @@ public class RobotContainer {
 
                                 @Override
                                 public void run() {
-                                        if (operatorPOVRecency != null && operatorPOVRecency + 0.25 > Timer
-                                                        .getFPGATimestamp()) {
+                                        if (operatorPOVRecency != null && 
+                                                operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
                                                 // on Double Press - Coral mode: after down press: score L1
                                         } else {
                                                 // on Single Press
@@ -274,8 +272,8 @@ public class RobotContainer {
 
                                 @Override
                                 public void run() {
-                                        if (operatorPOVRecency != null && operatorPOVRecency + 0.25 > Timer
-                                                        .getFPGATimestamp()) {
+                                        if (operatorPOVRecency != null && 
+                                                operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
                                                 // on Double Press
                                         } else {
                                                 // on Single Press
@@ -292,8 +290,8 @@ public class RobotContainer {
 
                                 @Override
                                 public void run() {
-                                        if (operatorPOVRecency != null && operatorPOVRecency + 0.25 > Timer
-                                                        .getFPGATimestamp()) {
+                                        if (operatorPOVRecency != null && 
+                                                operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
                                                 // on Double Press -
                                                 // Coral mode: after down press: score L2 left
                                                 // Coral mode: after up press: score L3 left
@@ -312,8 +310,8 @@ public class RobotContainer {
 
                                 @Override
                                 public void run() {
-                                        if (operatorPOVRecency != null && operatorPOVRecency + 0.25 > Timer
-                                                        .getFPGATimestamp()) {
+                                        if (operatorPOVRecency != null && 
+                                                operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
                                                 // on Double Press
                                         } else {
                                                 // on Single Press
@@ -384,8 +382,8 @@ public class RobotContainer {
 
                                 @Override
                                 public void run() {
-                                        if (driverPOVRecency != null && driverPOVRecency + 0.25 > Timer
-                                                        .getFPGATimestamp()) {
+                                        if (driverPOVRecency != null && 
+                                                driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
                                                 // on Double Press
                                         } else {
                                                 // on Single Press
@@ -402,8 +400,8 @@ public class RobotContainer {
 
                                 @Override
                                 public void run() {
-                                        if (driverPOVRecency != null && driverPOVRecency + 0.25 > Timer
-                                                        .getFPGATimestamp()) {
+                                        if (driverPOVRecency != null && 
+                                                driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
                                                 // on Double Press
                                         } else {
                                                 // on Single Press
@@ -420,8 +418,8 @@ public class RobotContainer {
 
                                 @Override
                                 public void run() {
-                                        if (driverPOVRecency != null && driverPOVRecency + 0.25 > Timer
-                                                        .getFPGATimestamp()) {
+                                        if (driverPOVRecency != null && 
+                                                driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
                                                 // on Double Press
                                         } else {
                                                 // on Single Press
@@ -438,8 +436,8 @@ public class RobotContainer {
 
                                 @Override
                                 public void run() {
-                                        if (driverPOVRecency != null && driverPOVRecency + 0.25 > Timer
-                                                        .getFPGATimestamp()) {
+                                        if (driverPOVRecency != null && 
+                                                driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
                                                 // on Double Press
                                         } else {
                                                 // on Single Press
@@ -456,8 +454,8 @@ public class RobotContainer {
 
                                 @Override
                                 public void run() {
-                                        if (driverPOVRecency != null && driverPOVRecency + 0.25 > Timer
-                                                        .getFPGATimestamp()) {
+                                        if (driverPOVRecency != null && 
+                                                driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
                                                 // on Double Press
                                         } else {
                                                 // on Single Press
@@ -474,8 +472,8 @@ public class RobotContainer {
 
                                 @Override
                                 public void run() {
-                                        if (driverPOVRecency != null && driverPOVRecency + 0.25 > Timer
-                                                        .getFPGATimestamp()) {
+                                        if (driverPOVRecency != null && 
+                                                driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
                                                 // on Double Press
                                         } else {
                                                 // on Single Press
@@ -492,8 +490,8 @@ public class RobotContainer {
 
                                 @Override
                                 public void run() {
-                                        if (driverPOVRecency != null && driverPOVRecency + 0.25 > Timer
-                                                        .getFPGATimestamp()) {
+                                        if (driverPOVRecency != null && 
+                                                driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
                                                 // on Double Press
                                         } else {
                                                 // on Single Press
@@ -510,8 +508,8 @@ public class RobotContainer {
 
                                 @Override
                                 public void run() {
-                                        if (driverPOVRecency != null && driverPOVRecency + 0.25 > Timer
-                                                        .getFPGATimestamp()) {
+                                        if (driverPOVRecency != null && 
+                                                driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
                                                 // on Double Press
                                         } else {
                                                 // on Single Press
