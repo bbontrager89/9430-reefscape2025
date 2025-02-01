@@ -10,7 +10,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LightControlSubSystem extends SubsystemBase {
 
-  public enum LightStatus{OFF, SOLIDLIGHT, FASTFLICKER, FLICKER, SLOWFLICKER}
+  public enum LightStatus {
+    OFF,
+    SOLIDLIGHT,
+    FASTFLICKER,
+    FLICKER,
+    SLOWFLICKER
+  }
+
   private double requestedStopTime;
   private boolean isFlickerTimerOn;
   private boolean isLightOn;
@@ -23,75 +30,75 @@ public class LightControlSubSystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("light", isLightOn);
-    
-switch (lightStatus) {
-  case OFF :
-  setOff();
-  break;
-  
-  case SOLIDLIGHT :
-  setOn();
-  break;
 
-  case FASTFLICKER :
-  if (isLightOn) {
-    setOff();
-  } else {
-    setOn();
-  }
-  break;
-  case FLICKER :
-  if (isLightOn == true && isFlickerTimerOn == false) {
-    isFlickerTimerOn = true;
-    new Thread(() ->  {
-      try{
-        Timer.delay(0.125);
-      } catch (Exception e){
-        e.printStackTrace();
-      }
-    }); 
-    isFlickerTimerOn = false;
-    setOff();
-  } else if (isLightOn == false && isFlickerTimerOn == false) {
-    isFlickerTimerOn = true;
-    new Thread(() ->  {
-      try{
-        Timer.delay(0.125);
-      } catch (Exception e){
-        e.printStackTrace();
-      }
-    });
-    isFlickerTimerOn = false;
-    setOn();    
-  }
-  break;
+    switch (lightStatus) {
+      case OFF:
+        setOff();
+        break;
 
-  case SLOWFLICKER :
-  if (isLightOn == true && isFlickerTimerOn == false) {
-    isFlickerTimerOn = true;
-    new Thread(() ->  {
-      try{
-        Timer.delay(0.25);
-      } catch (Exception e){
-        e.printStackTrace();
-      }
-    }); 
-    isFlickerTimerOn = false;
-    setOff();
-  } else if (isLightOn == false && isFlickerTimerOn == false) {
-    isFlickerTimerOn = true;
-    new Thread(() ->  {
-      try{
-        Timer.delay(0.25);
-      } catch (Exception e){
-        e.printStackTrace();
-      }
-    });
-    isFlickerTimerOn = false;
-    setOn();    
-  }
-  break;
-}
+      case SOLIDLIGHT:
+        setOn();
+        break;
+
+      case FASTFLICKER:
+        if (isLightOn) {
+          setOff();
+        } else {
+          setOn();
+        }
+        break;
+      case FLICKER:
+        if (isLightOn == true && isFlickerTimerOn == false) {
+          isFlickerTimerOn = true;
+          new Thread(() -> {
+            try {
+              Timer.delay(0.25);
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
+          });
+          isFlickerTimerOn = false;
+          setOff();
+        } else if (isLightOn == false && isFlickerTimerOn == false) {
+          isFlickerTimerOn = true;
+          new Thread(() -> {
+            try {
+              Timer.delay(0.25);
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
+          });
+          isFlickerTimerOn = false;
+          setOn();
+        }
+        break;
+
+      case SLOWFLICKER:
+        if (isLightOn == true && isFlickerTimerOn == false) {
+          isFlickerTimerOn = true;
+          new Thread(() -> {
+            try {
+              Timer.delay(0.5);
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
+          });
+          isFlickerTimerOn = false;
+          setOff();
+        } else if (isLightOn == false && isFlickerTimerOn == false) {
+          isFlickerTimerOn = true;
+          new Thread(() -> {
+            try {
+              Timer.delay(0.5);
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
+          });
+          isFlickerTimerOn = false;
+          setOn();
+        }
+        break;
+    }
   }
 
   public void setOff() {
@@ -106,45 +113,49 @@ switch (lightStatus) {
 
   public void turnOnFor(double timeOn) {
     lightStatus = LightStatus.SOLIDLIGHT;
-    new Thread(() ->  {
-      try{
+    new Thread(() -> {
+      try {
         Timer.delay(timeOn);
-      } catch (Exception e){
+      } catch (Exception e) {
         e.printStackTrace();
       }
-    }); lightStatus = LightStatus.OFF;
+    });
+    lightStatus = LightStatus.OFF;
   }
 
   public void fastFlickerFor(double timeOn) {
     lightStatus = LightStatus.FASTFLICKER;
-    new Thread(() ->  {
-      try{
+    new Thread(() -> {
+      try {
         Timer.delay(timeOn);
-      } catch (Exception e){
+      } catch (Exception e) {
         e.printStackTrace();
       }
-    }); lightStatus = LightStatus.OFF;
+    });
+    lightStatus = LightStatus.OFF;
   }
 
   public void flickerFor(double timeOn) {
     lightStatus = LightStatus.FLICKER;
-    new Thread(() ->  {
-      try{
+    new Thread(() -> {
+      try {
         Timer.delay(timeOn);
-      } catch (Exception e){
+      } catch (Exception e) {
         e.printStackTrace();
       }
-    }); lightStatus = LightStatus.OFF;
+    });
+    lightStatus = LightStatus.OFF;
   }
 
   public void slowFlickerFor(double timeOn) {
     lightStatus = LightStatus.SLOWFLICKER;
-    new Thread(() ->  {
-      try{
+    new Thread(() -> {
+      try {
         Timer.delay(timeOn);
-      } catch (Exception e){
+      } catch (Exception e) {
         e.printStackTrace();
       }
-    }); lightStatus = LightStatus.OFF;
+    });
+    lightStatus = LightStatus.OFF;
   }
 }
