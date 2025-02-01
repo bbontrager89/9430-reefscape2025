@@ -4,25 +4,35 @@
 
 package frc.utils;
 
-/** Add your docs here. */
+/** Util for Xbox controllers */
 public class ControllerUtils {
-   public enum POV {
-    Up(0),
-    UpRight(45),
-    Right(90),
-    DownRight(135),
-    Down(180),
-    DownLeft(210),
-    Left(270),
-    UpLeft(315),
-    None(-1);
+    /**Represents the D-pad on an Xbox controller */
+    public enum POV {
+        /** Up button */
+        Up(0),
+        /** Up-Right button */
+        UpRight(45),
+        /** Right button */
+        Right(90),
+        /** Down-Right button */
+        DownRight(135),
+        /** Down button */
+        Down(180),
+        /** Down-Left button */
+        DownLeft(210),
+        /** Left button */
+        Left(270),
+        /** Up-Left button */
+        UpLeft(315),
+        /** No button pressed */
+        None(-1);
 
-    public final int value;
+        /** The angle of the button */
+        public final int value;
 
-    POV(int value) {
+        POV(int value) {
             this.value = value;
+        }
     }
-}
- 
-}
 
+}

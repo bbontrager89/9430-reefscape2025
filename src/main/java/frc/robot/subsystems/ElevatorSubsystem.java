@@ -5,22 +5,16 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.ClosedLoopConfig;
-import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
 
@@ -39,63 +33,74 @@ public class ElevatorSubsystem extends SubsystemBase {
   private boolean belowMinHeight = false;
   private double currentSpeed = 0.0;
 
-  private SendableChooser<Command> elevatorCommands;
+  private static SendableChooser<Command> elevatorCommands;
+  
+    /** Creates a new ElevatorSubsystem. */
+    public ElevatorSubsystem() {
+  
+      elevatorMotorConfig.inverted(ElevatorConstants.elevatorMotorInverted);
+  
+      elevatorMotor.configure(elevatorMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+  
+      configureDashboardControls();
+  
+    }
+  
+    public void configureDashboardControls() {
+  
+      elevatorCommands = new SendableChooser<Command>();
+  
+      elevatorCommands.addOption("SP 1", new InstantCommand(new Runnable() {
+        @Override
+        public void run() {
+          moveToScoringPosition(1);
+        }
+      }));
+      elevatorCommands.addOption("SP 2", new InstantCommand(new Runnable() {
+        @Override
+        public void run() {
+          moveToScoringPosition(2);
+        }
+      }));
+      elevatorCommands.addOption("SP 3", new InstantCommand(new Runnable() {
+        @Override
+        public void run() {
+          moveToScoringPosition(3);
+        }
+      }));
+      elevatorCommands.addOption("min", new InstantCommand(new Runnable() {
+        @Override
+        public void run() {
+          moveToScoringPosition(4);
+        }
+      }));
+      elevatorCommands.addOption("max", new InstantCommand(new Runnable() {
+        @Override
+        public void run() {
+          moveToScoringPosition(5);
+        }
+      }));
+      elevatorCommands.addOption("Custom", new InstantCommand(new Runnable() {
+        @Override
+        public void run() {
+          moveToPosition(SmartDashboard.getNumber("Custom Elevator Height", ElevatorConstants.level1ScoringPosition));
+        }
+      }));
+  
+      SmartDashboard.putData("Elevator Height Commands", elevatorCommands);
 
-  /** Creates a new ElevatorSubsystem. */
-  public ElevatorSubsystem() {
+      SmartDashboard.putData("Run Elevator Command", new ScheduleCommand(new InstantCommand(new Runnable() {
+              @Override
+              public void run() {
+                if (elevatorCommands.getSelected() != null)
+                  elevatorCommands.getSelected().schedule();
+              }
+            })));
 
-    elevatorMotorConfig.inverted(ElevatorConstants.elevatorMotorInverted);
+      SmartDashboard.putNumber("Custom Elevator Height", ElevatorConstants.level1ScoringPosition);
+      SmartDashboard.putNumber("Desired Height", 0.0);
 
-    elevatorMotor.configure(elevatorMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-
-    // closedLoopController = elevatorMotor.getClosedLoopController();
-
-    elevatorCommands = new SendableChooser<Command>();
-
-    elevatorCommands.addOption("SP 1", new InstantCommand(new Runnable() {
-      @Override
-      public void run() {
-        moveToScoringPosition(1);
-      }
-    }));
-    elevatorCommands.addOption("SP 2", new InstantCommand(new Runnable() {
-      @Override
-      public void run() {
-        moveToScoringPosition(2);
-      }
-    }));
-    elevatorCommands.addOption("SP 3", new InstantCommand(new Runnable() {
-      @Override
-      public void run() {
-        moveToScoringPosition(3);
-      }
-    }));
-    elevatorCommands.addOption("min", new InstantCommand(new Runnable() {
-      @Override
-      public void run() {
-        moveToScoringPosition(4);
-      }
-    }));
-    elevatorCommands.addOption("max", new InstantCommand(new Runnable() {
-      @Override
-      public void run() {
-        moveToScoringPosition(5);
-      }
-    }));
-    elevatorCommands.addOption("Custom", new InstantCommand(new Runnable() {
-      @Override
-      public void run() {
-        moveToPosition(SmartDashboard.getNumber("Custom Elevator Height", ElevatorConstants.level1ScoringPosition));
-      }
-    }));
-
-    SmartDashboard.putData("Elevator Commands", elevatorCommands);
-    SmartDashboard.putNumber("Custom Elevator Height", ElevatorConstants.level1ScoringPosition);
-
-    SmartDashboard.putBoolean("Run Elevator Command", false);
-    SmartDashboard.putNumber("Desired Height", 0.0);
-
-  }
+    }
 
   public void setMotorSpeed(double speed) {
     currentSpeed = speed;
@@ -153,7 +158,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     stopMotor();
   }
 
-  public double getElevatorHeight() {
+  public double getHeight() {
     return absoluteEncoder.getPosition();
   }
 
@@ -166,7 +171,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
      
     // Lower soft limit check
-    if (absoluteEncoder.getPosition() > ElevatorConstants.maximumElevatorHeight) {
+    if (getHeight() > ElevatorConstants.maximumElevatorHeight) {
       if (currentSpeed < 0) {
         stopMotor();
       }
@@ -179,7 +184,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     // Upper soft limit check
-    if (absoluteEncoder.getPosition() < ElevatorConstants.minimumElevatorHeight) {
+    if (getHeight() < ElevatorConstants.minimumElevatorHeight) {
       if (currentSpeed > 0) {
         stopMotor();
       }
@@ -199,7 +204,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     if (autoMode) {
 
       // Calculate error
-      double elevatorError = (desiredHeight - absoluteEncoder.getPosition());
+      double elevatorError = (desiredHeight - getHeight());
 
       // Adjust speed to error
       double autoSpeed = ElevatorConstants.kP * elevatorError;
@@ -216,12 +221,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         setMotorSpeed(autoSpeed);
       }
 
-    }
-
-    // Dashboard Commands
-    if (SmartDashboard.getBoolean("Run Elevator Command", false)) {
-      SmartDashboard.putBoolean("Run Elevator Command", false);
-      elevatorCommands.getSelected().schedule();
     }
 
   }
