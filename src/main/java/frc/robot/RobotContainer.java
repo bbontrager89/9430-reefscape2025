@@ -80,8 +80,24 @@ public class RobotContainer {
 
         /** Represents modes for different controls */
         enum ControlMode {
+                /**
+                 * Retract Algae intake
+                 * Coral Manipulator to upright position
+                 * Elevator to bottom position
+                 */
                 Transit,
+                /**
+                 * Left stick moves elevator up and down
+                 * Right stick moves coral manipulator up and down
+                 * D-Pad right pivots algae intake out
+                 * D-Pad left pivots algae intake in
+                 * RB hold - Algae intake wheels spin out
+                 * LB hold - Algae intake wheels spin in
+                 * RT hold - Coral manipulator wheels intake
+                 * LT hold - Coral manipulator wheels out
+                 */
                 Manual,
+                /** Robot is controlled by commands mapped to button bindings */
                 SemiAuto
         }
 
@@ -534,5 +550,3 @@ public class RobotContainer {
                 return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
         }
 }
-
-
