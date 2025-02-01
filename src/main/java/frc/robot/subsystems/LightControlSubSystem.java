@@ -52,64 +52,70 @@ public class LightControlSubSystem extends SubsystemBase {
       if(requestedStopTime < Timer.getFPGATimestamp())  {
         lightStatus = LightStatus.OFF;
       }
-        if (isLightOn) {
-          setOff();
-        } else {
-          setOn();
-        }
+      if (isLightOn && !isFlickerTimerOn) {
+        //sets how long the light should be on before switching
+        flickerInterval = 0.125 + Timer.getFPGATimestamp();   
+        isFlickerTimerOn = true;
+      } else if (isLightOn && isFlickerTimerOn && flickerInterval < Timer.getFPGATimestamp()){
+        //switches the light state
+        setOff();
+        isFlickerTimerOn = false;
+      }
+      if(!isLightOn && !isFlickerTimerOn){
+        //sets how long the light should be on before switching
+        flickerInterval = 0.125 + Timer.getFPGATimestamp();
+        isFlickerTimerOn = true;
+      } else if(!isLightOn && isFlickerTimerOn && flickerInterval < Timer.getFPGATimestamp()) {
+        setOn();
+        isFlickerTimerOn = false;
+      }
         break;
       case FLICKER:
-      //still working on this
-      /*if(requestedStopTime < Timer.getFPGATimestamp())  {
+      if(requestedStopTime < Timer.getFPGATimestamp())  {
         lightStatus =LightStatus.OFF;
       }
-        if (isLightOn) {
-          flickerInterval = 0.25 + requestedStopTime;   
-        } else {
+        if (isLightOn && !isFlickerTimerOn) {
+          //sets how long the light should be on before switching
+          flickerInterval = 0.25 + Timer.getFPGATimestamp();   
           isFlickerTimerOn = true;
-          new Thread(() -> {
-            try {
-              Timer.delay(0.25);
-              isFlickerTimerOn = false;
-              setOn();
-            } catch (Exception e) {
-              e.printStackTrace();
-            }
-          });
-          
-        }*/
+        } else if (isLightOn && isFlickerTimerOn && flickerInterval < Timer.getFPGATimestamp()){
+          //switches the light state
+          setOff();
+          isFlickerTimerOn = false;
+        }
+        if(!isLightOn && !isFlickerTimerOn){
+         //sets how long the light should be on before switching
+          flickerInterval = 0.25 + Timer.getFPGATimestamp();
+          isFlickerTimerOn = true;
+        } else if(!isLightOn && isFlickerTimerOn && flickerInterval < Timer.getFPGATimestamp()) {
+          //switches the light state
+          setOn();
+          isFlickerTimerOn = false;
+        }
         break;
 
       case SLOWFLICKER:
-      //still working on this
-      /*if(requestedStopTime < Timer.getFPGATimestamp())  {
+      if(requestedStopTime < Timer.getFPGATimestamp())  {
         lightStatus =LightStatus.OFF;
       }
-        if (isLightOn == true && isFlickerTimerOn == false) {
+        if (isLightOn && !isFlickerTimerOn) {
+          //sets how long the light should be on before switching
+          flickerInterval = 0.5 + Timer.getFPGATimestamp();   
           isFlickerTimerOn = true;
-          new Thread(() -> {
-            try {
-              Timer.delay(0.5);
-              isFlickerTimerOn = false;
+        } else if (isLightOn && isFlickerTimerOn && flickerInterval < Timer.getFPGATimestamp()){
+          //switches the light state
           setOff();
-            } catch (Exception e) {
-              e.printStackTrace();
-            }
-          });
-          
-        } else if (isLightOn == false && isFlickerTimerOn == false) {
+          isFlickerTimerOn = false;
+        }
+        if(!isLightOn && !isFlickerTimerOn){
+          //sets how long the light should be on before switching
+          flickerInterval = 0.5 + Timer.getFPGATimestamp();
           isFlickerTimerOn = true;
-          new Thread(() -> {
-            try {
-              Timer.delay(0.5);
-              isFlickerTimerOn = false;
-              setOn();
-            } catch (Exception e) {
-              e.printStackTrace();
-            }
-          });
-          
-        }*/
+        } else if(!isLightOn && isFlickerTimerOn && flickerInterval < Timer.getFPGATimestamp()) {
+          //switches the light state
+          setOn();
+          isFlickerTimerOn = false;
+        }
         break;
     }
   }
@@ -125,30 +131,26 @@ public class LightControlSubSystem extends SubsystemBase {
   }
 
   public void turnOnFor(double timeOn) {
+    //switches the state of the lights and sets a timer
     lightStatus = LightStatus.SOLIDLIGHT;
     requestedStopTime = timeOn + Timer.getFPGATimestamp();    
   }
 
   public void fastFlickerFor(double timeOn) {
+    //switches the state of the lights and sets a timer
     lightStatus = LightStatus.FASTFLICKER;
     requestedStopTime = timeOn + Timer.getFPGATimestamp();
   }
 
   public void flickerFor(double timeOn) {
+    //switches the state of the lights and sets a timer
     lightStatus = LightStatus.FLICKER;
     requestedStopTime = timeOn + Timer.getFPGATimestamp();
   }
 
   public void slowFlickerFor(double timeOn) {
+    //switches the state of the lights and sets a timer
     lightStatus = LightStatus.SLOWFLICKER;
-    new Thread(() -> {
-      try {
-        Timer.delay(timeOn);
-        lightStatus = LightStatus.OFF;
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    });
-    
+    requestedStopTime = timeOn + Timer.getFPGATimestamp();
   }
 }
