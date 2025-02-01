@@ -50,7 +50,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   
       elevatorCommands = new SendableChooser<Command>();
   
-      elevatorCommands.addOption("SP 1", new InstantCommand(new Runnable() {
+      elevatorCommands.setDefaultOption("SP 1", new InstantCommand(new Runnable() {
         @Override
         public void run() {
           moveToScoringPosition(1);
@@ -94,7 +94,7 @@ public class ElevatorSubsystem extends SubsystemBase {
               public void run() {
                 if (elevatorCommands.getSelected() != null)
                   elevatorCommands.getSelected().schedule();
-              }
+                }
             })));
 
       SmartDashboard.putNumber("Custom Elevator Height", ElevatorConstants.level1ScoringPosition);
