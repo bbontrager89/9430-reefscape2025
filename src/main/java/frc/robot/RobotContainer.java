@@ -53,6 +53,8 @@ public class RobotContainer {
         Double operatorPOVRecency = null;
         POV operatorLatestPOVButton = POV.None;
 
+        ControlMode activeMode;
+
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
          */
@@ -76,6 +78,13 @@ public class RobotContainer {
                                                 m_robotDrive));
         }
 
+        /** Represents modes for different controls */
+        enum ControlMode {
+                Transit,
+                Manual,
+                SemiAuto
+        }
+
         /**
          * Use this method to define your button->command mappings. Buttons can be
          * created by
@@ -95,7 +104,12 @@ public class RobotContainer {
 
                 // Right bumper - Coral manipulator wheels intake
                 new JoystickButton(m_operatorController, Button.kRightBumper.value)
-                                .onTrue((new InstantCommand()));
+                                .onTrue((new InstantCommand(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                                activeMode = ControlMode.Transit;
+                                        }
+                                })));
 
                 // Left bumper - Coral manipulator wheels out
                 new JoystickButton(m_operatorController, Button.kLeftBumper.value)
