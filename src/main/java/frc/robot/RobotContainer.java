@@ -81,20 +81,20 @@ public class RobotContainer {
         /** Represents modes for different controls */
         enum ControlMode {
                 /**
-                 * Retract Algae intake
-                 * Coral Manipulator to upright position
-                 * Elevator to bottom position
+                 * <p> Retract Algae intake
+                 * <p> Coral Manipulator to upright position
+                 * <p> Elevator to bottom position
                  */
                 Transit,
                 /**
-                 * Left stick moves elevator up and down
-                 * Right stick moves coral manipulator up and down
-                 * D-Pad right pivots algae intake out
-                 * D-Pad left pivots algae intake in
-                 * RB hold - Algae intake wheels spin out
-                 * LB hold - Algae intake wheels spin in
-                 * RT hold - Coral manipulator wheels intake
-                 * LT hold - Coral manipulator wheels out
+                 * <p> Left stick moves elevator up and down
+                 * <p> Right stick moves coral manipulator up and down
+                 * <p> D-Pad right pivots algae intake out
+                 * <p> D-Pad left pivots algae intake in
+                 * <p> RB hold - Algae intake wheels spin out
+                 * <p> LB hold - Algae intake wheels spin in
+                 * <p> RT hold - Coral manipulator wheels intake
+                 * <p> LT hold - Coral manipulator wheels out
                  */
                 Manual,
                 /** Robot is controlled by commands mapped to button bindings */
