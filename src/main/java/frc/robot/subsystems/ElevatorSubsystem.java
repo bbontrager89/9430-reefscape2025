@@ -99,9 +99,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
       SmartDashboard.putNumber("Custom Elevator Height", ElevatorConstants.level1ScoringPosition);
       SmartDashboard.putNumber("Desired Height", 0.0);
-  
-      
-  
+
     }
 
   public void setMotorSpeed(double speed) {
@@ -160,7 +158,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     stopMotor();
   }
 
-  public double getElevatorHeight() {
+  public double getHeight() {
     return absoluteEncoder.getPosition();
   }
 
@@ -173,7 +171,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
      
     // Lower soft limit check
-    if (absoluteEncoder.getPosition() > ElevatorConstants.maximumElevatorHeight) {
+    if (getHeight() > ElevatorConstants.maximumElevatorHeight) {
       if (currentSpeed < 0) {
         stopMotor();
       }
@@ -186,7 +184,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     // Upper soft limit check
-    if (absoluteEncoder.getPosition() < ElevatorConstants.minimumElevatorHeight) {
+    if (getHeight() < ElevatorConstants.minimumElevatorHeight) {
       if (currentSpeed > 0) {
         stopMotor();
       }
@@ -206,7 +204,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     if (autoMode) {
 
       // Calculate error
-      double elevatorError = (desiredHeight - absoluteEncoder.getPosition());
+      double elevatorError = (desiredHeight - getHeight());
 
       // Adjust speed to error
       double autoSpeed = ElevatorConstants.kP * elevatorError;
