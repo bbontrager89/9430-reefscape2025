@@ -35,19 +35,21 @@ public class LightControlSubSystem extends SubsystemBase {
   private LightStatus lightStatus;
   private AddressableLED lights = new AddressableLED(Constants.LightConstants.PWMPort);
   private AddressableLEDBuffer lightBuffer = new AddressableLEDBuffer(Constants.LightConstants.lightLength);
+  LEDPattern solidPattern;
   
 
   /** Creates a new LightControlSubSystem. */
   public LightControlSubSystem() {
     lights.setLength(lightBuffer.getLength());
-    LEDPattern solidPattern = LEDPattern.solid(Color.kWhite);
-    solidPattern.applyTo(lightBuffer);
-    lights.setData(lightBuffer);
+    
+    
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("light", isLightOn);
+    solidPattern.applyTo(lightBuffer);
+    lights.setData(lightBuffer);
 
     switch (lightStatus) {
       case OFF:
@@ -223,47 +225,67 @@ public class LightControlSubSystem extends SubsystemBase {
     lightStatus = LightStatus.OFF;
   }
 
-  public void turnOnFor(double timeOn) {
+  public void turnOnFor(double timeOn, Color color) {
     //switches the state of the lights and sets a timer
     lightStatus = LightStatus.TIMEDSOLIDLIGHT;
     requestedStopTime = timeOn + Timer.getFPGATimestamp();    
+    solidPattern = LEDPattern.solid(color);
   }
 
-  public void turnOn() {
+  public void turnOn(Color color) {
     //switches the state of the lights
     lightStatus = LightStatus.SOLIDLIGHT;
+    solidPattern = LEDPattern.solid(color);
   }
 
-  public void fastFlickerFor(double timeOn) {
+  public void fastFlickerFor(double timeOn, Color color) {
     //switches the state of the lights and sets a timer
     lightStatus = LightStatus.TIMEDFASTFLICKER;
     requestedStopTime = timeOn + Timer.getFPGATimestamp();
+    solidPattern = LEDPattern.solid(color);
   }
 
-  public void fastFlicker() {
+  public void fastFlicker(Color color) {
     //switches the state of the lights
     lightStatus = LightStatus.FASTFLICKER;
+    solidPattern = LEDPattern.solid(color);
   }
 
-  public void flickerFor(double timeOn) {
+  public void flickerFor(double timeOn, Color color) {
     //switches the state of the lights and sets a timer
     lightStatus = LightStatus.TIMEDFLICKER;
     requestedStopTime = timeOn + Timer.getFPGATimestamp();
+    solidPattern = LEDPattern.solid(color);
   }
 
-  public void flicker() {
+  public void flicker(Color color) {
     //switches the state of the lights
     lightStatus = LightStatus.FLICKER;
+    solidPattern = LEDPattern.solid(color);
   }
 
-  public void slowFlickerFor(double timeOn) {
+  public void slowFlickerFor(double timeOn, Color color) {
     //switches the state of the lights and sets a timer
     lightStatus = LightStatus.TIMEDSLOWFLICKER;
     requestedStopTime = timeOn + Timer.getFPGATimestamp();
+    solidPattern = LEDPattern.solid(color);
   }
 
-  public void slowFlicker() {
+  public void slowFlicker(Color color) {
    //switches the state of the lights
     lightStatus = LightStatus.SLOWFLICKER;
+    solidPattern = LEDPattern.solid(color);
+  }
+
+  public void stateSet(Color color, LightStatus state, double timeOn) {
+    
+    requestedStopTime = timeOn + Timer.getFPGATimestamp();
+    
+    solidPattern = LEDPattern.solid(color);
+    lightStatus = state;
+  }
+  public void stateSet(Color color, LightStatus state) {
+    solidPattern = LEDPattern.solid(color);
+    lightStatus = state;
   }
 }
