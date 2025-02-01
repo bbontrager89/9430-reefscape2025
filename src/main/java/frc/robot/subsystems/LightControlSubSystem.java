@@ -12,7 +12,7 @@ public class LightControlSubSystem extends SubsystemBase {
 
   public enum LightStatus{OFF, SOLIDLIGHT, FASTFLICKER, FLICKER, SLOWFLICKER}
   private double requestedStopTime;
-  private boolean isFlickerModeOn;
+  private boolean isFlickerTimerOn;
   private boolean isLightOn;
   private LightStatus lightStatus = LightStatus.OFF;
 
@@ -22,7 +22,6 @@ public class LightControlSubSystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    //SmartDashboard.putBoolean("flickerMode", isFlickerModeOn);
     SmartDashboard.putBoolean("light", isLightOn);
     
 switch (lightStatus) {
@@ -42,11 +41,51 @@ switch (lightStatus) {
   }
   break;
   case FLICKER :
-  //add logic here
+  if (isLightOn == true && isFlickerTimerOn == false) {
+    isFlickerTimerOn = true;
+    new Thread(() ->  {
+      try{
+        Timer.delay(0.125);
+      } catch (Exception e){
+      }
+    }); 
+    isFlickerTimerOn = false;
+    setOff();
+  } else if (isLightOn == false && isFlickerTimerOn == false) {
+    isFlickerTimerOn = true;
+    new Thread(() ->  {
+      try{
+        Timer.delay(0.125);
+      } catch (Exception e){
+      }
+    });
+    isFlickerTimerOn = false;
+    setOn();    
+  }
   break;
 
   case SLOWFLICKER :
-  //add logic here
+  if (isLightOn == true && isFlickerTimerOn == false) {
+    isFlickerTimerOn = true;
+    new Thread(() ->  {
+      try{
+        Timer.delay(0.25);
+      } catch (Exception e){
+      }
+    }); 
+    isFlickerTimerOn = false;
+    setOff();
+  } else if (isLightOn == false && isFlickerTimerOn == false) {
+    isFlickerTimerOn = true;
+    new Thread(() ->  {
+      try{
+        Timer.delay(0.25);
+      } catch (Exception e){
+      }
+    });
+    isFlickerTimerOn = false;
+    setOn();    
+  }
   break;
 }
   }
