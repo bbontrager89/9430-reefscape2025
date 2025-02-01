@@ -53,7 +53,7 @@ public class RobotContainer {
         Double operatorPOVRecency = null;
         POV operatorLatestPOVButton = POV.None;
 
-        ControlMode activeMode;
+        ControlMode activeMode = ControlMode.Manual;
 
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
