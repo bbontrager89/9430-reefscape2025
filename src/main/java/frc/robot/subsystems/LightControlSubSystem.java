@@ -53,23 +53,25 @@ public class LightControlSubSystem extends SubsystemBase {
           new Thread(() -> {
             try {
               Timer.delay(0.25);
+              isFlickerTimerOn = false;
+              setOff();
             } catch (Exception e) {
               e.printStackTrace();
             }
           });
-          isFlickerTimerOn = false;
-          setOff();
+          
         } else if (isLightOn == false && isFlickerTimerOn == false) {
           isFlickerTimerOn = true;
           new Thread(() -> {
             try {
               Timer.delay(0.25);
+              isFlickerTimerOn = false;
+              setOn();
             } catch (Exception e) {
               e.printStackTrace();
             }
           });
-          isFlickerTimerOn = false;
-          setOn();
+          
         }
         break;
 
@@ -79,23 +81,25 @@ public class LightControlSubSystem extends SubsystemBase {
           new Thread(() -> {
             try {
               Timer.delay(0.5);
+              isFlickerTimerOn = false;
+          setOff();
             } catch (Exception e) {
               e.printStackTrace();
             }
           });
-          isFlickerTimerOn = false;
-          setOff();
+          
         } else if (isLightOn == false && isFlickerTimerOn == false) {
           isFlickerTimerOn = true;
           new Thread(() -> {
             try {
               Timer.delay(0.5);
+              isFlickerTimerOn = false;
+              setOn();
             } catch (Exception e) {
               e.printStackTrace();
             }
           });
-          isFlickerTimerOn = false;
-          setOn();
+          
         }
         break;
     }
@@ -116,11 +120,12 @@ public class LightControlSubSystem extends SubsystemBase {
     new Thread(() -> {
       try {
         Timer.delay(timeOn);
+        lightStatus = LightStatus.OFF;
       } catch (Exception e) {
         e.printStackTrace();
       }
     });
-    lightStatus = LightStatus.OFF;
+    
   }
 
   public void fastFlickerFor(double timeOn) {
@@ -128,11 +133,12 @@ public class LightControlSubSystem extends SubsystemBase {
     new Thread(() -> {
       try {
         Timer.delay(timeOn);
+        lightStatus = LightStatus.OFF;
       } catch (Exception e) {
         e.printStackTrace();
       }
     });
-    lightStatus = LightStatus.OFF;
+    
   }
 
   public void flickerFor(double timeOn) {
@@ -140,11 +146,12 @@ public class LightControlSubSystem extends SubsystemBase {
     new Thread(() -> {
       try {
         Timer.delay(timeOn);
+        lightStatus = LightStatus.OFF;
       } catch (Exception e) {
         e.printStackTrace();
       }
     });
-    lightStatus = LightStatus.OFF;
+    
   }
 
   public void slowFlickerFor(double timeOn) {
@@ -152,10 +159,11 @@ public class LightControlSubSystem extends SubsystemBase {
     new Thread(() -> {
       try {
         Timer.delay(timeOn);
+        lightStatus = LightStatus.OFF;
       } catch (Exception e) {
         e.printStackTrace();
       }
     });
-    lightStatus = LightStatus.OFF;
+    
   }
 }
