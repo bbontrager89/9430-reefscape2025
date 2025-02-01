@@ -111,13 +111,17 @@ public class RobotContainer {
         }
 
         /**
-         * Use this method to define your button->command mappings. Buttons can be
-         * created by
-         * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its
-         * subclasses ({@link
-         * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling
-         * passing it to a
-         * {@link JoystickButton}.
+         * ~~Use this method to define your button->command mappings. Buttons can be
+         * created by instantiating a {@link edu.wpi.first.wpilibj.GenericHID} 
+         * or one of its subclasses ({@link edu.wpi.first.wpilibj.Joystick} or 
+         * {@link XboxController}), and then calling passing it to a
+         * {@link JoystickButton}.~~
+         * 
+         * <p>
+         * Binds Commands to Xbox controller buttons using 
+         * {@link CommandXboxController} methods
+         * <p>
+         * This method should only be run once by the contructer
          */
         private void configureButtonBindings() {
 
