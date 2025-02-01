@@ -28,8 +28,6 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
   private double intakeOnTimestamp = Double.NEGATIVE_INFINITY;
 
-
-
   /** Creates a new CoralManipulatorSubsystem. */
   public CoralManipulatorSubsystem() {
   }
@@ -69,7 +67,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    double intakeMotorUptime = Timer.getFPGATimestamp() - intakeOnTimestamp; 
+    double intakeMotorUptime = Timer.getFPGATimestamp() - intakeOnTimestamp;
 
     // Log Data
     SmartDashboard.putBoolean("Intake Motor Active", isIntakeMotorOn);
@@ -77,7 +75,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Intake Motor Position", getIntakeMotorPosition());
 
     // Check if motor is stuck to prevent over straining it
-    if (isIntakeMotorOn && doAutoCurrentLimit && 
+    if (isIntakeMotorOn && doAutoCurrentLimit &&
         intakeMotorUptime > CoralManipulatorConstants.currentSpikeCheckDelay) {
       if (intakeMotor.getOutputCurrent() > CoralManipulatorConstants.autoStopCurrent) {
         stopIntakeMotor();
@@ -90,7 +88,6 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
         stopIntakeMotor();
       }
     }
-
 
   }
 }
