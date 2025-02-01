@@ -150,7 +150,12 @@ public class RobotContainer {
 
                 // Right trigger -
                 c_operatorController.rightTrigger(OIConstants.kTriggerThreshold)
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand(new Runnable() {
+                                @Override
+                                public void run() {
+                                        coralManipulatorSubsystem.runIntakeFor(1, 2);
+                                }
+                        }));
 
                 // Left bumper - Coral manipulator wheels out
                 c_operatorController.leftBumper()
