@@ -4,9 +4,15 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.util.Color;
+
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class LightControlSubSystem extends SubsystemBase {
 
@@ -27,9 +33,16 @@ public class LightControlSubSystem extends SubsystemBase {
   private double flickerInterval;
   private boolean isLightOn;
   private LightStatus lightStatus;
+  private AddressableLED lights = new AddressableLED(Constants.LightConstants.PWMPort);
+  private AddressableLEDBuffer lightBuffer = new AddressableLEDBuffer(Constants.LightConstants.lightLength);
+  
 
   /** Creates a new LightControlSubSystem. */
   public LightControlSubSystem() {
+    lights.setLength(lightBuffer.getLength());
+    LEDPattern solidPattern = LEDPattern.solid(Color.kWhite);
+    solidPattern.applyTo(lightBuffer);
+    lights.setData(lightBuffer);
   }
 
   @Override
@@ -195,11 +208,13 @@ public class LightControlSubSystem extends SubsystemBase {
 
   public void setOff() {
     // Turns off lights
+    lights.stop();
     isLightOn = false;
   }
 
   public void setOn() {
     // turns on lights
+    lights.start();
     isLightOn = true;
   }
 
