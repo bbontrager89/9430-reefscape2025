@@ -150,11 +150,12 @@ public final class Constants {
   }
 
   public static final class CoralManipulatorConstants {
-    //TODO Assign CAN ids
+    // TODO: Assign CAN ids
     public static final int PivotMotorCanId = 42;
     public static final int IntakeMotorCanId = 41;
 
-    public static final double autoStopTolerance = 0.005;
+    // TODO: Determine current spike
+    public static final double autoStopCurrent = 35;
   }
 
 }

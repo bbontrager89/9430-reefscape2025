@@ -18,7 +18,6 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   private SparkMax intakeMotor = new SparkMax(CoralManipulatorConstants.IntakeMotorCanId, MotorType.kBrushless);
   private RelativeEncoder intakePosEncoder = intakeMotor.getEncoder();
 
-  private double lastKnownPosition;
   private boolean autoStop = false;
 
   private boolean isIntakeMotorOn;
@@ -70,16 +69,9 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     // Check if motor is stuck to prevent over straining it
     if (isIntakeMotorOn && autoStop) {
 
-      // Change in motor position
-      double dm = getIntakeMotorPosition() - lastKnownPosition;
-
-      if (Math.abs(dm) < CoralManipulatorConstants.autoStopTolerance) {
+      if (intakeMotor.getOutputCurrent() > CoralManipulatorConstants.autoStopCurrent) {
 
         stopIntakeMotor();
-
-      } else {
-
-        lastKnownPosition = getIntakeMotorPosition();
 
       }
 
