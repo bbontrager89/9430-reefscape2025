@@ -347,7 +347,7 @@ public class RobotContainer {
                 c_driverController.rightBumper()
                         .onTrue((new InstantCommand()));
 
-                // Right Trigger -
+                // Right trigger -
                 c_driverController.rightTrigger(0.5)
                         .onTrue((new InstantCommand()));
 
@@ -355,7 +355,7 @@ public class RobotContainer {
                 c_driverController.leftBumper()
                         .onTrue((new InstantCommand()));
 
-                // Left Trigger -
+                // Left trigger -
                 c_driverController.leftTrigger(0.5)
                         .onTrue((new InstantCommand()));
 
