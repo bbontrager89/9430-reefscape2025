@@ -4,7 +4,7 @@
 
 package frc.utils;
 
-/** Util for Xbox controller */
+/** Util for Xbox controllers */
 public class ControllerUtils {
     /**Represents the D-pad on an Xbox controller */
     public enum POV {
