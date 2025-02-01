@@ -4,13 +4,6 @@
 
 package frc.robot;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
-import com.revrobotics.spark.config.ClosedLoopConfig;
-import com.revrobotics.spark.config.SoftLimitConfig;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
