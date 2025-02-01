@@ -119,13 +119,17 @@ public class RobotContainer {
         }
 
         /**
-         * Use this method to define your button->command mappings. Buttons can be
-         * created by
-         * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its
-         * subclasses ({@link
-         * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling
-         * passing it to a
-         * {@link JoystickButton}.
+         * ~~Use this method to define your button->command mappings. Buttons can be
+         * created by instantiating a {@link edu.wpi.first.wpilibj.GenericHID} 
+         * or one of its subclasses ({@link edu.wpi.first.wpilibj.Joystick} or 
+         * {@link XboxController}), and then calling passing it to a
+         * {@link JoystickButton}.~~
+         * 
+         * <p>
+         * Binds Commands to Xbox controller buttons using 
+         * {@link CommandXboxController} methods
+         * <p>
+         * This method should only be run once by the contructer
          */
         private void configureButtonBindings() {
 
@@ -137,52 +141,52 @@ public class RobotContainer {
 
                 // Right bumper - Manual mode: Coral manipulator wheels intake
                 c_operatorController.rightBumper()
-                        .onTrue((new InstantCommand(new Runnable() {
+                        .onTrue(new InstantCommand(new Runnable() {
                                 @Override
                                 public void run() {
                                         activeMode = ControlMode.Transit;
                                 }
-                        })));
+                        }));
 
                 // Right trigger -
-                c_operatorController.rightTrigger(0.5)
+                c_operatorController.rightTrigger(OIConstants.kTriggerThreshold)
                         .onTrue(new InstantCommand());
 
                 // Left bumper - Coral manipulator wheels out
                 c_operatorController.leftBumper()
-                        .onTrue((new InstantCommand()));
+                        .onTrue(new InstantCommand());
 
                 // Left trigger -
-                c_operatorController.leftTrigger(0.5)
+                c_operatorController.leftTrigger(OIConstants.kTriggerThreshold)
                         .onTrue(new InstantCommand());
 
                 // Y button - Toggle Coral Mode
                 c_operatorController.y()
-                        .onTrue((new InstantCommand()));
+                        .onTrue(new InstantCommand());
 
                 // X button - Algae Reef Clear Mode
                 c_operatorController.x()
-                        .onTrue((new InstantCommand()));
+                        .onTrue(new InstantCommand());
 
                 // B button - Algae intake mode
                 c_operatorController.b()
-                        .onTrue((new InstantCommand()));
+                        .onTrue(new InstantCommand());
 
                 // A button - Algae intake mode
                 c_operatorController.a()
-                        .onTrue((new InstantCommand()));
+                        .onTrue(new InstantCommand());
 
                 // Right Stick button - Transit mode
                 c_operatorController.rightStick()
-                        .onTrue((new InstantCommand()));
+                        .onTrue(new InstantCommand());
 
                 // Left Stick button -
                 c_operatorController.leftStick()
-                        .onTrue((new InstantCommand()));
+                        .onTrue(new InstantCommand());
 
                 // Dpad Up button -
                 c_operatorController.povUp()
-                        .onTrue((new InstantCommand(new Runnable() {
+                        .onTrue(new InstantCommand(new Runnable() {
 
                                 @Override
                                 public void run() {
@@ -197,11 +201,11 @@ public class RobotContainer {
                                         operatorPOVRecency = Timer.getFPGATimestamp();
                                         operatorLatestPOVButton = POV.Up;
                                 }
-                        })));
+                        }));
 
                 // Dpad Up-Right button -
                 c_operatorController.povUpRight()
-                        .onTrue((new InstantCommand(new Runnable() {
+                        .onTrue(new InstantCommand(new Runnable() {
 
                                 @Override
                                 public void run() {
@@ -215,11 +219,11 @@ public class RobotContainer {
                                         operatorPOVRecency = Timer.getFPGATimestamp();
                                         operatorLatestPOVButton = POV.UpRight;
                                 }
-                        })));
+                        }));
 
                 // Dpad Right button -
                 c_operatorController.povRight()
-                        .onTrue((new InstantCommand(new Runnable() {
+                        .onTrue(new InstantCommand(new Runnable() {
 
                                 @Override
                                 public void run() {
@@ -235,11 +239,11 @@ public class RobotContainer {
                                         operatorPOVRecency = Timer.getFPGATimestamp();
                                         operatorLatestPOVButton = POV.Right;
                                 }
-                        })));
+                        }));
 
                 // Dpad Down-Right button -
                 c_operatorController.povDownRight()
-                        .onTrue((new InstantCommand(new Runnable() {
+                        .onTrue(new InstantCommand(new Runnable() {
 
                                 @Override
                                 public void run() {
@@ -253,11 +257,11 @@ public class RobotContainer {
                                         operatorPOVRecency = Timer.getFPGATimestamp();
                                         operatorLatestPOVButton = POV.DownRight;
                                 }
-                        })));
+                        }));
 
                 // Dpad Down button -
                 c_operatorController.povDown()
-                        .onTrue((new InstantCommand(new Runnable() {
+                        .onTrue(new InstantCommand(new Runnable() {
 
                                 @Override
                                 public void run() {
@@ -271,11 +275,11 @@ public class RobotContainer {
                                         operatorPOVRecency = Timer.getFPGATimestamp();
                                         operatorLatestPOVButton = POV.Down;
                                 }
-                        })));
+                        }));
 
                 // Dpad Down-Left button -
                 c_operatorController.povDownLeft()
-                        .onTrue((new InstantCommand(new Runnable() {
+                        .onTrue(new InstantCommand(new Runnable() {
 
                                 @Override
                                 public void run() {
@@ -289,11 +293,11 @@ public class RobotContainer {
                                         operatorPOVRecency = Timer.getFPGATimestamp();
                                         operatorLatestPOVButton = POV.DownLeft;
                                 }
-                        })));
+                        }));
 
                 // Dpad Left button -
                 c_operatorController.povLeft()
-                        .onTrue((new InstantCommand(new Runnable() {
+                        .onTrue(new InstantCommand(new Runnable() {
 
                                 @Override
                                 public void run() {
@@ -309,11 +313,11 @@ public class RobotContainer {
                                         operatorPOVRecency = Timer.getFPGATimestamp();
                                         operatorLatestPOVButton = POV.Left;
                                 }
-                        })));
+                        }));
 
                 // Dpad Up-Left button -
                 c_operatorController.povUpLeft()
-                        .onTrue((new InstantCommand(new Runnable() {
+                        .onTrue(new InstantCommand(new Runnable() {
 
                                 @Override
                                 public void run() {
@@ -327,15 +331,15 @@ public class RobotContainer {
                                         operatorPOVRecency = Timer.getFPGATimestamp();
                                         operatorLatestPOVButton = POV.UpLeft;
                                 }
-                        })));
+                        }));
 
                 // Start Button button - Manual mode on 2 second hold
                 c_operatorController.start()
-                        .onTrue((new InstantCommand()));
+                        .onTrue(new InstantCommand());
 
                 // Back Button button - Cancel all actions?
                 c_operatorController.back()
-                        .onTrue((new InstantCommand()));
+                        .onTrue(new InstantCommand());
 
                 /* * * * * * * * * * * * *\
                  *                       *
@@ -345,47 +349,47 @@ public class RobotContainer {
 
                 // Right bumper -
                 c_driverController.rightBumper()
-                        .onTrue((new InstantCommand()));
+                        .onTrue(new InstantCommand());
 
                 // Right trigger -
-                c_driverController.rightTrigger(0.5)
-                        .onTrue((new InstantCommand()));
+                c_driverController.rightTrigger(OIConstants.kTriggerThreshold)
+                        .onTrue(new InstantCommand());
 
                 // Left bumper -
                 c_driverController.leftBumper()
-                        .onTrue((new InstantCommand()));
+                        .onTrue(new InstantCommand());
 
                 // Left trigger -
-                c_driverController.leftTrigger(0.5)
-                        .onTrue((new InstantCommand()));
+                c_driverController.leftTrigger(OIConstants.kTriggerThreshold)
+                        .onTrue(new InstantCommand());
 
                 // Y button -
                 c_driverController.y()
-                        .onTrue((new InstantCommand()));
+                        .onTrue(new InstantCommand());
 
                 // X button -
                 c_driverController.x()
-                        .onTrue((new InstantCommand()));
+                        .onTrue(new InstantCommand());
 
                 // B button -
                 c_driverController.b()
-                        .onTrue((new InstantCommand()));
+                        .onTrue(new InstantCommand());
 
                 // A button -
                 c_driverController.a()
-                        .onTrue((new InstantCommand()));
+                        .onTrue(new InstantCommand());
 
                 // Right Stick button -
                 c_driverController.rightStick()
-                        .onTrue((new InstantCommand()));
+                        .onTrue(new InstantCommand());
 
                 // Left Stick button -
                 c_driverController.leftStick()
-                        .onTrue((new InstantCommand()));
+                        .onTrue(new InstantCommand());
 
                 // Dpad Up button -
                 c_driverController.povUp()
-                        .onTrue((new InstantCommand(new Runnable() {
+                        .onTrue(new InstantCommand(new Runnable() {
 
                                 @Override
                                 public void run() {
@@ -399,11 +403,11 @@ public class RobotContainer {
                                         driverPOVRecency = Timer.getFPGATimestamp();
                                         driverLatestPOVButton = POV.Up;
                                 }
-                        })));
+                        }));
 
                 // Dpad Up-Right button -
                 c_driverController.povUpRight()
-                        .onTrue((new InstantCommand(new Runnable() {
+                        .onTrue(new InstantCommand(new Runnable() {
 
                                 @Override
                                 public void run() {
@@ -417,11 +421,11 @@ public class RobotContainer {
                                         driverPOVRecency = Timer.getFPGATimestamp();
                                         driverLatestPOVButton = POV.UpRight;
                                 }
-                        })));
+                        }));
 
                 // Dpad Right button -
                 c_driverController.povRight()
-                        .onTrue((new InstantCommand(new Runnable() {
+                        .onTrue(new InstantCommand(new Runnable() {
 
                                 @Override
                                 public void run() {
@@ -435,11 +439,11 @@ public class RobotContainer {
                                         driverPOVRecency = Timer.getFPGATimestamp();
                                         driverLatestPOVButton = POV.Right;
                                 }
-                        })));
+                        }));
 
                 // Dpad Down-Right button -
                 c_driverController.povDownRight()
-                        .onTrue((new InstantCommand(new Runnable() {
+                        .onTrue(new InstantCommand(new Runnable() {
 
                                 @Override
                                 public void run() {
@@ -453,11 +457,11 @@ public class RobotContainer {
                                         driverPOVRecency = Timer.getFPGATimestamp();
                                         driverLatestPOVButton = POV.DownRight;
                                 }
-                        })));
+                        }));
 
                 // Dpad Down button -
                 c_driverController.povDown()
-                        .onTrue((new InstantCommand(new Runnable() {
+                        .onTrue(new InstantCommand(new Runnable() {
 
                                 @Override
                                 public void run() {
@@ -471,11 +475,11 @@ public class RobotContainer {
                                         driverPOVRecency = Timer.getFPGATimestamp();
                                         driverLatestPOVButton = POV.Down;
                                 }
-                        })));
+                        }));
 
                 // Dpad Down-Left button -
                 c_driverController.povDownLeft()
-                        .onTrue((new InstantCommand(new Runnable() {
+                        .onTrue(new InstantCommand(new Runnable() {
 
                                 @Override
                                 public void run() {
@@ -489,11 +493,11 @@ public class RobotContainer {
                                         driverPOVRecency = Timer.getFPGATimestamp();
                                         driverLatestPOVButton = POV.DownLeft;
                                 }
-                        })));
+                        }));
 
                 // Dpad Left button -
                 c_driverController.povLeft()
-                        .onTrue((new InstantCommand(new Runnable() {
+                        .onTrue(new InstantCommand(new Runnable() {
 
                                 @Override
                                 public void run() {
@@ -507,11 +511,11 @@ public class RobotContainer {
                                         driverPOVRecency = Timer.getFPGATimestamp();
                                         driverLatestPOVButton = POV.Left;
                                 }
-                        })));
+                        }));
 
                 // Dpad Up-Left button -
                 c_driverController.povUpLeft()
-                        .onTrue((new InstantCommand(new Runnable() {
+                        .onTrue(new InstantCommand(new Runnable() {
 
                                 @Override
                                 public void run() {
@@ -525,15 +529,15 @@ public class RobotContainer {
                                         driverPOVRecency = Timer.getFPGATimestamp();
                                         driverLatestPOVButton = POV.UpLeft;
                                 }
-                        })));
+                        }));
 
                 // Start Button button -
                 c_driverController.start()
-                        .onTrue((new InstantCommand()));
+                        .onTrue(new InstantCommand());
 
                 // Back Button button -
                 c_driverController.back()
-                        .onTrue((new InstantCommand()));
+                        .onTrue(new InstantCommand());
 
         }
 
