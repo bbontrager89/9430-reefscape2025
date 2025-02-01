@@ -44,11 +44,9 @@ public class RobotContainer {
         private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
         // The driver's controller
-        XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
         CommandXboxController c_driverController = new CommandXboxController(OIConstants.kOperatorControllerPort);
 
         // The operator's controller
-        XboxController m_operatorController = new XboxController(OIConstants.kOperatorControllerPort);
         CommandXboxController c_operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
 
         Double driverPOVRecency = null;
@@ -74,11 +72,11 @@ public class RobotContainer {
                                 // Turning is controlled by the X axis of the right stick.
                                 new RunCommand(
                                                 () -> m_robotDrive.drive(
-                                                                -MathUtil.applyDeadband(m_driverController.getLeftY(),
+                                                                -MathUtil.applyDeadband(c_driverController.getLeftY(),
                                                                                 OIConstants.kDriveDeadband),
-                                                                -MathUtil.applyDeadband(m_driverController.getLeftX(),
+                                                                -MathUtil.applyDeadband(c_driverController.getLeftX(),
                                                                                 OIConstants.kDriveDeadband),
-                                                                -MathUtil.applyDeadband(m_driverController.getRightX(),
+                                                                -MathUtil.applyDeadband(c_driverController.getRightX(),
                                                                                 OIConstants.kDriveDeadband),
                                                                 true),
                                                 m_robotDrive));
