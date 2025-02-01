@@ -21,7 +21,9 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
   private boolean doAutoCurrentLimit = false;
   private boolean autoIntake = false;
-  private Double autoStopTime = null;
+  private double autoStopTime = Double.POSITIVE_INFINITY;
+
+  private double intakeSpeed = 0.0;
 
   private boolean isIntakeMotorOn;
   private boolean isPivotMotorOn;
@@ -40,6 +42,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   public void setIntakeMotorSpeed(double speed) {
     intakeMotor.set(speed);
     isIntakeMotorOn = true;
+    intakeSpeed = speed;
     intakeOnTimestamp = Timer.getFPGATimestamp();
   }
 
@@ -52,6 +55,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     intakeMotor.stopMotor();
 
     intakeOnTimestamp = 0.0;
+    intakeSpeed = 0.0;
     isIntakeMotorOn = false;
     autoIntake = false;
   }
@@ -77,6 +81,8 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Intake Motor Position", getIntakeMotorPosition());
     SmartDashboard.putNumber("Intake Motor Uptime", intakeMotorUptime);
     SmartDashboard.putNumber("Intake Motor Stop Time", autoStopTime);
+    SmartDashboard.putNumber("Intake Motor Timestamp", intakeOnTimestamp);
+    SmartDashboard.putNumber("Intake Motor Speed", intakeSpeed);
 
     // Check if motor is stuck to prevent over straining it
     if (isIntakeMotorOn && doAutoCurrentLimit &&
@@ -87,7 +93,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     }
 
     // Turn off motor after time has passed
-    if (autoIntake && autoStopTime != null) {
+    if (autoIntake) {
       if (Timer.getFPGATimestamp() > autoStopTime) {
         stopIntakeMotor();
       }
