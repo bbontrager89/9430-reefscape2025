@@ -51,6 +51,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   public void stopIntakeMotor() {
     intakeMotor.stopMotor();
 
+    intakeOnTimestamp = 0.0;
     isIntakeMotorOn = false;
     autoIntake = false;
   }
@@ -67,7 +68,8 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    double intakeMotorUptime = Timer.getFPGATimestamp() - intakeOnTimestamp;
+
+    double intakeMotorUptime = (isIntakeMotorOn) ? Timer.getFPGATimestamp() - intakeOnTimestamp : 0.0;
 
     // Log Data
     SmartDashboard.putBoolean("Intake Motor Active", isIntakeMotorOn);
