@@ -20,13 +20,15 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   private RelativeEncoder intakePosEncoder = intakeMotor.getEncoder();
 
   private boolean doAutoCurrentLimit = false;
-  private boolean autoIntake = false;
   private double autoStopTime = Double.POSITIVE_INFINITY;
+  private double slowingFactor = 0.02;
 
   private double intakeSpeed = 0.0;
 
   private boolean isIntakeMotorOn;
   private boolean isPivotMotorOn;
+
+  private CoralManipulatorState intakeState = CoralManipulatorState.Stopped;
 
   private double intakeOnTimestamp = Double.NEGATIVE_INFINITY;
 
@@ -34,16 +36,14 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   public CoralManipulatorSubsystem() {
   }
 
-  public void setPivotMotorSpeed(double speed) {
+  @SuppressWarnings("unused")
+  private void setPivotMotorSpeed(double speed) {
     pivotMotor.set(speed);
     isPivotMotorOn = true;
   }
 
-  public void setIntakeMotorSpeed(double speed) {
-    intakeMotor.set(speed);
-    isIntakeMotorOn = true;
-    intakeSpeed = speed;
-    intakeOnTimestamp = Timer.getFPGATimestamp();
+  public void startPivotMotor(double speed) {
+    
   }
 
   public void stopPivotMotor() {
@@ -51,23 +51,47 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     isPivotMotorOn = false;
   }
 
+  
+
+  private void setIntakeMotorSpeed(double speed) {
+    intakeMotor.set(speed);
+    isIntakeMotorOn = true;
+    intakeSpeed = speed;
+  }
+
+  public void startIntakeMotor(double speed) {
+    intakeState = CoralManipulatorState.Active;
+    setIntakeMotorSpeed(speed);
+  }
+
   public void stopIntakeMotor() {
     intakeMotor.stopMotor();
+    intakeState = CoralManipulatorState.Stopped;
 
     intakeOnTimestamp = 0.0;
     intakeSpeed = 0.0;
     isIntakeMotorOn = false;
-    autoIntake = false;
+  }
+
+  public void slowIntakeMotor() {
+    intakeState = CoralManipulatorState.Slowing;
+    slowingFactor = 0.1;
+  }
+
+  public void slowIntakeMotor(double time) {
+    intakeState = CoralManipulatorState.Slowing;
+    slowingFactor = (50.0 / time) / 500.0;
   }
 
   public double getIntakeMotorPosition() {
     return intakePosEncoder.getPosition();
   }
 
-  public void runIntakeFor(double speed, double time) {
+  public void startIntakeMotor(double speed, double time) {
     autoStopTime = time + Timer.getFPGATimestamp();
     setIntakeMotorSpeed(speed);
-    autoIntake = true;
+    intakeState = CoralManipulatorState.Auto;
+    intakeOnTimestamp = Timer.getFPGATimestamp();
   }
 
   @Override
@@ -93,11 +117,26 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     }
 
     // Turn off motor after time has passed
-    if (autoIntake) {
+    if (intakeState == CoralManipulatorState.Auto) {
       if (Timer.getFPGATimestamp() > autoStopTime) {
-        stopIntakeMotor();
+        slowIntakeMotor(1);
       }
     }
 
+    if (intakeState == CoralManipulatorState.Slowing) {
+      double preSpeed = intakeSpeed;
+      setIntakeMotorSpeed(intakeSpeed - ((intakeSpeed > 0)? 1 : -1) * slowingFactor); // Slow motor as it approches stopping
+      if (Math.abs(intakeSpeed) < 0.05 || (preSpeed > 0)? intakeSpeed < 0 : intakeSpeed > 0) {
+        stopIntakeMotor();
+      }
+    }
   }
+  
+  public enum CoralManipulatorState {
+      Active,
+      Auto,
+      Slowing,
+      Stopped
+  } 
 }
+
