@@ -190,7 +190,17 @@ public class RobotContainer {
 
                 // B button - Algae intake mode
                 c_operatorController.b()
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand(new Runnable() {
+                                @Override
+                                public void run() {
+                                        coralManipulatorSubsystem.startIntakeMotor(-1);
+                                }
+                        })).onFalse(new InstantCommand(new Runnable() {
+                                @Override
+                                public void run() {
+                                        coralManipulatorSubsystem.slowIntakeMotor(0.3);
+                                }
+                        }));
 
                 // A button - Algae intake mode
                 c_operatorController.a()
@@ -202,7 +212,7 @@ public class RobotContainer {
                         })).onFalse(new InstantCommand(new Runnable() {
                                 @Override
                                 public void run() {
-                                        coralManipulatorSubsystem.slowIntakeMotor(0.5);
+                                        coralManipulatorSubsystem.slowIntakeMotor(0.3);
                                 }
                         }));
 
