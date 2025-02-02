@@ -21,7 +21,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
   private boolean doAutoCurrentLimit = false;
   private double autoStopTime = Double.POSITIVE_INFINITY;
-  private double slowingFactor = 0.02;
+  private double slowingFactor = 0.1;
 
   private double intakeSpeed = 0.0;
 
@@ -51,19 +51,85 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     isPivotMotorOn = false;
   }
 
-  
 
+  /** 
+   * Private method to set the motor speed. 
+   * Accessed by methods inside the subsystem.
+   * 
+   * @param speed the speed to set the motor
+   */
   private void setIntakeMotorSpeed(double speed) {
     intakeMotor.set(speed);
-    isIntakeMotorOn = true;
+    
     intakeSpeed = speed;
+
+    if (!isIntakeMotorOn) {
+      intakeOnTimestamp = Timer.getFPGATimestamp();
+      isIntakeMotorOn = true;
+    }
   }
 
+  /** 
+   * Public method to set the motor speed. 
+   * Also sets the state of the motor to Active
+   * 
+   * @param speed the speed to set the motor
+   */
   public void startIntakeMotor(double speed) {
     intakeState = CoralManipulatorState.Active;
     setIntakeMotorSpeed(speed);
   }
 
+  /** 
+   * Public method to set the motor speed for a given time. 
+   * Accessed by methods inside the subsystem.
+   * Slows down for 1 second after given time
+   * 
+   * @param speed the initial speed to set the motor
+   * @param time time to stay on for
+   */
+  public void startIntakeMotor(double speed, double time) {
+    autoStopTime = time + Timer.getFPGATimestamp();
+    setIntakeMotorSpeed(speed);
+    intakeState = CoralManipulatorState.Auto;
+  }
+  
+  /** 
+   * Public method to set the motor speed for a given time. 
+   * Accessed by methods inside the subsystem.
+   * Slows down for 1 second after given time
+   * 
+   * @param speed the initial speed to set the motor
+   * @param time time to stay on for
+   * @param slowTime time to slow down for after the run time
+   */
+  public void startIntakeMotor(double speed, double time, double slowTime) {
+    autoStopTime = time + Timer.getFPGATimestamp();
+    setIntakeMotorSpeed(speed);
+    intakeState = CoralManipulatorState.Auto;
+  }
+
+  /**
+   * Slows the motor to zero over a 1 second interval
+   */
+  public void slowIntakeMotor() {
+    slowIntakeMotor(1);
+  }
+
+  /**
+   * Slows the motor to zero over a time interval
+   * 
+   * @param time time before motor stops
+   */
+  public void slowIntakeMotor(double time) {
+    intakeState = CoralManipulatorState.Slowing;
+    slowingFactor = (intakeSpeed / (50 * time));
+  }
+
+  /** 
+   * Stops the intake motor immediatly.
+   * Sets the intake state to stopped
+   */
   public void stopIntakeMotor() {
     intakeMotor.stopMotor();
     intakeState = CoralManipulatorState.Stopped;
@@ -73,25 +139,12 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     isIntakeMotorOn = false;
   }
 
-  public void slowIntakeMotor() {
-    intakeState = CoralManipulatorState.Slowing;
-    slowingFactor = 0.1;
-  }
-
-  public void slowIntakeMotor(double time) {
-    intakeState = CoralManipulatorState.Slowing;
-    slowingFactor = (50.0 / time) / 500.0;
-  }
-
+  /**
+   * Returns the relative position of the inake motor
+   * @return double representing the relative position
+   */
   public double getIntakeMotorPosition() {
     return intakePosEncoder.getPosition();
-  }
-
-  public void startIntakeMotor(double speed, double time) {
-    autoStopTime = time + Timer.getFPGATimestamp();
-    setIntakeMotorSpeed(speed);
-    intakeState = CoralManipulatorState.Auto;
-    intakeOnTimestamp = Timer.getFPGATimestamp();
   }
 
   @Override
@@ -109,7 +162,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Intake Motor Speed", intakeSpeed);
 
     // Check if motor is stuck to prevent over straining it
-    if (isIntakeMotorOn && doAutoCurrentLimit &&
+    if (intakeState == CoralManipulatorState.Auto && doAutoCurrentLimit &&
         intakeMotorUptime > CoralManipulatorConstants.currentSpikeCheckDelay) {
       if (intakeMotor.getOutputCurrent() > CoralManipulatorConstants.autoStopCurrent) {
         stopIntakeMotor();
@@ -125,7 +178,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
     if (intakeState == CoralManipulatorState.Slowing) {
       double preSpeed = intakeSpeed;
-      setIntakeMotorSpeed(intakeSpeed - ((intakeSpeed > 0)? 1 : -1) * slowingFactor); // Slow motor as it approches stopping
+      setIntakeMotorSpeed(intakeSpeed - slowingFactor); // Slow motor as it approches stopping
       if (Math.abs(intakeSpeed) < 0.05 || (preSpeed > 0)? intakeSpeed < 0 : intakeSpeed > 0) {
         stopIntakeMotor();
       }
