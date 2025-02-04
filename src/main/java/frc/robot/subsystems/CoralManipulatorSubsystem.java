@@ -80,7 +80,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     
     intakeSpeed = speed;
 
-    if (!isIntakeMotorOn) {
+    if (intakeState == CoralManipulatorState.Stopped) {
       intakeOnTimestamp = Timer.getFPGATimestamp();
       isIntakeMotorOn = true;
     }
@@ -140,8 +140,8 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
    * @param time time in seconds before motor stops
    */
   public void slowIntakeMotor(double time) {
-    intakeState = CoralManipulatorState.Slowing;
     slowingFactor = (intakeSpeed / (50 * time));
+    intakeState = CoralManipulatorState.Slowing;
   }
 
   /** 
