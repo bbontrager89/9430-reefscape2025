@@ -65,7 +65,7 @@ public class AlignCommand extends Command {
         detectedCameraIndex = poseEstimatorSubsystem.getLastDetectionCameraIndex();
         System.out.println("[DETECT_CAMERA] Tag " + lastTagId + " seen by cameraIndex=" + detectedCameraIndex);
 
-        if (detectedCameraIndex == 1) {
+        if (detectedCameraIndex == 0) {
           currentState = AlignState.ALIGN;
         } else if (detectedCameraIndex == 0 || detectedCameraIndex == 2) {
           currentState = AlignState.ROTATE;
@@ -79,7 +79,7 @@ public class AlignCommand extends Command {
 
         int currCam = poseEstimatorSubsystem.getLastDetectionCameraIndex();
         int currId = poseEstimatorSubsystem.getLastDetectedTagId();
-        if (currCam == 1 && desiredTagIds.contains(currId)) {
+        if (currCam == 0 && desiredTagIds.contains(currId)) {
           driveSubsystem.drive(0, 0, 0, false);
           currentState = AlignState.ALIGN;
         }
