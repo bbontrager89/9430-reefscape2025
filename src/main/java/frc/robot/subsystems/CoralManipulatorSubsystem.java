@@ -45,6 +45,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
    */
   private void setPivotMotorSpeed(double speed) {
     pivotMotor.set(speed);
+    pivotSpeed = speed;
     isPivotMotorOn = true;
   }
 
@@ -62,6 +63,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
    */
   public void stopPivotMotor() {
     pivotMotor.stopMotor();
+    pivotSpeed = 0.0;
     isPivotMotorOn = false;
   }
 
@@ -133,7 +135,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   /**
    * Slows the motor to zero over a time interval
    * 
-   * @param time time before motor stops
+   * @param time time in seconds before motor stops
    */
   public void slowIntakeMotor(double time) {
     intakeState = CoralManipulatorState.Slowing;
