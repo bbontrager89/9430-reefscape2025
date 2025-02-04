@@ -22,6 +22,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   private boolean doAutoCurrentLimit = false;
   private double autoStopTime = Double.POSITIVE_INFINITY;
   private double slowingFactor = 0.1;
+  private double slowTime;
 
   private double intakeSpeed = 0.0;
   private double pivotSpeed = 0.0;
@@ -119,8 +120,9 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
    * @param time time to stay on for
    * @param slowTime time to slow down for after the run time
    */
-  public void startIntakeMotor(double speed, double time, double slowTime) {
+  public void startIntakeMotor(double speed, double time, double slowingTime) {
     autoStopTime = time + Timer.getFPGATimestamp();
+    slowTime = slowingTime;
     setIntakeMotorSpeed(speed);
     intakeState = CoralManipulatorState.Auto;
   }
@@ -188,7 +190,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     // Turn off motor after time has passed
     if (intakeState == CoralManipulatorState.Auto) {
       if (Timer.getFPGATimestamp() > autoStopTime) {
-        slowIntakeMotor(1);
+        slowIntakeMotor(slowTime);
       }
     }
 
@@ -201,7 +203,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     }
   }
   
-  public enum CoralManipulatorState {
+  private enum CoralManipulatorState {
       Active,
       Auto,
       Slowing,
