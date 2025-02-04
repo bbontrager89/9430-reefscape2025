@@ -24,9 +24,10 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   private double slowingFactor = 0.1;
 
   private double intakeSpeed = 0.0;
+  private double pivotSpeed = 0.0;
 
-  private boolean isIntakeMotorOn;
-  private boolean isPivotMotorOn;
+  private boolean isIntakeMotorOn = false;
+  private boolean isPivotMotorOn = false;
 
   private CoralManipulatorState intakeState = CoralManipulatorState.Stopped;
 
@@ -36,16 +37,29 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   public CoralManipulatorSubsystem() {
   }
 
-  @SuppressWarnings("unused")
+  /** 
+   * Private method to set the pivot motor speed. 
+   * Accessed by methods inside the subsystem.
+   * 
+   * @param speed the speed to set the motor
+   */
   private void setPivotMotorSpeed(double speed) {
     pivotMotor.set(speed);
     isPivotMotorOn = true;
   }
 
+  /** 
+   * Public method to set the pivot motor speed. 
+   * 
+   * @param speed the speed to set the motor
+   */
   public void startPivotMotor(double speed) {
-    
+    setPivotMotorSpeed(speed);
   }
 
+  /** 
+   * Stops the pivot motor immediatly.
+   */
   public void stopPivotMotor() {
     pivotMotor.stopMotor();
     isPivotMotorOn = false;
@@ -53,7 +67,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
 
   /** 
-   * Private method to set the motor speed. 
+   * Private method to set the intake motor speed. 
    * Accessed by methods inside the subsystem.
    * 
    * @param speed the speed to set the motor
@@ -70,7 +84,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   }
 
   /** 
-   * Public method to set the motor speed. 
+   * Public method to set the intake motor speed. 
    * Also sets the state of the motor to Active
    * 
    * @param speed the speed to set the motor
