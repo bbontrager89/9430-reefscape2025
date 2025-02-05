@@ -25,8 +25,6 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   private double slowTime;
 
   private double intakeSpeed = 0.0;
-  private double pivotSpeed = 0.0;
-
   private boolean isIntakeMotorOn = false;
   private boolean isPivotMotorOn = false;
 
@@ -46,7 +44,6 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
    */
   private void setPivotMotorSpeed(double speed) {
     pivotMotor.set(speed);
-    pivotSpeed = speed;
     isPivotMotorOn = true;
   }
 
@@ -64,7 +61,6 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
    */
   public void stopPivotMotor() {
     pivotMotor.stopMotor();
-    pivotSpeed = 0.0;
     isPivotMotorOn = false;
   }
 
@@ -165,6 +161,14 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     return pivotEncoder.getPosition();
   }
 
+  /**
+   * Returns the position of the pivot motor
+   * @return double representing the position
+   */
+  public double getPivotVelocity() {
+    return pivotEncoder.getVelocity();
+  }
+
   @Override
   public void periodic() {
 
@@ -174,10 +178,17 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Intake Motor Active", isIntakeMotorOn);
     SmartDashboard.putBoolean("Pivot Motor Active", isPivotMotorOn);
     SmartDashboard.putNumber("Pivot Motor Position", getPivotMotorPosition());
+    SmartDashboard.putNumber("Pivot Motor Speed", getPivotVelocity());
     SmartDashboard.putNumber("Intake Motor Uptime", intakeMotorUptime);
     SmartDashboard.putNumber("Intake Motor Stop Time", autoStopTime);
     SmartDashboard.putNumber("Intake Motor Timestamp", intakeOnTimestamp);
     SmartDashboard.putNumber("Intake Motor Speed", intakeSpeed);
+
+    // Temp always false
+    if (false)
+    if (getPivotMotorPosition() > CoralManipulatorConstants.maximumPivotPosition || getPivotMotorPosition() < CoralManipulatorConstants.minimumPivotPosition) {
+      stopPivotMotor();
+    }
 
     // Check if motor is stuck to prevent over straining it
     if (intakeState == CoralManipulatorState.Auto && doAutoCurrentLimit &&
