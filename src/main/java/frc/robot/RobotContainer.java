@@ -188,7 +188,18 @@ public class RobotContainer {
 
                 // Y button - Toggle Coral Mode
                 c_operatorController.y()
-                        .onTrue(new InstantCommand());
+                        .whileTrue(new InstantCommand(new Runnable() {
+                                @Override
+                                public void run() {
+                                        if (c_operatorController.getLeftY() > 0.1)
+                                                elevatorSubsystem.setMotorSpeed(-c_operatorController.getLeftY());
+                                }
+                        })).onFalse(new InstantCommand(new Runnable() {
+                                @Override
+                                public void run() {
+                                        elevatorSubsystem.setMotorSpeed(0);
+                                }
+                        }));
 
                 // X button - Algae Reef Clear Mode
                 c_operatorController.x()
