@@ -193,6 +193,8 @@ public class RobotContainer {
                                 public void run() {
                                         if (c_operatorController.getLeftY() > 0.1)
                                                 elevatorSubsystem.setMotorSpeed(-c_operatorController.getLeftY());
+                                        else 
+                                                elevatorSubsystem.setMotorSpeed(0);
                                 }
                         })).onFalse(new InstantCommand(new Runnable() {
                                 @Override
