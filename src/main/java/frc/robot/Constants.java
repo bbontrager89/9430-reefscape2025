@@ -151,6 +151,10 @@ public final class Constants {
     // TODO: Determine current spike
     public static final double autoStopCurrent = 35;
     public static final double currentSpikeCheckDelay = 0.25; // Seconds
+
+    // TODO: Determine limits
+    public static final double maximumPivotPosition = 0.0;
+    public static final double minimumPivotPosition = 0.0;
   }
 
 }
