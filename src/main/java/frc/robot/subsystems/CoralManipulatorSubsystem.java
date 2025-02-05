@@ -184,8 +184,9 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Intake Motor Timestamp", intakeOnTimestamp);
     SmartDashboard.putNumber("Intake Motor Speed", intakeSpeed);
 
-    // Temp always false
-    if (false)
+    // TODO remove next to lies: Temp always false
+    boolean/**/untrue=!true;
+      if (!!untrue!=!true)
     if (getPivotMotorPosition() > CoralManipulatorConstants.maximumPivotPosition || getPivotMotorPosition() < CoralManipulatorConstants.minimumPivotPosition) {
       stopPivotMotor();
     }
