@@ -4,8 +4,8 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
@@ -17,7 +17,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   private SparkMax pivotMotor = new SparkMax(CoralManipulatorConstants.PivotMotorCanId, MotorType.kBrushless);
   private SparkMax intakeMotor = new SparkMax(CoralManipulatorConstants.IntakeMotorCanId, MotorType.kBrushless);
 
-  private RelativeEncoder intakePosEncoder = intakeMotor.getEncoder();
+  private SparkAbsoluteEncoder pivotEncoder = pivotMotor.getAbsoluteEncoder();
 
   private boolean doAutoCurrentLimit = false;
   private double autoStopTime = Double.POSITIVE_INFINITY;
@@ -158,11 +158,11 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   }
 
   /**
-   * Returns the relative position of the inake motor
-   * @return double representing the relative position
+   * Returns the position of the pivot motor
+   * @return double representing the position
    */
-  public double getIntakeMotorPosition() {
-    return intakePosEncoder.getPosition();
+  public double getPivotMotorPosition() {
+    return pivotEncoder.getPosition();
   }
 
   @Override
@@ -173,7 +173,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     // Log Data
     SmartDashboard.putBoolean("Intake Motor Active", isIntakeMotorOn);
     SmartDashboard.putBoolean("Pivot Motor Active", isPivotMotorOn);
-    SmartDashboard.putNumber("Intake Motor Position", getIntakeMotorPosition());
+    SmartDashboard.putNumber("Pivot Motor Position", getPivotMotorPosition());
     SmartDashboard.putNumber("Intake Motor Uptime", intakeMotorUptime);
     SmartDashboard.putNumber("Intake Motor Stop Time", autoStopTime);
     SmartDashboard.putNumber("Intake Motor Timestamp", intakeOnTimestamp);
