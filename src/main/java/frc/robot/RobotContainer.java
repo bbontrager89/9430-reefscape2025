@@ -144,7 +144,7 @@ public class RobotContainer {
                         .onTrue(new InstantCommand(new Runnable() {
                                 @Override
                                 public void run() {
-                                        activeMode = ControlMode.Transit;
+                                        coralManipulatorSubsystem.startPivotMotor(0.1);
                                 }
                         }));
 
@@ -164,7 +164,12 @@ public class RobotContainer {
 
                 // Left bumper - Coral manipulator wheels out
                 c_operatorController.leftBumper()
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand(new Runnable() {
+                                @Override
+                                public void run() {
+                                        coralManipulatorSubsystem.startPivotMotor(-0.1);
+                                }
+                        }));
 
                 // Left trigger -
                 c_operatorController.leftTrigger(OIConstants.kTriggerThreshold)
