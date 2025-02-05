@@ -45,12 +45,14 @@ public class RobotContainer {
 
         private CoralManipulatorSubsystem coralManipulatorSubsystem = new CoralManipulatorSubsystem();
 
+
         // The driver's controller
         CommandXboxController c_driverController = new CommandXboxController(OIConstants.kOperatorControllerPort);
 
         // The operator's controller
         CommandXboxController c_operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
 
+        // POV button utilities
         Double driverPOVRecency = null;
         POV driverLatestPOVButton = POV.None;
 
@@ -58,7 +60,6 @@ public class RobotContainer {
         POV operatorLatestPOVButton = POV.None;
 
         ControlMode activeMode = ControlMode.Manual;
-        double intakeMotorSpeed = 0.3;
 
 
         /**

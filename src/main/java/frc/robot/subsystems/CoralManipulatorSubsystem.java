@@ -22,7 +22,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   private boolean doAutoCurrentLimit = false;
   private double autoStopTime = Double.POSITIVE_INFINITY;
   private double slowingFactor = 0.1;
-  private double slowTime;
+  private double slowTime = 0.0;
 
   private double intakeSpeed = 0.0;
   private boolean isIntakeMotorOn = false;
