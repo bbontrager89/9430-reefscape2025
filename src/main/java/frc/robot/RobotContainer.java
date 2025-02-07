@@ -143,65 +143,44 @@ public class RobotContainer {
 
                 // Right bumper - Manual mode: Coral manipulator wheels intake
                 c_operatorController.rightBumper()
-                        .onTrue(new InstantCommand(new Runnable() {
-                                @Override
-                                public void run() {
-                                        coralManipulatorSubsystem.startPivotMotor(0.1);
-                                }
+                        .onTrue(new InstantCommand(() -> {
+                                coralManipulatorSubsystem.startPivotMotor(0.1);
                         }));
 
                 // Right trigger -
                 c_operatorController.rightTrigger(OIConstants.kTriggerThreshold)
-                        .whileTrue(new InstantCommand(new Runnable() {
-                                @Override
-                                public void run() {
-                                        coralManipulatorSubsystem.startIntakeMotor(c_operatorController.getRightTriggerAxis());
-                                }
-                        })).onFalse(new InstantCommand(new Runnable() {
-                                @Override
-                                public void run() {
-                                        coralManipulatorSubsystem.slowIntakeMotor(0.3);
-                                }
+                        .whileTrue(new InstantCommand(() -> {
+                                coralManipulatorSubsystem.startIntakeMotor(c_operatorController.getRightTriggerAxis());
+
+                        })).onFalse(new InstantCommand(() -> {
+                                coralManipulatorSubsystem.slowIntakeMotor(0.3);
                         }));
 
                 // Left bumper - Coral manipulator wheels out
                 c_operatorController.leftBumper()
-                        .onTrue(new InstantCommand(new Runnable() {
-                                @Override
-                                public void run() {
-                                        coralManipulatorSubsystem.startPivotMotor(-0.1);
-                                }
+                        .onTrue(new InstantCommand(() -> {
+                                coralManipulatorSubsystem.startPivotMotor(-0.1);
                         }));
 
                 // Left trigger -
                 c_operatorController.leftTrigger(OIConstants.kTriggerThreshold)
-                        .whileTrue(new InstantCommand(new Runnable() {
-                                @Override
-                                public void run() {
-                                        coralManipulatorSubsystem.startIntakeMotor(c_operatorController.getLeftTriggerAxis());
-                                }
-                        })).onFalse(new InstantCommand(new Runnable() {
-                                @Override
-                                public void run() {
-                                        coralManipulatorSubsystem.slowIntakeMotor(0.3);
-                                }
+                        .whileTrue(new InstantCommand(() -> {
+                                coralManipulatorSubsystem.startIntakeMotor(c_operatorController.getLeftTriggerAxis());
+
+                        })).onFalse(new InstantCommand(() -> {
+                                coralManipulatorSubsystem.slowIntakeMotor(0.3);
                         }));
 
                 // Y button - Toggle Coral Mode
                 c_operatorController.y()
-                        .whileTrue(new InstantCommand(new Runnable() {
-                                @Override
-                                public void run() {
-                                        if (c_operatorController.getLeftY() > 0.1)
-                                                elevatorSubsystem.setMotorSpeed(-c_operatorController.getLeftY());
-                                        else 
-                                                elevatorSubsystem.setMotorSpeed(0);
-                                }
-                        })).onFalse(new InstantCommand(new Runnable() {
-                                @Override
-                                public void run() {
+                        .whileTrue(new InstantCommand(() -> {
+                                if (c_operatorController.getLeftY() > 0.1)
+                                        elevatorSubsystem.setMotorSpeed(-c_operatorController.getLeftY());
+                                else 
                                         elevatorSubsystem.setMotorSpeed(0);
-                                }
+
+                        })).onFalse(new InstantCommand(() -> {
+                                elevatorSubsystem.setMotorSpeed(0);
                         }));
 
                 // X button - Algae Reef Clear Mode
@@ -210,30 +189,20 @@ public class RobotContainer {
 
                 // B button - Algae intake mode
                 c_operatorController.b()
-                        .onTrue(new InstantCommand(new Runnable() {
-                                @Override
-                                public void run() {
-                                        coralManipulatorSubsystem.startIntakeMotor(-1);
-                                }
-                        })).onFalse(new InstantCommand(new Runnable() {
-                                @Override
-                                public void run() {
-                                        coralManipulatorSubsystem.slowIntakeMotor(0.3);
-                                }
+                        .onTrue(new InstantCommand(() -> {
+                                coralManipulatorSubsystem.startIntakeMotor(-1);
+
+                        })).onFalse(new InstantCommand(() -> {
+                                coralManipulatorSubsystem.slowIntakeMotor(0.3);
                         }));
 
                 // A button - Algae intake mode
                 c_operatorController.a()
-                        .onTrue(new InstantCommand(new Runnable() {
-                                @Override
-                                public void run() {
-                                        coralManipulatorSubsystem.startIntakeMotor(1);
-                                }
-                        })).onFalse(new InstantCommand(new Runnable() {
-                                @Override
-                                public void run() {
-                                        coralManipulatorSubsystem.slowIntakeMotor(0.3);
-                                }
+                        .onTrue(new InstantCommand(() -> {
+                                coralManipulatorSubsystem.startIntakeMotor(1);
+
+                        })).onFalse(new InstantCommand(() -> {
+                                coralManipulatorSubsystem.slowIntakeMotor(0.3);
                         }));
 
                 // Right Stick button - Transit mode
