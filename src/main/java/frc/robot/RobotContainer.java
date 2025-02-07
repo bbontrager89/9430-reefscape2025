@@ -168,11 +168,8 @@ public class RobotContainer {
 
                 // Right Stick button - Transit mode
                 c_operatorController.rightStick()
-                        .onTrue(new InstantCommand(new Runnable() {
-                                @Override
-                                public void run() {
-                                      activeMode = ControlMode.Transit;
-                                }
+                        .onTrue(new InstantCommand(() ->  {
+                                activeMode = ControlMode.Transit;
                         }));
 
                 // Left Stick button -
@@ -181,174 +178,135 @@ public class RobotContainer {
 
                 // Dpad Up button -
                 c_operatorController.povUp()
-                        .onTrue(new InstantCommand(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                        if (operatorPOVRecency != null && 
-                                                operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
-                                                // on Double Press -
-                                                // Coral mode: intake from Coral station
-                                        } else {
-                                                // on Single Press
-                                        }
-
-                                        operatorPOVRecency = Timer.getFPGATimestamp();
-                                        operatorLatestPOVButton = POV.Up;
+                        .onTrue(new InstantCommand(() -> {
+                                if (operatorPOVRecency != null && 
+                                        operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        // on Double Press -
+                                        // Coral mode: intake from Coral station
+                                } else {
+                                        // on Single Press
                                 }
+
+                                operatorPOVRecency = Timer.getFPGATimestamp();
+                                operatorLatestPOVButton = POV.Up;
                         }));
 
                 // Dpad Up-Right button -
                 c_operatorController.povUpRight()
-                        .onTrue(new InstantCommand(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                        if (operatorPOVRecency != null && 
-                                                operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
-                                                // on Double Press
-                                        } else {
-                                                // on Single Press
-                                        }
-
-                                        operatorPOVRecency = Timer.getFPGATimestamp();
-                                        operatorLatestPOVButton = POV.UpRight;
+                        .onTrue(new InstantCommand(() -> {
+                                if (operatorPOVRecency != null && 
+                                        operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        // on Double Press
+                                } else {
+                                        // on Single Press
                                 }
+
+                                operatorPOVRecency = Timer.getFPGATimestamp();
+                                operatorLatestPOVButton = POV.UpRight;
                         }));
 
                 // Dpad Right button -
                 c_operatorController.povRight()
-                        .onTrue(new InstantCommand(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                        if (operatorPOVRecency != null && 
-                                                operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
-                                                // on Double Press -
-                                                // Coral mode: after down press: score L2 right
-                                                // Coral mode: after up press: score L3 right
-                                        } else {
-                                                // on Single Press
-                                        }
-
-                                        operatorPOVRecency = Timer.getFPGATimestamp();
-                                        operatorLatestPOVButton = POV.Right;
+                        .onTrue(new InstantCommand(() -> {
+                                if (operatorPOVRecency != null && 
+                                        operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        // on Double Press -
+                                        // Coral mode: after down press: score L2 right
+                                        // Coral mode: after up press: score L3 right
+                                } else {
+                                        // on Single Press
                                 }
+
+                                operatorPOVRecency = Timer.getFPGATimestamp();
+                                operatorLatestPOVButton = POV.Right;
                         }));
 
                 // Dpad Down-Right button -
                 c_operatorController.povDownRight()
-                        .onTrue(new InstantCommand(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                        if (operatorPOVRecency != null && 
-                                                operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
-                                                // on Double Press
-                                        } else {
-                                                // on Single Press
-                                        }
-
-                                        operatorPOVRecency = Timer.getFPGATimestamp();
-                                        operatorLatestPOVButton = POV.DownRight;
+                        .onTrue(new InstantCommand(() -> {
+                                if (operatorPOVRecency != null && 
+                                        operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        // on Double Press
+                                } else {
+                                        // on Single Press
                                 }
+
+                                operatorPOVRecency = Timer.getFPGATimestamp();
+                                operatorLatestPOVButton = POV.DownRight;
                         }));
 
                 // Dpad Down button -
                 c_operatorController.povDown()
-                        .onTrue(new InstantCommand(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                        if (operatorPOVRecency != null && 
-                                                operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
-                                                // on Double Press - Coral mode: after down press: score L1
-                                        } else {
-                                                // on Single Press
-                                        }
-
-                                        operatorPOVRecency = Timer.getFPGATimestamp();
-                                        operatorLatestPOVButton = POV.Down;
+                        .onTrue(new InstantCommand(() -> {
+                                if (operatorPOVRecency != null && 
+                                        operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        // on Double Press - Coral mode: after down press: score L1
+                                } else {
+                                        // on Single Press
                                 }
+
+                                operatorPOVRecency = Timer.getFPGATimestamp();
+                                operatorLatestPOVButton = POV.Down;
                         }));
 
                 // Dpad Down-Left button -
                 c_operatorController.povDownLeft()
-                        .onTrue(new InstantCommand(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                        if (operatorPOVRecency != null && 
-                                                operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
-                                                // on Double Press
-                                        } else {
-                                                // on Single Press
-                                        }
-
-                                        operatorPOVRecency = Timer.getFPGATimestamp();
-                                        operatorLatestPOVButton = POV.DownLeft;
+                        .onTrue(new InstantCommand(() -> {
+                                if (operatorPOVRecency != null && 
+                                        operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        // on Double Press
+                                } else {
+                                        // on Single Press
                                 }
+
+                                operatorPOVRecency = Timer.getFPGATimestamp();
+                                operatorLatestPOVButton = POV.DownLeft;
                         }));
 
                 // Dpad Left button -
                 c_operatorController.povLeft()
-                        .onTrue(new InstantCommand(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                        if (operatorPOVRecency != null && 
-                                                operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
-                                                // on Double Press -
-                                                // Coral mode: after down press: score L2 left
-                                                // Coral mode: after up press: score L3 left
-                                        } else {
-                                                // on Single Press
-                                        }
-
-                                        operatorPOVRecency = Timer.getFPGATimestamp();
-                                        operatorLatestPOVButton = POV.Left;
+                        .onTrue(new InstantCommand(() -> {
+                                if (operatorPOVRecency != null && 
+                                        operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        // on Double Press -
+                                        // Coral mode: after down press: score L2 left
+                                        // Coral mode: after up press: score L3 left
+                                } else {
+                                        // on Single Press
                                 }
+
+                                operatorPOVRecency = Timer.getFPGATimestamp();
+                                operatorLatestPOVButton = POV.Left;
                         }));
 
                 // Dpad Up-Left button -
                 c_operatorController.povUpLeft()
-                        .onTrue(new InstantCommand(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                        if (operatorPOVRecency != null && 
-                                                operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
-                                                // on Double Press
-                                        } else {
-                                                // on Single Press
-                                        }
-
-                                        operatorPOVRecency = Timer.getFPGATimestamp();
-                                        operatorLatestPOVButton = POV.UpLeft;
+                        .onTrue(new InstantCommand(() -> {
+                                if (operatorPOVRecency != null && 
+                                        operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        // on Double Press
+                                } else {
+                                        // on Single Press
                                 }
+
+                                operatorPOVRecency = Timer.getFPGATimestamp();
+                                operatorLatestPOVButton = POV.UpLeft;
                         }));
 
                 // Start Button button - Manual mode on 2 second hold
                 c_operatorController.start()
-                        .onTrue(new InstantCommand(new Runnable() {
-                                @Override
-                                public void run() {
-                                        operatorStartButtonTimestamp = Timer.getFPGATimestamp();
-                                }
-                        })).onFalse(new InstantCommand(new Runnable() {
-                                @Override
-                                public void run() {
-                                        operatorStartButtonTimestamp = Double.NEGATIVE_INFINITY;
-                                }
-                        })).whileTrue(new InstantCommand(new Runnable() {
-                                @Override
-                                public void run() {
-                                        if (operatorStartButtonTimestamp + 2 < Timer.getFPGATimestamp()) {
-                                                if (activeMode == ControlMode.SemiAuto)
-                                                        activeMode = ControlMode.Manual;
-                                                else 
-                                                        activeMode = ControlMode.SemiAuto;
-                                        }
+                        .onTrue(new InstantCommand(() -> {
+                                operatorStartButtonTimestamp = Timer.getFPGATimestamp();
+
+                        })).onFalse(new InstantCommand(() -> {
+                                operatorStartButtonTimestamp = Double.NEGATIVE_INFINITY;
+
+                        })).whileTrue(new InstantCommand(() -> {
+                                if (operatorStartButtonTimestamp + 2 < Timer.getFPGATimestamp()) {
+                                        if (activeMode == ControlMode.SemiAuto)
+                                                activeMode = ControlMode.Manual;
+                                        else 
+                                                activeMode = ControlMode.SemiAuto;
                                 }
                         }));
 
@@ -404,146 +362,114 @@ public class RobotContainer {
 
                 // Dpad Up button -
                 c_driverController.povUp()
-                        .onTrue(new InstantCommand(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                        if (driverPOVRecency != null && 
-                                                driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
-                                                // on Double Press
-                                        } else {
-                                                // on Single Press
-                                        }
-
-                                        driverPOVRecency = Timer.getFPGATimestamp();
-                                        driverLatestPOVButton = POV.Up;
+                        .onTrue(new InstantCommand(() -> {
+                                if (driverPOVRecency != null && 
+                                        driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        // on Double Press
+                                } else {
+                                        // on Single Press
                                 }
+
+                                driverPOVRecency = Timer.getFPGATimestamp();
+                                driverLatestPOVButton = POV.Up;
                         }));
 
                 // Dpad Up-Right button -
                 c_driverController.povUpRight()
-                        .onTrue(new InstantCommand(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                        if (driverPOVRecency != null && 
-                                                driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
-                                                // on Double Press
-                                        } else {
-                                                // on Single Press
-                                        }
-
-                                        driverPOVRecency = Timer.getFPGATimestamp();
-                                        driverLatestPOVButton = POV.UpRight;
+                        .onTrue(new InstantCommand(() -> {
+                                if (driverPOVRecency != null && 
+                                        driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        // on Double Press
+                                } else {
+                                        // on Single Press
                                 }
+
+                                driverPOVRecency = Timer.getFPGATimestamp();
+                                driverLatestPOVButton = POV.UpRight;
                         }));
 
                 // Dpad Right button -
                 c_driverController.povRight()
-                        .onTrue(new InstantCommand(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                        if (driverPOVRecency != null && 
-                                                driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
-                                                // on Double Press
-                                        } else {
-                                                // on Single Press
-                                        }
-
-                                        driverPOVRecency = Timer.getFPGATimestamp();
-                                        driverLatestPOVButton = POV.Right;
+                        .onTrue(new InstantCommand(() -> {
+                                if (driverPOVRecency != null && 
+                                        driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        // on Double Press
+                                } else {
+                                        // on Single Press
                                 }
+
+                                driverPOVRecency = Timer.getFPGATimestamp();
+                                driverLatestPOVButton = POV.Right;
                         }));
 
                 // Dpad Down-Right button -
                 c_driverController.povDownRight()
-                        .onTrue(new InstantCommand(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                        if (driverPOVRecency != null && 
-                                                driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
-                                                // on Double Press
-                                        } else {
-                                                // on Single Press
-                                        }
-
-                                        driverPOVRecency = Timer.getFPGATimestamp();
-                                        driverLatestPOVButton = POV.DownRight;
+                        .onTrue(new InstantCommand(() -> {
+                                if (driverPOVRecency != null && 
+                                        driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        // on Double Press
+                                } else {
+                                        // on Single Press
                                 }
+
+                                driverPOVRecency = Timer.getFPGATimestamp();
+                                driverLatestPOVButton = POV.DownRight;
                         }));
 
                 // Dpad Down button -
                 c_driverController.povDown()
-                        .onTrue(new InstantCommand(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                        if (driverPOVRecency != null && 
-                                                driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
-                                                // on Double Press
-                                        } else {
-                                                // on Single Press
-                                        }
-
-                                        driverPOVRecency = Timer.getFPGATimestamp();
-                                        driverLatestPOVButton = POV.Down;
+                        .onTrue(new InstantCommand(() -> {
+                                if (driverPOVRecency != null && 
+                                        driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        // on Double Press
+                                } else {
+                                        // on Single Press
                                 }
+
+                                driverPOVRecency = Timer.getFPGATimestamp();
+                                driverLatestPOVButton = POV.Down;
                         }));
 
                 // Dpad Down-Left button -
                 c_driverController.povDownLeft()
-                        .onTrue(new InstantCommand(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                        if (driverPOVRecency != null && 
-                                                driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
-                                                // on Double Press
-                                        } else {
-                                                // on Single Press
-                                        }
-
-                                        driverPOVRecency = Timer.getFPGATimestamp();
-                                        driverLatestPOVButton = POV.DownLeft;
+                        .onTrue(new InstantCommand(() -> {
+                                if (driverPOVRecency != null && 
+                                        driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        // on Double Press
+                                } else {
+                                        // on Single Press
                                 }
+
+                                driverPOVRecency = Timer.getFPGATimestamp();
+                                driverLatestPOVButton = POV.DownLeft;
                         }));
 
                 // Dpad Left button -
                 c_driverController.povLeft()
-                        .onTrue(new InstantCommand(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                        if (driverPOVRecency != null && 
-                                                driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
-                                                // on Double Press
-                                        } else {
-                                                // on Single Press
-                                        }
-
-                                        driverPOVRecency = Timer.getFPGATimestamp();
-                                        driverLatestPOVButton = POV.Left;
+                        .onTrue(new InstantCommand(() -> {
+                                if (driverPOVRecency != null && 
+                                        driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        // on Double Press
+                                } else {
+                                        // on Single Press
                                 }
+
+                                driverPOVRecency = Timer.getFPGATimestamp();
+                                driverLatestPOVButton = POV.Left;
                         }));
 
                 // Dpad Up-Left button -
                 c_driverController.povUpLeft()
-                        .onTrue(new InstantCommand(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                        if (driverPOVRecency != null && 
-                                                driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
-                                                // on Double Press
-                                        } else {
-                                                // on Single Press
-                                        }
-
-                                        driverPOVRecency = Timer.getFPGATimestamp();
-                                        driverLatestPOVButton = POV.UpLeft;
+                        .onTrue(new InstantCommand(() -> {
+                                if (driverPOVRecency != null && 
+                                        driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        // on Double Press
+                                } else {
+                                        // on Single Press
                                 }
+
+                                driverPOVRecency = Timer.getFPGATimestamp();
+                                driverLatestPOVButton = POV.UpLeft;
                         }));
 
                 // Start Button button -
