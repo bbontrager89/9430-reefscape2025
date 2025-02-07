@@ -152,7 +152,7 @@ public class RobotContainer {
 
                 // Right trigger -
                 c_operatorController.rightTrigger(OIConstants.kTriggerThreshold)
-                        .onTrue(new InstantCommand(new Runnable() {
+                        .whileTrue(new InstantCommand(new Runnable() {
                                 @Override
                                 public void run() {
                                         coralManipulatorSubsystem.startIntakeMotor(c_operatorController.getRightTriggerAxis());
@@ -175,7 +175,7 @@ public class RobotContainer {
 
                 // Left trigger -
                 c_operatorController.leftTrigger(OIConstants.kTriggerThreshold)
-                        .onTrue(new InstantCommand(new Runnable() {
+                        .whileTrue(new InstantCommand(new Runnable() {
                                 @Override
                                 public void run() {
                                         coralManipulatorSubsystem.startIntakeMotor(c_operatorController.getLeftTriggerAxis());
