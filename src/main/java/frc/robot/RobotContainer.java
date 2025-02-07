@@ -139,12 +139,7 @@ public class RobotContainer {
 
                 // Right bumper - Manual mode: Coral manipulator wheels intake
                 c_operatorController.rightBumper()
-                        .onTrue(new InstantCommand(new Runnable() {
-                                @Override
-                                public void run() {
-                                        activeMode = ControlMode.Transit;
-                                }
-                        }));
+                        .onTrue(new InstantCommand());
 
                 // Right trigger -
                 c_operatorController.rightTrigger(OIConstants.kTriggerThreshold)
@@ -176,7 +171,12 @@ public class RobotContainer {
 
                 // Right Stick button - Transit mode
                 c_operatorController.rightStick()
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand(new Runnable() {
+                                @Override
+                                public void run() {
+                                      activeMode = ControlMode.Transit;
+                                }
+                        }));
 
                 // Left Stick button -
                 c_operatorController.leftStick()
@@ -346,8 +346,12 @@ public class RobotContainer {
                         })).whileTrue(new InstantCommand(new Runnable() {
                                 @Override
                                 public void run() {
-                                        if (operatorStartButtonTimestamp + 2 < Timer.getFPGATimestamp()) 
-                                                activeMode = ControlMode.Manual;
+                                        if (operatorStartButtonTimestamp + 2 < Timer.getFPGATimestamp()) {
+                                                if (activeMode == ControlMode.SemiAuto)
+                                                        activeMode = ControlMode.Manual;
+                                                else 
+                                                        activeMode = ControlMode.SemiAuto;
+                                        }
                                 }
                         }));
 
