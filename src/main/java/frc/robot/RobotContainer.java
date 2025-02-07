@@ -121,7 +121,7 @@ public class RobotContainer {
          * Binds Commands to Xbox controller buttons using 
          * {@link CommandXboxController} methods
          * <p>
-         * This method should only be run once by the contructer
+         * This method should only be run once by the constructer
          */
         private void configureButtonBindings() {
 
