@@ -31,7 +31,7 @@ import frc.utils.ControllerUtils.POV;
 
 import java.util.List;
 
-/*
+/**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
  * periodic methods (other than the scheduler calls).  Instead, the structure of the robot
@@ -130,7 +130,7 @@ public class RobotContainer {
          * Binds Commands to Xbox controller buttons using 
          * {@link CommandXboxController} methods
          * <p>
-         * This method should only be run once by the contructer
+         * This method should only be run once by the constructer
          */
         private void configureButtonBindings() {
 
@@ -154,12 +154,12 @@ public class RobotContainer {
                         .onTrue(new InstantCommand(new Runnable() {
                                 @Override
                                 public void run() {
-                                        coralManipulatorSubsystem.startIntakeMotor(1, 2);
+                                        coralManipulatorSubsystem.startIntakeMotor(c_operatorController.getRightTriggerAxis());
                                 }
                         })).onFalse(new InstantCommand(new Runnable() {
                                 @Override
                                 public void run() {
-                                        coralManipulatorSubsystem.stopIntakeMotor();
+                                        coralManipulatorSubsystem.slowIntakeMotor(0.3);
                                 }
                         }));
 
@@ -177,12 +177,12 @@ public class RobotContainer {
                         .onTrue(new InstantCommand(new Runnable() {
                                 @Override
                                 public void run() {
-                                        coralManipulatorSubsystem.startIntakeMotor(-1, 2);
+                                        coralManipulatorSubsystem.startIntakeMotor(c_operatorController.getLeftTriggerAxis());
                                 }
                         })).onFalse(new InstantCommand(new Runnable() {
                                 @Override
                                 public void run() {
-                                        coralManipulatorSubsystem.stopIntakeMotor();
+                                        coralManipulatorSubsystem.slowIntakeMotor(0.3);
                                 }
                         }));
 
