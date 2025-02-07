@@ -52,15 +52,6 @@ public class RobotContainer {
         // The operator's controller
         CommandXboxController c_operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
 
-        // POV button utilities
-        Double driverPOVRecency = null;
-        POV driverLatestPOVButton = POV.None;
-
-        Double operatorPOVRecency = null;
-        POV operatorLatestPOVButton = POV.None;
-
-        ControlMode activeMode = ControlMode.Manual;
-
 
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -118,6 +109,16 @@ public class RobotContainer {
                 /** Robot is controlled by commands mapped to button bindings */
                 SemiAuto
         }
+
+        Double driverPOVRecency = null;
+        POV driverLatestPOVButton = POV.None;
+
+        Double operatorPOVRecency = null;
+        POV operatorLatestPOVButton = POV.None;
+
+        ControlMode activeMode = ControlMode.Manual;
+
+        double operatorStartButtonTimestamp = Double.NEGATIVE_INFINITY;
 
         /**
          * ~~Use this method to define your button->command mappings. Buttons can be
@@ -394,7 +395,23 @@ public class RobotContainer {
 
                 // Start Button button - Manual mode on 2 second hold
                 c_operatorController.start()
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand(new Runnable() {
+                                @Override
+                                public void run() {
+                                        operatorStartButtonTimestamp = Timer.getFPGATimestamp();
+                                }
+                        })).onFalse(new InstantCommand(new Runnable() {
+                                @Override
+                                public void run() {
+                                        operatorStartButtonTimestamp = Double.NEGATIVE_INFINITY;
+                                }
+                        })).whileTrue(new InstantCommand(new Runnable() {
+                                @Override
+                                public void run() {
+                                        if (operatorStartButtonTimestamp + 2 < Timer.getFPGATimestamp()) 
+                                                activeMode = ControlMode.Manual;
+                                }
+                        }));
 
                 // Back Button button - Cancel all actions?
                 c_operatorController.back()

@@ -14,13 +14,13 @@ public class StrafeToAlignCommand extends Command {
     // Constants
     private static final double LATERAL_TOLERANCE_METERS = 0.05;  // 5cm
     private static final double ROTATION_TOLERANCE_DEG = 2.0;
-    private static final double MAX_STRAFE_SPEED = 0.5; // m/s
+    private static final double MAX_STRAFE_SPEED = 1.0; // m/s
     private static final double MAX_ROTATION_SPEED = 0.5; // rad/s
     private static final double LOST_TAG_TIMEOUT = 0.5; // seconds
     
     private double lastTagTimestamp = 0;
     private double lastStrafeSpeed = 0;
-    private static final double MAX_STRAFE_ACCELERATION = 0.5; // m/s^2
+    private static final double MAX_STRAFE_ACCELERATION = 1.0; // m/s^2
     
     public StrafeToAlignCommand(DriveSubsystem drive, double desiredLateralOffset) {
         this.drive = drive;
