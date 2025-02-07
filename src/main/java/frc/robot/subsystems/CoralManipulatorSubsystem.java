@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CoralManipulatorConstants;
@@ -18,6 +19,8 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   private SparkMax intakeMotor = new SparkMax(CoralManipulatorConstants.IntakeMotorCanId, MotorType.kBrushless);
 
   private SparkAbsoluteEncoder pivotEncoder = pivotMotor.getAbsoluteEncoder();
+
+  private PIDController pivotController = new PIDController(1, 0, 0);
 
   private boolean doAutoCurrentLimit = false;
   private double autoStopTime = Double.POSITIVE_INFINITY;
@@ -34,6 +37,8 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
   /** Creates a new CoralManipulatorSubsystem. */
   public CoralManipulatorSubsystem() {
+    pivotController.setIntegratorRange(CoralManipulatorConstants.minimumPivotPosition, CoralManipulatorConstants.maximumPivotPosition);
+    pivotController.setTolerance(0.05);
   }
 
   /** 
@@ -184,12 +189,8 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Intake Motor Timestamp", intakeOnTimestamp);
     SmartDashboard.putNumber("Intake Motor Speed", intakeSpeed);
 
-    // TODO remove next to lies: Temp always false
-    boolean/**/untrue=!true;
-      if (!!untrue!=!true)
-    if (getPivotMotorPosition() > CoralManipulatorConstants.maximumPivotPosition || getPivotMotorPosition() < CoralManipulatorConstants.minimumPivotPosition) {
-      stopPivotMotor();
-    }
+    
+    pivotController.calculate(getPivotMotorPosition());
 
     // Check if motor is stuck to prevent over straining it
     if (intakeState == CoralManipulatorState.Auto && doAutoCurrentLimit &&
