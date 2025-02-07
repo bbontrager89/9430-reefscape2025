@@ -50,51 +50,30 @@ public class ElevatorSubsystem extends SubsystemBase {
   
       elevatorCommands = new SendableChooser<Command>();
   
-      elevatorCommands.setDefaultOption("SP 1", new InstantCommand(new Runnable() {
-        @Override
-        public void run() {
+      elevatorCommands.setDefaultOption("SP 1", new InstantCommand(() -> {
           moveToScoringPosition(1);
-        }
       }));
-      elevatorCommands.addOption("SP 2", new InstantCommand(new Runnable() {
-        @Override
-        public void run() {
+      elevatorCommands.addOption("SP 2", new InstantCommand(() -> {
           moveToScoringPosition(2);
-        }
       }));
-      elevatorCommands.addOption("SP 3", new InstantCommand(new Runnable() {
-        @Override
-        public void run() {
+      elevatorCommands.addOption("SP 3", new InstantCommand(() -> {
           moveToScoringPosition(3);
-        }
       }));
-      elevatorCommands.addOption("min", new InstantCommand(new Runnable() {
-        @Override
-        public void run() {
+      elevatorCommands.addOption("min", new InstantCommand(() -> {
           moveToScoringPosition(4);
-        }
       }));
-      elevatorCommands.addOption("max", new InstantCommand(new Runnable() {
-        @Override
-        public void run() {
+      elevatorCommands.addOption("max", new InstantCommand(() -> {
           moveToScoringPosition(5);
-        }
       }));
-      elevatorCommands.addOption("Custom", new InstantCommand(new Runnable() {
-        @Override
-        public void run() {
+      elevatorCommands.addOption("Custom", new InstantCommand(() -> {
           moveToPosition(SmartDashboard.getNumber("Custom Elevator Height", ElevatorConstants.level1ScoringPosition));
-        }
       }));
   
       SmartDashboard.putData("Elevator Height Commands", elevatorCommands);
 
-      SmartDashboard.putData("Run Elevator Command", new ScheduleCommand(new InstantCommand(new Runnable() {
-              @Override
-              public void run() {
+      SmartDashboard.putData("Run Elevator Command", new ScheduleCommand(new InstantCommand(() -> {
                 if (elevatorCommands.getSelected() != null)
                   elevatorCommands.getSelected().schedule();
-                }
             })));
 
       SmartDashboard.putNumber("Custom Elevator Height", ElevatorConstants.level1ScoringPosition);
