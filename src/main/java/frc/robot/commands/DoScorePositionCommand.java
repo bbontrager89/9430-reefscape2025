@@ -3,15 +3,17 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.CoralManipulatorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
-public class ElevatorCommand extends SequentialCommandGroup {
+public class DoScorePositionCommand extends SequentialCommandGroup {
     private final DriveSubsystem drive;
     private final double desiredLateralOffset;
     private final double desiredDistance;
 
-    public ElevatorCommand(ElevatorSubsystem elevator, DriveSubsystem drive, int scoringPosition, double desiredLateralOffset, double desiredDistance) {
+    public DoScorePositionCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coralSubsystem, DriveSubsystem drive, int scoringPosition, double desiredLateralOffset, double desiredDistance, double pivotHeight) {
         this.drive = drive;
         this.desiredLateralOffset = desiredLateralOffset;
         this.desiredDistance = desiredDistance;
@@ -29,7 +31,11 @@ public class ElevatorCommand extends SequentialCommandGroup {
                     new RotateToTagCommand(drive),
                     new StrafeToAlignCommand(drive, desiredLateralOffset),
                     new MoveElevator(elevator, scoringPosition),
-                    new ApproachTagCommand(drive, desiredDistance)
+                    new PivotCoral(coralSubsystem, pivotHeight),
+                    new ApproachTagCommand(drive, desiredDistance),
+                    new SetCoralSpeed(coralSubsystem, 1),
+                    new WaitCommand(0.5),
+                    new SetCoralSpeed(coralSubsystem, 0)
                 ),
                 // If we don't see a tag, do nothing
                 new InstantCommand(),
