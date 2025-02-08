@@ -144,13 +144,13 @@ public class RobotContainer {
                 // Right bumper - Manual mode: Coral manipulator wheels intake
                 c_operatorController.rightBumper()
                         .onTrue(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.startPivotMotor(0.1);
+                                coralManipulatorSubsystem.startPivotMotor(0.3);
                         }));
 
                 // Right trigger -
                 c_operatorController.rightTrigger(OIConstants.kTriggerThreshold)
-                        .whileTrue(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.startIntakeMotor(c_operatorController.getRightTriggerAxis());
+                        .onTrue(new InstantCommand(() -> {
+                                coralManipulatorSubsystem.startIntakeMotor(1);
 
                         })).onFalse(new InstantCommand(() -> {
                                 coralManipulatorSubsystem.slowIntakeMotor(0.3);
@@ -159,13 +159,13 @@ public class RobotContainer {
                 // Left bumper - Coral manipulator wheels out
                 c_operatorController.leftBumper()
                         .onTrue(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.startPivotMotor(-0.1);
+                                coralManipulatorSubsystem.startPivotMotor(-0.3);
                         }));
 
                 // Left trigger -
                 c_operatorController.leftTrigger(OIConstants.kTriggerThreshold)
-                        .whileTrue(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.startIntakeMotor(c_operatorController.getLeftTriggerAxis());
+                        .onTrue(new InstantCommand(() -> {
+                                coralManipulatorSubsystem.startIntakeMotor(-1);
 
                         })).onFalse(new InstantCommand(() -> {
                                 coralManipulatorSubsystem.slowIntakeMotor(0.3);
@@ -190,19 +190,15 @@ public class RobotContainer {
                 // B button - Algae intake mode
                 c_operatorController.b()
                         .onTrue(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.startIntakeMotor(-1);
+                                
 
-                        })).onFalse(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.slowIntakeMotor(0.3);
                         }));
 
                 // A button - Algae intake mode
                 c_operatorController.a()
                         .onTrue(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.startIntakeMotor(1);
+                                
 
-                        })).onFalse(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.slowIntakeMotor(0.3);
                         }));
 
                 // Right Stick button - Transit mode
