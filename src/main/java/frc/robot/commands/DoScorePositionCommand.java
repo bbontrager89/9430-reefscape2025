@@ -31,7 +31,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                     new RotateToTagCommand(drive),
                     new StrafeToAlignCommand(drive, desiredLateralOffset),
                     new MoveElevator(elevator, scoringPosition),
-                    new PivotCoral(coralSubsystem, pivotHeight),
+                    new PivotCoral(coralSubsystem, pivotHeight), // TODO make correct
                     new ApproachTagCommand(drive, desiredDistance),
                     new SetCoralSpeed(coralSubsystem, 1),
                     new WaitCommand(0.5),
