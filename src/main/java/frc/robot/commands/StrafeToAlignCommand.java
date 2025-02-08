@@ -28,11 +28,10 @@ public class StrafeToAlignCommand extends Command {
         addRequirements(drive);
         
         // PID for strafe control
-        strafeController = new PIDController(0.4, 0.0, 0.0);
+        strafeController = new PIDController(4.4, 0.0, 0.0);
         strafeController.setTolerance(LATERAL_TOLERANCE_METERS);
-        
         // PID for rotation
-        rotationController = new PIDController(0.02, 0.0, 0.0);
+        rotationController = new PIDController(0.3, 0.0, 0.0);
         rotationController.setTolerance(ROTATION_TOLERANCE_DEG);
         rotationController.enableContinuousInput(-180, 180);
     }
@@ -59,19 +58,19 @@ public class StrafeToAlignCommand extends Command {
             
             // Calculate desired speeds
             // Note: strafeSpeed is negated because positive lateral offset means robot needs to move left (negative Y)
-            double strafeSpeed = -strafeController.calculate(currentLateralOffset, desiredLateralOffset);
+            double strafeSpeed = strafeController.calculate(currentLateralOffset, desiredLateralOffset);
             double rotationSpeed = rotationController.calculate(currentOrientation, 0);
             
             // Apply acceleration limiting to strafe
-            double period = 0.02; // Assuming 50Hz
+           /* double period = 0.04; // Assuming 50Hz
             double maxDeltaSpeed = MAX_STRAFE_ACCELERATION * period;
             double deltaSpeed = strafeSpeed - lastStrafeSpeed;
             deltaSpeed = Math.max(Math.min(deltaSpeed, maxDeltaSpeed), -maxDeltaSpeed);
             strafeSpeed = lastStrafeSpeed + deltaSpeed;
-            lastStrafeSpeed = strafeSpeed;
+            lastStrafeSpeed = strafeSpeed;*/
             
             // Clamp speeds
-            strafeSpeed = Math.min(Math.max(strafeSpeed, -MAX_STRAFE_SPEED), MAX_STRAFE_SPEED);
+            strafeSpeed = -Math.min(Math.max(strafeSpeed, -MAX_STRAFE_SPEED), MAX_STRAFE_SPEED);
             rotationSpeed = Math.min(Math.max(rotationSpeed, -MAX_ROTATION_SPEED), MAX_ROTATION_SPEED);
             
             // Log current state

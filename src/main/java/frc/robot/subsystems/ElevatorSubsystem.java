@@ -143,6 +143,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     return absoluteEncoder.getPosition();
   }
 
+  public boolean atHeight() {
+    return (Math.abs(getHeight() - desiredHeight) < ElevatorConstants.positionTolerence);
+  }
+
   @Override
   public void periodic() {
 
