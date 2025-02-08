@@ -22,7 +22,7 @@ public class RotateToTagCommand extends Command {
         addRequirements(drive);
         
         // PID for rotation control
-        rotationController = new PIDController(0.05, 0.0, 0.001);
+        rotationController = new PIDController(0.09, 0.0, 0.001);
         rotationController.setTolerance(ROTATION_TOLERANCE_DEG);
         rotationController.enableContinuousInput(-180, 180);
     }
