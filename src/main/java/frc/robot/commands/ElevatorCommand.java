@@ -27,7 +27,7 @@ public class ElevatorCommand extends SequentialCommandGroup {
                 // If we see a tag, execute the full alignment sequence
                 new SequentialCommandGroup(
                     new RotateToTagCommand(drive),
-                    new InstantCommand(() -> elevator.moveToScoringPosition(scoringPosition)),
+                    new MoveElevator(elevator, scoringPosition),
                     new StrafeToAlignCommand(drive, desiredLateralOffset),
                     new ApproachTagCommand(drive, desiredDistance)
                 ),
