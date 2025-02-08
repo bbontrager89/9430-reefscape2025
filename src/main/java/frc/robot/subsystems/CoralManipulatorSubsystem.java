@@ -52,7 +52,6 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   public CoralManipulatorSubsystem() {
 
     pivotEncoder = pivotMotor.getAbsoluteEncoder();
-    closedLoopPivotController = pivotMotor.getClosedLoopController();
     pivotController = new PIDController(1.5, 0, 0.05);
 
     pivotController.setTolerance(0.005);
