@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.utils.Elastic.ElasticNotification;
 
 /** Where all SmartDashbard vales will be edited */
 public class SmartDashboardUtils extends SubsystemBase{
@@ -86,10 +85,6 @@ public class SmartDashboardUtils extends SubsystemBase{
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void sendElasticNotification(ElasticNotification notification){
-        Elastic.sendAlert(notification);
     }
 
 }
