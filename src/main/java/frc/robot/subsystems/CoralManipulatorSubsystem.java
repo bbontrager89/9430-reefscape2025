@@ -217,6 +217,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     if (doAutoCurrentLimit) {
       if (intakeMotor.getOutputCurrent() > CoralManipulatorConstants.autoStopCurrent) {
         stopIntakeMotor();
+        Elastic.sendWarning("Pivot Motor Current Spike", "Likely Coral Fully Intaken");
       }
     }
 
