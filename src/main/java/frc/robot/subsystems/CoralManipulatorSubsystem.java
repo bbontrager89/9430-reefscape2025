@@ -236,6 +236,10 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     return pivotEncoder.getVelocity();
   }
 
+  public boolean atPivotPosition() {
+    return pivotController.atSetpoint();
+  }
+
   @Override
   public void periodic() {
 
