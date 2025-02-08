@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
+import frc.utils.Elastic;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
@@ -113,6 +114,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         break;
       default:
         System.out.println("Invalid Scoring Position requested in ElevatorSubsystem");
+        Elastic.sendError("Invalid Scoring Position", "requested in ElevatorSubsystem");
         break;
     }
 
