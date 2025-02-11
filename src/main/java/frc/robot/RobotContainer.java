@@ -16,6 +16,7 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.CoralManipulatorConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DoScorePositionCommand;
@@ -216,9 +217,20 @@ public class RobotContainer {
                 c_operatorController.povUp()
                         .onTrue(new InstantCommand(() -> {
                                 if (operatorPOVRecency != null && 
-                                        operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        operatorPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
                                         // on Double Press -
                                         // Coral mode: intake from Coral station
+                                        if (operatorLatestPOVButton == POV.Up) {
+                                                new DoScorePositionCommand(
+                                                        elevatorSubsystem, 
+                                                        coralManipulatorSubsystem, 
+                                                        m_robotDrive, 
+                                                        0, 
+                                                        0.0, 
+                                                        OIConstants.scoringDistance, 
+                                                        CoralManipulatorConstants.levelThreePivotPosition)
+                                                .schedule();
+                                        }
                                 } else {
                                         // on Single Press
                                 }
@@ -231,7 +243,7 @@ public class RobotContainer {
                 c_operatorController.povUpRight()
                         .onTrue(new InstantCommand(() -> {
                                 if (operatorPOVRecency != null && 
-                                        operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        operatorPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
                                         // on Double Press
                                 } else {
                                         // on Single Press
@@ -245,10 +257,32 @@ public class RobotContainer {
                 c_operatorController.povRight()
                         .onTrue(new InstantCommand(() -> {
                                 if (operatorPOVRecency != null && 
-                                        operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        operatorPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
                                         // on Double Press -
                                         // Coral mode: after down press: score L2 right
                                         // Coral mode: after up press: score L3 right
+                                        if (operatorLatestPOVButton == POV.Down) {
+                                                new DoScorePositionCommand(
+                                                        elevatorSubsystem, 
+                                                        coralManipulatorSubsystem, 
+                                                        m_robotDrive, 
+                                                        2, 
+                                                        OIConstants.rightScoringOffset, 
+                                                        OIConstants.scoringDistance, 
+                                                        CoralManipulatorConstants.levelTwoPivotPosition)
+                                                .schedule();
+                                        }
+                                        if (operatorLatestPOVButton == POV.Up) {
+                                                new DoScorePositionCommand(
+                                                        elevatorSubsystem, 
+                                                        coralManipulatorSubsystem, 
+                                                        m_robotDrive, 
+                                                        3, 
+                                                        OIConstants.rightScoringOffset, 
+                                                        OIConstants.scoringDistance, 
+                                                        CoralManipulatorConstants.levelThreePivotPosition)
+                                                .schedule();
+                                        }
                                 } else {
                                         // on Single Press
                                 }
@@ -261,7 +295,7 @@ public class RobotContainer {
                 c_operatorController.povDownRight()
                         .onTrue(new InstantCommand(() -> {
                                 if (operatorPOVRecency != null && 
-                                        operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        operatorPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
                                         // on Double Press
                                 } else {
                                         // on Single Press
@@ -275,8 +309,19 @@ public class RobotContainer {
                 c_operatorController.povDown()
                         .onTrue(new InstantCommand(() -> {
                                 if (operatorPOVRecency != null && 
-                                        operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        operatorPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
                                         // on Double Press - Coral mode: after down press: score L1
+                                        if (operatorLatestPOVButton == POV.Down) {
+                                                new DoScorePositionCommand(
+                                                        elevatorSubsystem, 
+                                                        coralManipulatorSubsystem, 
+                                                        m_robotDrive, 
+                                                        1, 
+                                                        0.0, 
+                                                        OIConstants.scoringDistance, 
+                                                        CoralManipulatorConstants.levelOnePivotPosition)
+                                                .schedule();
+                                        }
                                 } else {
                                         // on Single Press
                                 }
@@ -289,7 +334,7 @@ public class RobotContainer {
                 c_operatorController.povDownLeft()
                         .onTrue(new InstantCommand(() -> {
                                 if (operatorPOVRecency != null && 
-                                        operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        operatorPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
                                         // on Double Press
                                 } else {
                                         // on Single Press
@@ -303,10 +348,32 @@ public class RobotContainer {
                 c_operatorController.povLeft()
                         .onTrue(new InstantCommand(() -> {
                                 if (operatorPOVRecency != null && 
-                                        operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        operatorPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
                                         // on Double Press -
                                         // Coral mode: after down press: score L2 left
                                         // Coral mode: after up press: score L3 left
+                                        if (operatorLatestPOVButton == POV.Down) {
+                                                new DoScorePositionCommand(
+                                                        elevatorSubsystem, 
+                                                        coralManipulatorSubsystem, 
+                                                        m_robotDrive, 
+                                                        2, 
+                                                        OIConstants.leftScoringOffset, 
+                                                        OIConstants.scoringDistance, 
+                                                        CoralManipulatorConstants.levelTwoPivotPosition)
+                                                .schedule();
+                                        }
+                                        if (operatorLatestPOVButton == POV.Up) {
+                                                new DoScorePositionCommand(
+                                                        elevatorSubsystem, 
+                                                        coralManipulatorSubsystem, 
+                                                        m_robotDrive, 
+                                                        3, 
+                                                        OIConstants.leftScoringOffset, 
+                                                        OIConstants.scoringDistance, 
+                                                        CoralManipulatorConstants.levelThreePivotPosition)
+                                                .schedule();
+                                        }
                                 } else {
                                         // on Single Press
                                 }
@@ -319,7 +386,7 @@ public class RobotContainer {
                 c_operatorController.povUpLeft()
                         .onTrue(new InstantCommand(() -> {
                                 if (operatorPOVRecency != null && 
-                                        operatorPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        operatorPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
                                         // on Double Press
                                 } else {
                                         // on Single Press
@@ -386,7 +453,7 @@ public class RobotContainer {
 
                 // A button -
                 c_driverController.a()
-                        .onTrue(new DoScorePositionCommand(elevatorSubsystem, coralManipulatorSubsystem, m_robotDrive, 2, 0.0, 0.3, 0.25));
+                        .onTrue(new DoScorePositionCommand(elevatorSubsystem, coralManipulatorSubsystem, m_robotDrive, 2, 0.0, 0.3, OIConstants.doublePressBuffer));
 
                 // Right Stick button -
                 c_driverController.rightStick()
@@ -400,7 +467,7 @@ public class RobotContainer {
                 c_driverController.povUp()
                         .onTrue(new InstantCommand(() -> {
                                 if (driverPOVRecency != null && 
-                                        driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        driverPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
                                         // on Double Press
                                 } else {
                                         // on Single Press
@@ -414,7 +481,7 @@ public class RobotContainer {
                 c_driverController.povUpRight()
                         .onTrue(new InstantCommand(() -> {
                                 if (driverPOVRecency != null && 
-                                        driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        driverPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
                                         // on Double Press
                                 } else {
                                         // on Single Press
@@ -428,7 +495,7 @@ public class RobotContainer {
                 c_driverController.povRight()
                         .onTrue(new InstantCommand(() -> {
                                 if (driverPOVRecency != null && 
-                                        driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        driverPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
                                         // on Double Press
                                 } else {
                                         // on Single Press
@@ -442,7 +509,7 @@ public class RobotContainer {
                 c_driverController.povDownRight()
                         .onTrue(new InstantCommand(() -> {
                                 if (driverPOVRecency != null && 
-                                        driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        driverPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
                                         // on Double Press
                                 } else {
                                         // on Single Press
@@ -456,7 +523,7 @@ public class RobotContainer {
                 c_driverController.povDown()
                         .onTrue(new InstantCommand(() -> {
                                 if (driverPOVRecency != null && 
-                                        driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        driverPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
                                         // on Double Press
                                 } else {
                                         // on Single Press
@@ -470,7 +537,7 @@ public class RobotContainer {
                 c_driverController.povDownLeft()
                         .onTrue(new InstantCommand(() -> {
                                 if (driverPOVRecency != null && 
-                                        driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        driverPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
                                         // on Double Press
                                 } else {
                                         // on Single Press
@@ -484,7 +551,7 @@ public class RobotContainer {
                 c_driverController.povLeft()
                         .onTrue(new InstantCommand(() -> {
                                 if (driverPOVRecency != null && 
-                                        driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        driverPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
                                         // on Double Press
                                 } else {
                                         // on Single Press
@@ -498,7 +565,7 @@ public class RobotContainer {
                 c_driverController.povUpLeft()
                         .onTrue(new InstantCommand(() -> {
                                 if (driverPOVRecency != null && 
-                                        driverPOVRecency + 0.25 > Timer.getFPGATimestamp()) {
+                                        driverPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
                                         // on Double Press
                                 } else {
                                         // on Single Press
