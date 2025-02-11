@@ -97,6 +97,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void moveToScoringPosition(int scoringPosition) {
 
     switch (scoringPosition) {
+      case 0:
+        desiredHeight = ElevatorConstants.coralStationPosition;
+        break;
       case 1:
         desiredHeight = ElevatorConstants.level1ScoringPosition;
         break;
