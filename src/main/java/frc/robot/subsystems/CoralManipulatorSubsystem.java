@@ -17,18 +17,19 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CoralManipulatorConstants;
-import frc.robot.Constants.ElevatorConstants;
 import frc.utils.Elastic;
 
 public class CoralManipulatorSubsystem extends SubsystemBase {
 
+  // Pivot and intake motors
   private SparkMax pivotMotor = new SparkMax(CoralManipulatorConstants.PivotMotorCanId, MotorType.kBrushless);
   private SparkMax intakeMotor = new SparkMax(CoralManipulatorConstants.IntakeMotorCanId, MotorType.kBrushless);
 
+  // Encoder and PID for pivot control
   private SparkAbsoluteEncoder pivotEncoder;
-
   private PIDController pivotController;
 
+  // Intake motor timing and state variables
   private boolean doAutoCurrentLimit = true;
   private double autoStopTime = Double.POSITIVE_INFINITY;
   private double slowingFactor = 0.1;
@@ -39,23 +40,28 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   private boolean isPivotMotorOn = false;
 
   private CoralManipulatorState intakeState = CoralManipulatorState.Stopped;
-
   private double intakeOnTimestamp = Double.NEGATIVE_INFINITY;
 
+  // Desired pivot position (normalized value, e.g., 0.0 to 1.0)
   private double desiredPivotPosition = 0.25;
 
   private static SendableChooser<Command> pivotCommands;
 
   /** Creates a new CoralManipulatorSubsystem. */
   public CoralManipulatorSubsystem() {
-
     pivotEncoder = pivotMotor.getAbsoluteEncoder();
-    pivotController = new PIDController(1.5, 0, 0.05);
 
+    // Adjusted PID gains for smoother, less oscillatory motion:
+    // - Lower proportional gain to reduce overreaction to manual disturbances.
+    // - Increased derivative gain to dampen oscillations.
+    pivotController = new PIDController(1.0, 0.0, 0.1);
     pivotController.setTolerance(0.005);
-    pivotController.setIntegratorRange(0.13, 0.47);
+    pivotController.setIntegratorRange(-0.2, 0.2);
   }
 
+  /**
+   * Configures dashboard controls for pivot commands.
+   */
   public void configureDashboardControls() {
 
     pivotCommands = new SendableChooser<Command>();
@@ -88,12 +94,12 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Custom Pivot Height", 0.2);
     SmartDashboard.putNumber("Desired Pivot Height", 0.0);
-
   }
 
+  // ================= Pivot Motor Control =================
+
   /**
-   * Private method to set the pivot motor speed.
-   * Accessed by methods inside the subsystem.
+   * Sets the pivot motor speed and updates the status flag.
    * 
    * @param speed the speed to set the motor
    */
@@ -103,7 +109,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   }
 
   /**
-   * Public method to set the pivot motor speed.
+   * Public method to start the pivot motor at a given speed.
    * 
    * @param speed the speed to set the motor
    */
@@ -112,13 +118,18 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   }
 
   /**
-   * Stops the pivot motor immediatly.
+   * Stops the pivot motor immediately.
    */
   public void stopPivotMotor() {
     pivotMotor.stopMotor();
     isPivotMotorOn = false;
   }
 
+  /**
+   * Sets the desired pivot position. Ensures the position is within allowed limits.
+   * 
+   * @param pos the target position
+   */
   public void movePivotTo(double pos) {
     desiredPivotPosition = pos;
     if (desiredPivotPosition > CoralManipulatorConstants.maximumPivotPosition) {
@@ -131,14 +142,36 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   }
 
   /**
-   * Private method to set the intake motor speed.
-   * Accessed by methods inside the subsystem.
+   * If the pivot is manually moved, call this method to update the desired
+   * position so the PID doesn't fight the manual adjustment.
+   */
+  public void updateDesiredPivotPosition() {
+    desiredPivotPosition = getPivotMotorPosition();
+    pivotController.reset();
+  }
+
+  /**
+   * Calculates a simple gravity feedforward term based on the current pivot position.
+   * 
+   * @param position the current pivot position
+   * @return the feedforward output to help counteract gravity
+   */
+  private double calculateGravityFeedForward(double position) {
+    double kGravity = 0.1;  // Tune this constant as needed.
+    // Assume position is normalized [0, 1] and mapped to an angle in radians.
+    double angleRadians = position * Math.PI;
+    return kGravity * Math.cos(angleRadians);
+  }
+
+  // ================= Intake Motor Control =================
+
+  /**
+   * Sets the intake motor speed and updates the state.
    * 
    * @param speed the speed to set the motor
    */
   private void setIntakeMotorSpeed(double speed) {
     intakeMotor.set(speed);
-
     intakeSpeed = speed;
 
     if (intakeState == CoralManipulatorState.Stopped) {
@@ -148,8 +181,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   }
 
   /**
-   * Public method to set the intake motor speed.
-   * Also sets the state of the motor to Active
+   * Starts the intake motor at the given speed.
    * 
    * @param speed the speed to set the motor
    */
@@ -159,12 +191,10 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   }
 
   /**
-   * Public method to set the motor speed for a given time.
-   * Accessed by methods inside the subsystem.
-   * Slows down for 1 second after given time
+   * Starts the intake motor for a specified time.
    * 
-   * @param speed the initial speed to set the motor
-   * @param time  time to stay on for
+   * @param speed the speed to set the motor
+   * @param time  the duration to run the motor
    */
   public void startIntakeMotor(double speed, double time) {
     autoStopTime = time + Timer.getFPGATimestamp();
@@ -173,13 +203,11 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   }
 
   /**
-   * Public method to set the motor speed for a given time.
-   * Accessed by methods inside the subsystem.
-   * Slows down for 1 second after given time
+   * Starts the intake motor for a specified time with a slowing period afterward.
    * 
-   * @param speed       the initial speed to set the motor
-   * @param time        time to stay on for
-   * @param slowingTime time to slow down for after the run time
+   * @param speed       the speed to set the motor
+   * @param time        the duration to run the motor at full speed
+   * @param slowingTime the duration over which the motor slows down to a stop
    */
   public void startIntakeMotor(double speed, double time, double slowingTime) {
     autoStopTime = time + Timer.getFPGATimestamp();
@@ -189,16 +217,16 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   }
 
   /**
-   * Slows the motor to zero over a 1 second interval
+   * Slows the intake motor to zero over a default 1-second interval.
    */
   public void slowIntakeMotor() {
     slowIntakeMotor(1);
   }
 
   /**
-   * Slows the motor to zero over a time interval
+   * Slows the intake motor to zero over the specified time interval.
    * 
-   * @param time time in seconds before motor stops
+   * @param time time in seconds before the motor stops
    */
   public void slowIntakeMotor(double time) {
     slowingFactor = (intakeSpeed / (50 * time));
@@ -206,49 +234,67 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   }
 
   /**
-   * Stops the intake motor immediatly.
-   * Sets the intake state to stopped
+   * Stops the intake motor immediately.
    */
   public void stopIntakeMotor() {
     intakeMotor.stopMotor();
     intakeState = CoralManipulatorState.Stopped;
-
     intakeOnTimestamp = 0.0;
     intakeSpeed = 0.0;
     isIntakeMotorOn = false;
   }
 
   /**
-   * Returns the position of the pivot motor
+   * Returns the current pivot motor position.
    * 
-   * @return double representing the position
+   * @return the pivot position
    */
   public double getPivotMotorPosition() {
     return pivotEncoder.getPosition();
   }
 
   /**
-   * Returns the position of the pivot motor
+   * Returns the current pivot motor velocity.
    * 
-   * @return double representing the position
+   * @return the pivot velocity
    */
   public double getPivotVelocity() {
     return pivotEncoder.getVelocity();
   }
 
+  /**
+   * Checks whether the pivot has reached its setpoint.
+   * 
+   * @return true if the pivot is at the desired position
+   */
   public boolean atPivotPosition() {
     return pivotController.atSetpoint();
   }
 
+  // ================= Periodic Loop =================
+
   @Override
   public void periodic() {
+    // ----- Pivot Motor Control -----
+    double currentPosition = getPivotMotorPosition();
+    double error = desiredPivotPosition - currentPosition;
 
+    // Deadband: if the error is very small, do not command the motor.
+    if (Math.abs(error) < pivotController.getErrorTolerance()) {
+      pivotMotor.set(0);
+    } else {
+      double pidOutput = pivotController.calculate(currentPosition, desiredPivotPosition);
+      double feedForward = calculateGravityFeedForward(currentPosition);
+      // The negative sign may be necessary based on your motor wiring/direction.
+      pivotMotor.set(-(pidOutput + feedForward));
+    }
+
+    // ----- Intake Motor Control & Diagnostics -----
     double intakeMotorUptime = (isIntakeMotorOn) ? Timer.getFPGATimestamp() - intakeOnTimestamp : 0.0;
 
-    // Log Data
     SmartDashboard.putBoolean("Intake Motor Active", isIntakeMotorOn);
     SmartDashboard.putBoolean("Pivot Motor Active", isPivotMotorOn);
-    SmartDashboard.putNumber("Pivot Motor Position", getPivotMotorPosition());
+    SmartDashboard.putNumber("Pivot Motor Position", currentPosition);
     SmartDashboard.putNumber("Pivot Motor Speed", getPivotVelocity());
     SmartDashboard.putNumber("Intake Motor Uptime", intakeMotorUptime);
     SmartDashboard.putNumber("Intake Motor Stop Time", autoStopTime);
@@ -256,9 +302,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Intake Motor Speed", intakeSpeed);
     SmartDashboard.putNumber("Pivot Error", pivotController.getError());
 
-    pivotMotor.set(-pivotController.calculate(getPivotMotorPosition(), desiredPivotPosition));
-
-    // Check if motor is stuck to prevent over straining it
+    // Check if the intake motor current is too high (to prevent stalling)
     if (doAutoCurrentLimit) {
       if (intakeMotor.getOutputCurrent() > CoralManipulatorConstants.autoStopCurrent) {
         stopIntakeMotor();
@@ -266,21 +310,24 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
       }
     }
 
-    // Turn off motor after time has passed
+    // If running in Auto mode, check the timer to begin slowing down the intake.
     if (intakeState == CoralManipulatorState.Auto) {
       if (Timer.getFPGATimestamp() > autoStopTime) {
         slowIntakeMotor(slowTime);
       }
     }
 
+    // Gradually reduce the intake speed when in Slowing mode.
     if (intakeState == CoralManipulatorState.Slowing) {
       double preSpeed = intakeSpeed;
-      setIntakeMotorSpeed(intakeSpeed - slowingFactor); // Slow motor as it approches stopping
-      if (Math.abs(intakeSpeed) < 0.05 || (preSpeed > 0) ? intakeSpeed < 0 : intakeSpeed > 0) {
+      setIntakeMotorSpeed(intakeSpeed - slowingFactor); // reduce speed gradually
+      if (Math.abs(intakeSpeed) < 0.05 || (preSpeed > 0 ? intakeSpeed < 0 : intakeSpeed > 0)) {
         stopIntakeMotor();
       }
     }
   }
+
+  // ================= Internal State =================
 
   private enum CoralManipulatorState {
     Active,

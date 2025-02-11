@@ -37,7 +37,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
     // Camera names from your PhotonVision config
     private static final String[] CAMERA_NAMES = {
-        "Arducam_3"  // index 2 => right
+        "Arducam_3"  // index 0 in this array (adjust index comment as needed)
     };
 
     /**
@@ -46,7 +46,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
      * Rotation3d(roll, pitch, yaw) in radians.
      */
     private final Transform3d[] robotToCams = {
-        // Index 1: front camera
+        // Index 0: front camera (adjust based on your actual camera mounting)
         new Transform3d(
             new Translation3d(+0.267, 0.0, 0.165),
             new Rotation3d(0.0, 0.0, 0.0)
@@ -203,5 +203,12 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
     public boolean isRedAlliance() {
         return DriverStation.getAlliance().equals(DriverStation.Alliance.Red);
+    }
+    
+    /**
+     * Returns true if a tag is currently detected.
+     */
+    public boolean hasTag() {
+        return lastDetectedTagId != -1;
     }
 }
