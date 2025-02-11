@@ -51,6 +51,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   
       elevatorCommands = new SendableChooser<Command>();
   
+      elevatorCommands.addOption("SP 0", new InstantCommand(() -> {
+        moveToScoringPosition(0);
+    }));
       elevatorCommands.setDefaultOption("SP 1", new InstantCommand(() -> {
           moveToScoringPosition(1);
       }));
@@ -123,7 +126,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Desired Height", desiredHeight);
 
-    // ;;;;;;;;desiredHeight=(scoringPosition==1)?ElevatorConstants.level1ScoringPosition:(scoringPosition==2)?ElevatorConstants.level3ScoringPosition:(scoringPosition==3)?ElevatorConstants.level3ScoringPosition/*IWouldNotRecommend-Titus(ButItIsFunny)*/:(scoringPosition==4)?ElevatorConstants.level4ScoringPosition:-1.0;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    // ;;;;;;;;desiredHeight=(scoringPosition==0)?ElevatorConstants.coralStationPosition:desiredHeight=(scoringPosition==1)?ElevatorConstants.level1ScoringPosition:(scoringPosition==2)?ElevatorConstants.level3ScoringPosition:(scoringPosition==3)?ElevatorConstants.level3ScoringPosition/*IWouldNotRecommend-Titus(ButItIsFunny)*/:(scoringPosition==4)?ElevatorConstants.level4ScoringPosition:-1.0;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     autoMode = true;
 
