@@ -58,7 +58,7 @@ public class StrafeToAlignCommand extends Command {
             
             // Calculate desired speeds
             // Note: strafeSpeed is negated because positive lateral offset means robot needs to move left (negative Y)
-            double strafeSpeed = strafeController.calculate(currentLateralOffset, desiredLateralOffset);
+            double strafeSpeed = -strafeController.calculate(currentLateralOffset, desiredLateralOffset);
             double rotationSpeed = rotationController.calculate(currentOrientation, 0);
             
             // Apply acceleration limiting to strafe
@@ -70,7 +70,7 @@ public class StrafeToAlignCommand extends Command {
             lastStrafeSpeed = strafeSpeed;*/
             
             // Clamp speeds
-            strafeSpeed = -Math.min(Math.max(strafeSpeed, -MAX_STRAFE_SPEED), MAX_STRAFE_SPEED);
+            strafeSpeed = Math.min(Math.max(strafeSpeed, -MAX_STRAFE_SPEED), MAX_STRAFE_SPEED);
             rotationSpeed = Math.min(Math.max(rotationSpeed, -MAX_ROTATION_SPEED), MAX_ROTATION_SPEED);
             
             // Log current state
