@@ -15,16 +15,19 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CoralManipulatorConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DoScorePositionCommand;
+import frc.robot.commands.TransitModeCommand;
 import frc.robot.subsystems.CoralManipulatorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -205,9 +208,7 @@ public class RobotContainer {
 
                 // Right Stick button - Transit mode
                 c_operatorController.rightStick()
-                        .onTrue(new InstantCommand(() ->  {
-                                activeMode = ControlMode.Transit;
-                        }));
+                        .onTrue(new TransitModeCommand(elevatorSubsystem, coralManipulatorSubsystem));
 
                 // Left Stick button -
                 c_operatorController.leftStick()
