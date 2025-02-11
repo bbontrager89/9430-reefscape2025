@@ -94,6 +94,15 @@ public final class Constants {
     public static final double kDriveDeadband = 0.05;
     
     public static final double kTriggerThreshold = 0.1;
+
+    // TODO Determine distance
+    public static final double scoringDistance = 0.3;
+
+    // TODO Determine Offsets
+    public static final double leftScoringOffset = 0;
+    public static final double rightScoringOffset = 0;
+    
+    public static final double doublePressBuffer = 0.25;
   }
 
   public static final class AutoConstants {
@@ -153,6 +162,11 @@ public final class Constants {
     // TODO: Determine limits
     public static final double maximumPivotPosition = 0.0;
     public static final double minimumPivotPosition = 0.0;
+
+    // TODO Determine positions
+    public static final double levelOnePivotPosition = 0;
+    public static final double levelTwoPivotPosition = 0;
+    public static final double levelThreePivotPosition = 0;
   }
 
 }
