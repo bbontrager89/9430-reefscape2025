@@ -34,5 +34,27 @@ public class ControllerUtils {
             this.value = value;
         }
     }
+    /**Represents the Axis's on an Xbox controller */
+    public enum AXIS {
+        /** Up button */
+        LeftVertical(1),
+        /** Up-Right button */
+        LeftHorizontal(0),
+        /** Right button */
+        RightVertical(5),
+        /** Down-Right button */
+        RightHorizontal(4),
+        /** Down button */
+        LeftTrigger(2),
+        /** Down-Left button */
+        RightTrigger(3);
+
+        /** The angle of the button */
+        public final int value;
+
+        AXIS(int value) {
+            this.value = value;
+        }
+    }
 
 }
