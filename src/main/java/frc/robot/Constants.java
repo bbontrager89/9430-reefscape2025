@@ -159,8 +159,14 @@ public final class Constants {
     public static final int PivotMotorCanId = 42;
     public static final int IntakeMotorCanId = 41;
 
+    public static final double pivotKp = 4;
+    public static final double pivotKi = 0.3;
+    public static final double pivotKd = 0.1;
+
+    public static final double maxPivotSpeed = 0.2;
+
     // TODO: Determine current spike
-    public static final double autoStopCurrent = 35;
+    public static final double autoStopCurrent = 40;
 
     // TODO: Determine limits
     public static final double maximumPivotPosition = 0.0;
