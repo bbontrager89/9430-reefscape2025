@@ -119,7 +119,7 @@ public final class Constants {
 
     public static final int elevatorMotorCanId = 27;
 
-    public static final double kP = -20;
+    public static final double kP = 20;
     public static final double kI = 0;
     public static final double kD = 0;
 
@@ -136,7 +136,7 @@ public final class Constants {
     public static final double level4ScoringPosition = minimumElevatorHeight;
     public static final double level5ScoringPosition = maximumElevatorHeight;
 
-    public static final boolean elevatorMotorInverted = false;
+    public static final boolean elevatorMotorInverted = true;
 
     public static final double encoderToRevolutionRatio = 200.0;
 
