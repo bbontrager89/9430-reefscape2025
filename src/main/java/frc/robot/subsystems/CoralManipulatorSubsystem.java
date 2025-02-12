@@ -44,15 +44,17 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
   private double desiredPivotPosition = 0.25;
 
+  private boolean autoMode = true;
+
   private static SendableChooser<Command> pivotCommands;
 
   /** Creates a new CoralManipulatorSubsystem. */
   public CoralManipulatorSubsystem() {
 
     pivotEncoder = pivotMotor.getAbsoluteEncoder();
-    pivotController = new PIDController(1.5, 0, 0.05);
+    pivotController = new PIDController(CoralManipulatorConstants.pivotKp, CoralManipulatorConstants.pivotKi, CoralManipulatorConstants.pivotKd);
 
-    pivotController.setTolerance(0.005);
+    pivotController.setTolerance(0);
     pivotController.setIntegratorRange(0.13, 0.47);
   }
 
@@ -256,7 +258,9 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Intake Motor Speed", intakeSpeed);
     SmartDashboard.putNumber("Pivot Error", pivotController.getError());
 
-    pivotMotor.set(-pivotController.calculate(getPivotMotorPosition(), desiredPivotPosition));
+    if (autoMode)
+      pivotMotor.set(Math.min(Math.max(-pivotController.calculate(getPivotMotorPosition(), desiredPivotPosition), -CoralManipulatorConstants.maxPivotSpeed),CoralManipulatorConstants.maxPivotSpeed));
+    
 
     // Check if motor is stuck to prevent over straining it
     if (doAutoCurrentLimit) {
