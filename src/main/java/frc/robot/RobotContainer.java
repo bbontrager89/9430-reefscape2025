@@ -187,22 +187,26 @@ public class RobotContainer {
                 // Right bumper - Manual mode: Coral manipulator wheels intake
                 c_operatorController.rightBumper()
                         .onTrue(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.startPivotMotor(0.3);
+                                coralManipulatorSubsystem.startPivotMotor(0.05);
+                        })).onFalse(new InstantCommand(() -> {
+                                coralManipulatorSubsystem.stopPivotMotor();
                         }));
 
                 // Right trigger -
                 c_operatorController.rightTrigger(OIConstants.kTriggerThreshold)
                         .whileTrue(new RepeatCommand(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.startIntakeMotor(c_operatorController.getRightTriggerAxis());
+                                coralManipulatorSubsystem.startIntakeMotor(-1 * c_operatorController.getRightTriggerAxis());
 
                         }))).onFalse(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.slowIntakeMotor(0.3);
+                                coralManipulatorSubsystem.stopIntakeMotor();
                         }));
 
                 // Left bumper - Coral manipulator wheels out
                 c_operatorController.leftBumper()
                         .onTrue(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.startPivotMotor(-0.3);
+                                coralManipulatorSubsystem.startPivotMotor(-0.05);
+                        })).onFalse(new InstantCommand(() -> {
+                                coralManipulatorSubsystem.stopPivotMotor();
                         }));
 
                 // Left trigger -
@@ -211,7 +215,7 @@ public class RobotContainer {
                                 coralManipulatorSubsystem.startIntakeMotor(c_operatorController.getLeftTriggerAxis());
 
                         }))).onFalse(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.slowIntakeMotor(0.3);
+                                coralManipulatorSubsystem.stopIntakeMotor();
                         }));
 
                 // Y button - Toggle Coral Mode
