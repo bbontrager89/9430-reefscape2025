@@ -54,7 +54,7 @@ public class RobotContainer {
 
 
         // The driver's controller
-        CommandXboxController c_driverController = new CommandXboxController(OIConstants.kOperatorControllerPort);
+        CommandXboxController c_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
         // The operator's controller
         CommandXboxController c_operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
@@ -144,10 +144,10 @@ public class RobotContainer {
                 c_operatorController.axisLessThan(AXIS.LeftVertical.value, -OIConstants.kTriggerThreshold))
                         .whileTrue(new RepeatCommand(new InstantCommand(() -> {
                                 if (activeMode == ControlMode.Manual) {
-                                        
+                                      elevatorSubsystem.setMotorSpeed(c_operatorController.getLeftY());  
                                 }
                         }))).onFalse(new InstantCommand(() -> {
-
+                                elevatorSubsystem.setMotorSpeed(0); 
                         }));
 
                 // Left Stick Horizontal Absolute Value Greater Than Threshold
@@ -191,12 +191,11 @@ public class RobotContainer {
                         }));
 
                 // Right trigger -
-                c_operatorController.rightTrigger()
-                        .whileTrue(new InstantCommand(() -> {
-                                if (c_operatorController.getRightTriggerAxis() > OIConstants.kTriggerThreshold)
-                                        coralManipulatorSubsystem.startIntakeMotor(c_operatorController.getRightTriggerAxis());
+                c_operatorController.rightTrigger(OIConstants.kTriggerThreshold)
+                        .whileTrue(new RepeatCommand(new InstantCommand(() -> {
+                                coralManipulatorSubsystem.startIntakeMotor(c_operatorController.getRightTriggerAxis());
 
-                        })).onFalse(new InstantCommand(() -> {
+                        }))).onFalse(new InstantCommand(() -> {
                                 coralManipulatorSubsystem.slowIntakeMotor(0.3);
                         }));
 
@@ -207,12 +206,11 @@ public class RobotContainer {
                         }));
 
                 // Left trigger -
-                c_operatorController.leftTrigger()
-                        .whileTrue(new InstantCommand(() -> {
-                                if (c_operatorController.getLeftTriggerAxis() > OIConstants.kTriggerThreshold)
-                                        coralManipulatorSubsystem.startIntakeMotor(c_operatorController.getLeftTriggerAxis());
+                c_operatorController.leftTrigger(OIConstants.kTriggerThreshold)
+                        .whileTrue(new RepeatCommand(new InstantCommand(() -> {
+                                coralManipulatorSubsystem.startIntakeMotor(c_operatorController.getLeftTriggerAxis());
 
-                        })).onFalse(new InstantCommand(() -> {
+                        }))).onFalse(new InstantCommand(() -> {
                                 coralManipulatorSubsystem.slowIntakeMotor(0.3);
                         }));
 
