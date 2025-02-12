@@ -150,12 +150,11 @@ public final class Constants {
     public static final int PivotMotorCanId = 42;
     public static final int IntakeMotorCanId = 41;
 
-    // TODO: Determine current spike
     public static final double autoStopCurrent = 35;
 
     // TODO: Determine limits
-    public static final double maximumPivotPosition = 0.0;
-    public static final double minimumPivotPosition = 0.0;
+    public static final double maximumPivotPosition = 0.49;
+    public static final double minimumPivotPosition = 0.11;
   }
 
 }
