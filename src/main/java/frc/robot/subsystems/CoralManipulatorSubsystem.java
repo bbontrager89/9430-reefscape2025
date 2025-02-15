@@ -51,6 +51,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
     pivotEncoder = pivotMotor.getAbsoluteEncoder();
     pivotController = new PIDController(CoralManipulatorConstants.pivotKp, CoralManipulatorConstants.pivotKi, CoralManipulatorConstants.pivotKd);
+    pivotController.reset();
 
     pivotController.setTolerance(0.001);
     pivotController.setIntegratorRange(0.13, 0.47);
@@ -120,7 +121,11 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   }
 
   public void movePivotTo(double pos) {
+    pivotController.reset();
+    
     desiredPivotPosition = pos;
+    pivotController = new PIDController(CoralManipulatorConstants.pivotKp, CoralManipulatorConstants.pivotKi, CoralManipulatorConstants.pivotKd);
+    
     if (desiredPivotPosition > CoralManipulatorConstants.maximumPivotPosition) {
       desiredPivotPosition = CoralManipulatorConstants.maximumPivotPosition;
     }
@@ -255,6 +260,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Intake Motor Timestamp", intakeOnTimestamp);
     SmartDashboard.putNumber("Intake Motor Speed", intakeSpeed);
     SmartDashboard.putNumber("Pivot Error", pivotController.getError());
+    SmartDashboard.putNumber("desiredPivotPosition", desiredPivotPosition);
 
     pivotMotor.set(Math.min(Math.max(-pivotController.calculate(getPivotMotorPosition(), desiredPivotPosition), -CoralManipulatorConstants.maxPivotSpeed),CoralManipulatorConstants.maxPivotSpeed));
     
