@@ -27,7 +27,7 @@ public class TagAlignCommand extends SequentialCommandGroup {
                 new SequentialCommandGroup(
                     new RotateToTagCommand(drive),
                     new StrafeToAlignCommand(drive, desiredLateralOffset),
-                    new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset)
+                    new ApproachTagCommand(drive, desiredDistance)
                 ),
                 // If we don't see a tag, do nothing
                 new InstantCommand(),
