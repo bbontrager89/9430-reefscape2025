@@ -13,7 +13,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
     private final double desiredLateralOffset;
     private final double desiredDistance;
 
-    public DoScorePositionCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coralSubsystem, DriveSubsystem drive, double setpoint , int scoringPosition, double desiredLateralOffset, double desiredDistance, double pivotHeight) {
+    public DoScorePositionCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coralSubsystem, DriveSubsystem drive, int scoringPosition, double desiredLateralOffset, double desiredDistance, double pivotHeight) {
         this.drive = drive;
         this.desiredLateralOffset = desiredLateralOffset;
         this.desiredDistance = desiredDistance;

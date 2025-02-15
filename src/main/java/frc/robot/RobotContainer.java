@@ -263,8 +263,7 @@ public class RobotContainer {
                                                 new DoScorePositionCommand(
                                                         elevatorSubsystem, 
                                                         coralManipulatorSubsystem, 
-                                                        m_robotDrive, 
-                                                        0,
+                                                        m_robotDrive,
                                                         0, 
                                                         0.0, 
                                                         OIConstants.scoringDistance, 
@@ -305,8 +304,7 @@ public class RobotContainer {
                                                 new DoScorePositionCommand(
                                                         elevatorSubsystem, 
                                                         coralManipulatorSubsystem, 
-                                                        m_robotDrive, 
-                                                        0,
+                                                        m_robotDrive,
                                                         2, 
                                                         OIConstants.rightScoringOffset, 
                                                         OIConstants.scoringDistance, 
@@ -317,8 +315,7 @@ public class RobotContainer {
                                                 new DoScorePositionCommand(
                                                         elevatorSubsystem, 
                                                         coralManipulatorSubsystem, 
-                                                        m_robotDrive, 
-                                                        0,
+                                                        m_robotDrive,
                                                         3, 
                                                         OIConstants.rightScoringOffset, 
                                                         OIConstants.scoringDistance, 
@@ -357,8 +354,7 @@ public class RobotContainer {
                                                 new DoScorePositionCommand(
                                                         elevatorSubsystem, 
                                                         coralManipulatorSubsystem, 
-                                                        m_robotDrive, 
-                                                        0,
+                                                        m_robotDrive,
                                                         1, 
                                                         0.0, 
                                                         OIConstants.scoringDistance, 
@@ -399,8 +395,7 @@ public class RobotContainer {
                                                 new DoScorePositionCommand(
                                                         elevatorSubsystem, 
                                                         coralManipulatorSubsystem, 
-                                                        m_robotDrive, 
-                                                        0,
+                                                        m_robotDrive,
                                                         2, 
                                                         OIConstants.leftScoringOffset, 
                                                         OIConstants.scoringDistance, 
@@ -411,8 +406,7 @@ public class RobotContainer {
                                                 new DoScorePositionCommand(
                                                         elevatorSubsystem, 
                                                         coralManipulatorSubsystem, 
-                                                        m_robotDrive, 
-                                                        0,
+                                                        m_robotDrive,
                                                         3, 
                                                         OIConstants.leftScoringOffset, 
                                                         OIConstants.scoringDistance, 
