@@ -128,7 +128,7 @@ public final class Constants {
 
     public static final int elevatorMotorCanId = 27;
 
-    public static final double kP = 20;
+    public static final double kP = -20;
     public static final double kI = 0;
     public static final double kD = 0;
 
@@ -145,7 +145,7 @@ public final class Constants {
     public static final double level4ScoringPosition = minimumElevatorHeight;
     public static final double level5ScoringPosition = maximumElevatorHeight;
 
-    public static final boolean elevatorMotorInverted = true;
+    public static final boolean elevatorMotorInverted = false;
 
     public static final double encoderToRevolutionRatio = 200.0;
 
@@ -169,8 +169,8 @@ public final class Constants {
     public static final double autoStopCurrent = 40;
 
     // TODO: Determine limits
-    public static final double maximumPivotPosition = 0.49;
-    public static final double minimumPivotPosition = 0.11;
+    public static final double maximumPivotPosition = 0.0;
+    public static final double minimumPivotPosition = 0.0;
 
     // TODO Determine positions
     public static final double levelOnePivotPosition = 0;

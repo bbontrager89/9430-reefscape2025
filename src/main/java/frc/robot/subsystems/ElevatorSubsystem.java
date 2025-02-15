@@ -10,8 +10,6 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,6 +27,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   private SparkMaxConfig elevatorMotorConfig = new SparkMaxConfig();
 
   private double desiredHeight;
+  private double autoSpeed = 0.0;
   private boolean autoMode = false;
 
   private boolean aboveMaxHeight = false;
@@ -36,61 +35,58 @@ public class ElevatorSubsystem extends SubsystemBase {
   private double currentSpeed = 0.0;
 
   private static SendableChooser<Command> elevatorCommands;
-
-  // Create a WPILib PIDController using your constants.
-  // If you only have kP defined, set kI and kD to 0.
-  private final PIDController elevatorPIDController = new PIDController(
-      ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD);
-
-  /** Creates a new ElevatorSubsystem. */
-  public ElevatorSubsystem() {
-
-    elevatorMotorConfig.inverted(ElevatorConstants.elevatorMotorInverted);
-    elevatorMotor.configure(elevatorMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-
-    // Configure the PID tolerance (how close in position you need to be to the setpoint).
-    elevatorPIDController.setTolerance(ElevatorConstants.positionTolerence);
-
-    configureDashboardControls();
-  }
-
-  public void configureDashboardControls() {
-
-    elevatorCommands = new SendableChooser<Command>();
-
-    elevatorCommands.setDefaultOption("SP 1", new InstantCommand(() -> {
-      moveToScoringPosition(1);
+  
+    /** Creates a new ElevatorSubsystem. */
+    public ElevatorSubsystem() {
+  
+      elevatorMotorConfig.inverted(ElevatorConstants.elevatorMotorInverted);
+  
+      elevatorMotor.configure(elevatorMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+  
+      configureDashboardControls();
+  
+    }
+  
+    public void configureDashboardControls() {
+  
+      elevatorCommands = new SendableChooser<Command>();
+  
+      elevatorCommands.addOption("SP 0", new InstantCommand(() -> {
+        moveToScoringPosition(0);
     }));
-    elevatorCommands.addOption("SP 2", new InstantCommand(() -> {
-      moveToScoringPosition(2);
-    }));
-    elevatorCommands.addOption("SP 3", new InstantCommand(() -> {
-      moveToScoringPosition(3);
-    }));
-    elevatorCommands.addOption("min", new InstantCommand(() -> {
-      moveToScoringPosition(4);
-    }));
-    elevatorCommands.addOption("max", new InstantCommand(() -> {
-      moveToScoringPosition(5);
-    }));
-    elevatorCommands.addOption("Custom", new InstantCommand(() -> {
-      moveToPosition(SmartDashboard.getNumber("Custom Elevator Height", ElevatorConstants.level1ScoringPosition));
-    }));
+      elevatorCommands.setDefaultOption("SP 1", new InstantCommand(() -> {
+          moveToScoringPosition(1);
+      }));
+      elevatorCommands.addOption("SP 2", new InstantCommand(() -> {
+          moveToScoringPosition(2);
+      }));
+      elevatorCommands.addOption("SP 3", new InstantCommand(() -> {
+          moveToScoringPosition(3);
+      }));
+      elevatorCommands.addOption("min", new InstantCommand(() -> {
+          moveToScoringPosition(4);
+      }));
+      elevatorCommands.addOption("max", new InstantCommand(() -> {
+          moveToScoringPosition(5);
+      }));
+      elevatorCommands.addOption("Custom", new InstantCommand(() -> {
+          moveToPosition(SmartDashboard.getNumber("Custom Elevator Height", ElevatorConstants.level1ScoringPosition));
+      }));
+  
+      SmartDashboard.putData("Elevator Height Commands", elevatorCommands);
 
-    SmartDashboard.putData("Elevator Height Commands", elevatorCommands);
+      SmartDashboard.putData("Run Elevator Command", new ScheduleCommand(new InstantCommand(() -> {
+                if (elevatorCommands.getSelected() != null)
+                  elevatorCommands.getSelected().schedule();
+            })));
 
-    SmartDashboard.putData("Run Elevator Command", new ScheduleCommand(new InstantCommand(() -> {
-      if (elevatorCommands.getSelected() != null)
-        elevatorCommands.getSelected().schedule();
-    })));
+      SmartDashboard.putNumber("Custom Elevator Height", ElevatorConstants.level1ScoringPosition);
+      SmartDashboard.putNumber("Desired Height", 0.0);
 
-    SmartDashboard.putNumber("Custom Elevator Height", ElevatorConstants.level1ScoringPosition);
-    SmartDashboard.putNumber("Desired Height", 0.0);
-  }
+    }
 
   public void setMotorSpeed(double speed) {
     currentSpeed = speed;
-    // Check soft limits before commanding the motor.
     if (!(aboveMaxHeight && (speed < 0)) && !(belowMinHeight && (speed > 0))) {
       elevatorMotor.set(speed);
     }
@@ -125,25 +121,23 @@ public class ElevatorSubsystem extends SubsystemBase {
       default:
         System.out.println("Invalid Scoring Position requested in ElevatorSubsystem");
         Elastic.sendError("Invalid Scoring Position", "requested in ElevatorSubsystem");
-        return;
+        break;
     }
 
     SmartDashboard.putNumber("Desired Height", desiredHeight);
 
     // ;;;;;;;;desiredHeight=(scoringPosition==0)?ElevatorConstants.coralStationPosition:desiredHeight=(scoringPosition==1)?ElevatorConstants.level1ScoringPosition:(scoringPosition==2)?ElevatorConstants.level3ScoringPosition:(scoringPosition==3)?ElevatorConstants.level3ScoringPosition/*IWouldNotRecommend-Titus(ButItIsFunny)*/:(scoringPosition==4)?ElevatorConstants.level4ScoringPosition:-1.0;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-    // Set the PID setpoint and enable auto mode.
-    elevatorPIDController.setSetpoint(desiredHeight);
     autoMode = true;
+
   }
 
   public void moveToPosition(double position) {
+
     desiredHeight = position;
+    autoMode = true;
     SmartDashboard.putNumber("Desired Height", desiredHeight);
 
-    // Set the PID setpoint and enable auto mode.
-    elevatorPIDController.setSetpoint(desiredHeight);
-    autoMode = true;
   }
 
   public void turnOffAutoMode() {
@@ -161,31 +155,18 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // Log current sensor data.
-    double height = getHeight();
-    SmartDashboard.putNumber("Elevator Position", height);
+
+    // Log data
+    SmartDashboard.putNumber("Elevator Position", absoluteEncoder.getPosition());
     SmartDashboard.putNumber("Elevator Velocity", absoluteEncoder.getVelocity());
 
-    // If in auto mode, compute the PID output.
-    double pidOutput = 0.0;
-    if (autoMode) {
-      pidOutput = elevatorPIDController.calculate(height, elevatorPIDController.getSetpoint());
-      pidOutput = MathUtil.clamp(pidOutput, -ElevatorConstants.maximumAutoSpeed, ElevatorConstants.maximumAutoSpeed);
-      SmartDashboard.putNumber("AutoSpeed", pidOutput);
-    }
-
-    // Soft limit checks
-
-    // Lower soft limit check (when elevator is too high).
-    if (height > ElevatorConstants.maximumElevatorHeight) {
-      // If the motor is moving downward (negative speed) while above maximum,
-      // stop the motor.
+     
+    // Lower soft limit check
+    if (getHeight() > ElevatorConstants.maximumElevatorHeight) {
       if (currentSpeed < 0) {
         stopMotor();
       }
-      // If auto mode is active and the PID output would drive the elevator down further,
-      // disable auto mode.
-      if (autoMode && pidOutput < 0) {
+      if (autoSpeed < 0 && autoMode) {
         turnOffAutoMode();
       }
       aboveMaxHeight = true;
@@ -193,31 +174,45 @@ public class ElevatorSubsystem extends SubsystemBase {
       aboveMaxHeight = false;
     }
 
-    // Upper soft limit check (when elevator is too low).
-    if (height < ElevatorConstants.minimumElevatorHeight) {
-      // If the motor is moving upward (positive speed) while below minimum,
-      // stop the motor.
+    // Upper soft limit check
+    if (getHeight() < ElevatorConstants.minimumElevatorHeight) {
       if (currentSpeed > 0) {
         stopMotor();
       }
-      // If auto mode is active and the PID output would drive the elevator upward,
-      // disable auto mode.
-      if (autoMode && pidOutput > 0) {
+
+      if (autoSpeed > 0 && autoMode) {
         turnOffAutoMode();
       }
+
       belowMinHeight = true;
+
     } else {
       belowMinHeight = false;
     }
+    
 
-    // If auto mode is still enabled, command the motor using the PID controller’s output.
+    // Run auto movement
     if (autoMode) {
-      // If the controller is within tolerance of the setpoint, stop auto mode.
-      if (elevatorPIDController.atSetpoint()) {
+
+      // Calculate error
+      double elevatorError = (desiredHeight - getHeight());
+
+      // Adjust speed to error
+      double autoSpeed = ElevatorConstants.kP * elevatorError;
+      autoSpeed = (autoSpeed > ElevatorConstants.maximumAutoSpeed) ? ElevatorConstants.maximumAutoSpeed
+          : (autoSpeed < -ElevatorConstants.maximumAutoSpeed) ? -ElevatorConstants.maximumAutoSpeed : autoSpeed;
+
+      // Log data
+      SmartDashboard.putNumber("AutoSpeed", autoSpeed);
+
+      // Run or don't run
+      if (Math.abs(elevatorError) < ElevatorConstants.positionTolerence) {
         turnOffAutoMode();
       } else {
-        setMotorSpeed(pidOutput);
+        setMotorSpeed(autoSpeed);
       }
+
     }
+
   }
 }
