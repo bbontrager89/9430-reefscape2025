@@ -12,7 +12,7 @@ public class StrafeToAlignCommand extends Command {
     private final PIDController rotationController;
     
     // Constants
-    private static final double LATERAL_TOLERANCE_METERS = 0.03;  // 5cm
+    private static final double LATERAL_TOLERANCE_METERS = 0.05;  // 5cm
     private static final double ROTATION_TOLERANCE_DEG = 1.7;
     private static final double MAX_STRAFE_SPEED = 1.0; // m/s
     private static final double MAX_ROTATION_SPEED = 0.5; // rad/s
@@ -28,7 +28,7 @@ public class StrafeToAlignCommand extends Command {
         addRequirements(drive);
         
         // PID for strafe control
-        strafeController = new PIDController(3.8, 0.0, 0.0);
+        strafeController = new PIDController(3.0, 0.0, 0.0);
         strafeController.setTolerance(LATERAL_TOLERANCE_METERS);
         // PID for rotation
         rotationController = new PIDController(0.3, 0.0, 0.0);
@@ -58,7 +58,7 @@ public class StrafeToAlignCommand extends Command {
             
             // Calculate desired speeds
             // Note: strafeSpeed is negated because positive lateral offset means robot needs to move left (negative Y)
-            double strafeSpeed = strafeController.calculate(currentLateralOffset, desiredLateralOffset);
+            double strafeSpeed = -strafeController.calculate(currentLateralOffset, desiredLateralOffset);
             double rotationSpeed = rotationController.calculate(currentOrientation, 0);
             
             // Apply acceleration limiting to strafe
@@ -70,7 +70,7 @@ public class StrafeToAlignCommand extends Command {
             lastStrafeSpeed = strafeSpeed;*/
             
             // Clamp speeds
-            strafeSpeed = -Math.min(Math.max(strafeSpeed, -MAX_STRAFE_SPEED), MAX_STRAFE_SPEED);
+            strafeSpeed = Math.min(Math.max(strafeSpeed, -MAX_STRAFE_SPEED), MAX_STRAFE_SPEED);
             rotationSpeed = Math.min(Math.max(rotationSpeed, -MAX_ROTATION_SPEED), MAX_ROTATION_SPEED);
             
             // Log current state
