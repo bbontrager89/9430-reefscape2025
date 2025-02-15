@@ -8,49 +8,57 @@ import frc.robot.subsystems.DriveSubsystem;
 public class ApproachTagCommand extends Command {
     private final DriveSubsystem drive;
     private final double desiredDistance;
-    private final PIDController approachController;
+    private final PIDController distanceController;
+    private final PIDController lateralController;
     private final PIDController rotationController;
     
-    // Constants
+    // Tolerances and speed limits
     private static final double DISTANCE_TOLERANCE_METERS = 0.08;  // 8cm
-    private static final double ROTATION_TOLERANCE_DEG = 2.0;     // Increased for stability
-    private static final double MAX_APPROACH_SPEED = 1.5; // m/s
-    private static final double MAX_ROTATION_SPEED = 1.0; // rad/s
-    private static final double LOST_TAG_TIMEOUT = 0.5; // seconds
+    private static final double LATERAL_TOLERANCE_METERS = 0.03;   // 3cm
+    private static final double ROTATION_TOLERANCE_DEG = 2.0;        // degrees tolerance for rotation error
+    private static final double MAX_FORWARD_SPEED = 1.5;           // m/s
+    private static final double MAX_LATERAL_SPEED = 1.0;           // m/s
+    private static final double MAX_ROTATION_SPEED = 0.3;          // rad/s (small correction)
+    private static final double LOST_TAG_TIMEOUT = 0.5;            // seconds
     
     private double lastTagTimestamp = 0;
-    private double lastApproachSpeed = 0;
-    private static final double MAX_APPROACH_ACCELERATION = 2.0; // m/s^2
     
     public ApproachTagCommand(DriveSubsystem drive, double desiredDistance) {
         this.drive = drive;
         this.desiredDistance = desiredDistance;
         addRequirements(drive);
         
-        // PID for approach distance control
-        approachController = new PIDController(2.0, 0.1, 0.05);
-        approachController.setTolerance(DISTANCE_TOLERANCE_METERS);
+        // PID for forward (distance) control.
+        distanceController = new PIDController(2.0, 0.1, 0.05);
+        distanceController.setTolerance(DISTANCE_TOLERANCE_METERS);
         
-        // PID for maintaining perpendicular alignment
-        rotationController = new PIDController(0.08, 0.001, 0.003);
+        // PID for lateral offset correction.
+        lateralController = new PIDController(3.8, 0.0, 0.0);
+        lateralController.setTolerance(LATERAL_TOLERANCE_METERS);
+        
+        // PID for slight rotation correction.
+        // This corrects the tag orientation error (in degrees) with a low gain.
+        rotationController = new PIDController(0.05, 0.0, 0.005);
         rotationController.setTolerance(ROTATION_TOLERANCE_DEG);
-        rotationController.enableContinuousInput(-180, 180);  // This is key for handling wrap-around
+        rotationController.enableContinuousInput(-180, 180);  // angle wrap-around
     }
     
     @Override
     public void initialize() {
-        approachController.reset();
+        distanceController.reset();
+        lateralController.reset();
         rotationController.reset();
-        lastApproachSpeed = 0;
-        System.out.printf("ApproachTagCommand initialized - Target distance: %.2f meters%n", 
-            desiredDistance);
+        System.out.printf("ApproachTagCommand initialized - Target distance: %.2f meters%n", desiredDistance);
     }
     
+    // Helper: Normalize angle to [-180, 180)
     private double normalizeAngle(double angle) {
-        // Normalize angle to [-180, 180)
         angle = angle % 360;
-        if (angle > 180) angle -= 360;
-        if (angle <= -180) angle += 360;
+        if (angle > 180) {
+            angle -= 360;
+        } else if (angle <= -180) {
+            angle += 360;
+        }
         return angle;
     }
     
@@ -61,62 +69,51 @@ public class ApproachTagCommand extends Command {
         if (poseEstimator.getLastDetectedTagId() != -1) {
             lastTagTimestamp = poseEstimator.getLastDetectionTimestamp();
             
-            // Get current state
             double currentDistance = poseEstimator.getDistanceToTag();
-            double tagOrientation = normalizeAngle(poseEstimator.getTagOrientationErrorDeg());
+            double currentLateralOffset = poseEstimator.getLateralOffsetToTag();
+            double tagOrientationError = normalizeAngle(poseEstimator.getTagOrientationErrorDeg());
             
-            // Calculate approach speed
-            double approachSpeed = -approachController.calculate(currentDistance, desiredDistance);
+            // Compute forward speed correction (positive drives forward)
+            double forwardSpeed = distanceController.calculate(currentDistance, desiredDistance);
+            // Compute lateral correction (positive moves right to reduce offset)
+            double lateralSpeed = lateralController.calculate(currentLateralOffset, 0);
+            // Compute a slight rotation correction (aiming for 0° error)
+            double rotationSpeed = rotationController.calculate(tagOrientationError, 0);
             
-            // Calculate rotation to maintain perpendicular alignment
-            double rotationSpeed = -rotationController.calculate(tagOrientation, 0);
-            
-            // Clamp speeds
-            approachSpeed = Math.min(Math.max(approachSpeed, -MAX_APPROACH_SPEED), MAX_APPROACH_SPEED);
+            // Clamp each speed to its maximum limit
+            forwardSpeed = Math.min(Math.max(forwardSpeed, -MAX_FORWARD_SPEED), MAX_FORWARD_SPEED);
+            lateralSpeed = Math.min(Math.max(lateralSpeed, -MAX_LATERAL_SPEED), MAX_LATERAL_SPEED);
             rotationSpeed = Math.min(Math.max(rotationSpeed, -MAX_ROTATION_SPEED), MAX_ROTATION_SPEED);
             
-            // Reduce rotation speed when close to target
-            double distanceRatio = (currentDistance - desiredDistance) / desiredDistance;
-            rotationSpeed *= Math.min(1.0, Math.max(0.2, distanceRatio));
+            System.out.printf("Approach - Dist: %.2f m (Target: %.2f m), Lateral: %.2f m, Angle Error: %.2f°, " +
+                              "Forward: %.2f m/s, Lateral: %.2f m/s, Rot: %.2f rad/s%n",
+                currentDistance, desiredDistance, currentLateralOffset, tagOrientationError,
+                forwardSpeed, lateralSpeed, rotationSpeed);
             
-            // Reduce approach speed when alignment is poor
-            double alignmentFactor = Math.cos(Math.toRadians(tagOrientation));
-            approachSpeed *= Math.max(0.2, alignmentFactor); // Minimum 20% speed
-            
-            // Additional slow down when very close to target
-            if (Math.abs(currentDistance - desiredDistance) < DISTANCE_TOLERANCE_METERS * 2) {
-                approachSpeed *= 0.5;
-                rotationSpeed *= 0.5;
-            }
-            
-            System.out.printf("Approach - Distance: %.2f m, Target: %.2f m, Speed: %.2f m/s, " +
-                            "Orientation: %.2f°, Rotation: %.2f rad/s%n",
-                currentDistance, desiredDistance, approachSpeed, tagOrientation, rotationSpeed);
-            
-            // Apply motion
-            drive.driveRobotRelative(new ChassisSpeeds(approachSpeed, 0, 0));
+            // Drive: the robot will move forward and sideways while applying a slight rotation correction.
+            drive.driveRobotRelative(new ChassisSpeeds(forwardSpeed, lateralSpeed, rotationSpeed));
         } else {
             drive.driveRobotRelative(new ChassisSpeeds());
-            lastApproachSpeed = 0;
         }
     }
     
     @Override
     public boolean isFinished() {
         var poseEstimator = drive.getPoseEstimatorSubsystem();
-        
         double currentTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+        
         if (currentTime - lastTagTimestamp > LOST_TAG_TIMEOUT) {
             return true;
         }
         
         if (poseEstimator.getLastDetectedTagId() != -1) {
             double currentDistance = poseEstimator.getDistanceToTag();
-            double tagOrientation = normalizeAngle(poseEstimator.getTagOrientationErrorDeg());
+            double currentLateralOffset = poseEstimator.getLateralOffsetToTag();
+            double tagOrientationError = normalizeAngle(poseEstimator.getTagOrientationErrorDeg());
             
-            // Only finish when both distance and orientation are within tolerance
             return Math.abs(currentDistance - desiredDistance) < DISTANCE_TOLERANCE_METERS &&
-                   Math.abs(tagOrientation) < ROTATION_TOLERANCE_DEG;
+                   Math.abs(currentLateralOffset) < LATERAL_TOLERANCE_METERS &&
+                   Math.abs(tagOrientationError) < ROTATION_TOLERANCE_DEG;
         }
         
         return false;
