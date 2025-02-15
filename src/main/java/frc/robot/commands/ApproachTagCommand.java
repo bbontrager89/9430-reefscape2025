@@ -16,7 +16,7 @@ public class ApproachTagCommand extends Command {
     private static final double ROTATION_TOLERANCE_DEG = 2.0;     // Increased for stability
     private static final double MAX_APPROACH_SPEED = 1.5; // m/s
     private static final double MAX_ROTATION_SPEED = 1.0; // rad/s
-    private static final double LOST_TAG_TIMEOUT = 0.5; // seconds
+    private static final double LOST_TAG_TIMEOUT = 0.25; // seconds
     
     private double lastTagTimestamp = 0;
     private double lastApproachSpeed = 0;
@@ -28,11 +28,11 @@ public class ApproachTagCommand extends Command {
         addRequirements(drive);
         
         // PID for approach distance control
-        approachController = new PIDController(2.0, 0.1, 0.05);
+        approachController = new PIDController(4.0, 0, 0);
         approachController.setTolerance(DISTANCE_TOLERANCE_METERS);
         
         // PID for maintaining perpendicular alignment
-        rotationController = new PIDController(0.08, 0.001, 0.003);
+        rotationController = new PIDController(0.08, 0, 0);
         rotationController.setTolerance(ROTATION_TOLERANCE_DEG);
         rotationController.enableContinuousInput(-180, 180);  // This is key for handling wrap-around
     }
