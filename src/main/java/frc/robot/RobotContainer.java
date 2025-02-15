@@ -264,6 +264,7 @@ public class RobotContainer {
                                                         elevatorSubsystem, 
                                                         coralManipulatorSubsystem, 
                                                         m_robotDrive, 
+                                                        0,
                                                         0, 
                                                         0.0, 
                                                         OIConstants.scoringDistance, 
@@ -305,6 +306,7 @@ public class RobotContainer {
                                                         elevatorSubsystem, 
                                                         coralManipulatorSubsystem, 
                                                         m_robotDrive, 
+                                                        0,
                                                         2, 
                                                         OIConstants.rightScoringOffset, 
                                                         OIConstants.scoringDistance, 
@@ -316,6 +318,7 @@ public class RobotContainer {
                                                         elevatorSubsystem, 
                                                         coralManipulatorSubsystem, 
                                                         m_robotDrive, 
+                                                        0,
                                                         3, 
                                                         OIConstants.rightScoringOffset, 
                                                         OIConstants.scoringDistance, 
@@ -355,6 +358,7 @@ public class RobotContainer {
                                                         elevatorSubsystem, 
                                                         coralManipulatorSubsystem, 
                                                         m_robotDrive, 
+                                                        0,
                                                         1, 
                                                         0.0, 
                                                         OIConstants.scoringDistance, 
@@ -396,6 +400,7 @@ public class RobotContainer {
                                                         elevatorSubsystem, 
                                                         coralManipulatorSubsystem, 
                                                         m_robotDrive, 
+                                                        0,
                                                         2, 
                                                         OIConstants.leftScoringOffset, 
                                                         OIConstants.scoringDistance, 
@@ -407,6 +412,7 @@ public class RobotContainer {
                                                         elevatorSubsystem, 
                                                         coralManipulatorSubsystem, 
                                                         m_robotDrive, 
+                                                        0,
                                                         3, 
                                                         OIConstants.leftScoringOffset, 
                                                         OIConstants.scoringDistance, 
@@ -492,7 +498,7 @@ public class RobotContainer {
 
                 // A button -
                 c_driverController.a()
-                        .onTrue(new DoScorePositionCommand(elevatorSubsystem, coralManipulatorSubsystem, m_robotDrive, 3, 0.0, 1.5, 0.25));
+                        .onTrue(new DoScorePositionCommand(elevatorSubsystem, coralManipulatorSubsystem, m_robotDrive, 0, 3, 0.3, 1.5, 0.25));
 
                 // Right Stick button -
                 c_driverController.rightStick()

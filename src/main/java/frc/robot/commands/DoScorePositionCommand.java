@@ -13,7 +13,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
     private final double desiredLateralOffset;
     private final double desiredDistance;
 
-    public DoScorePositionCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coralSubsystem, DriveSubsystem drive, int scoringPosition, double desiredLateralOffset, double desiredDistance, double pivotHeight) {
+    public DoScorePositionCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coralSubsystem, DriveSubsystem drive, double setpoint , int scoringPosition, double desiredLateralOffset, double desiredDistance, double pivotHeight) {
         this.drive = drive;
         this.desiredLateralOffset = desiredLateralOffset;
         this.desiredDistance = desiredDistance;
@@ -28,7 +28,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
             new ConditionalCommand(
                 // If we see a tag, execute the full alignment sequence
                 new SequentialCommandGroup(
-                    new RotateToTagCommand(drive),
+                    new RotateToTagCommand(drive, setpoint),
                     new StrafeToAlignCommand(drive, desiredLateralOffset),
                     new MoveElevator(elevator, scoringPosition),
                     new PivotCoral(coralSubsystem, pivotHeight), // TODO make correct

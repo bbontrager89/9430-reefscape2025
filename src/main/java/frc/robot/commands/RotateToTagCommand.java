@@ -13,12 +13,15 @@ public class RotateToTagCommand extends Command {
     private static final double ROTATION_TOLERANCE_DEG = 2.0;
     private static final double MAX_ROTATION_SPEED = 0.5; // rad/s
     private static final double LOST_TAG_TIMEOUT = 0.5; // seconds
+
+    private double setpoint = 0.0;
     
     // Tracking when we lose sight of the tag
     private double lastTagTimestamp = 0;
     
-    public RotateToTagCommand(DriveSubsystem drive) {
+    public RotateToTagCommand(DriveSubsystem drive, double setpoint) {
         this.drive = drive;
+        this.setpoint = setpoint;
         addRequirements(drive);
         
         // PID for rotation control
@@ -42,7 +45,7 @@ public class RotateToTagCommand extends Command {
             lastTagTimestamp = poseEstimator.getLastDetectionTimestamp();
             
             // Calculate rotation speed based on bearing
-            double rotationSpeed = -rotationController.calculate(bearing, 0);
+            double rotationSpeed = -rotationController.calculate(bearing, setpoint);
             
             // Clamp rotation speed
             rotationSpeed = Math.min(Math.max(rotationSpeed, -MAX_ROTATION_SPEED), MAX_ROTATION_SPEED);
