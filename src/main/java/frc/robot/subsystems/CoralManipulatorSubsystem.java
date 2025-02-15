@@ -128,6 +128,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
       desiredPivotPosition = CoralManipulatorConstants.minimumPivotPosition;
     }
     SmartDashboard.putNumber("Desired Pivot Height", desiredPivotPosition);
+    pivotController.reset();
   }
 
   /**

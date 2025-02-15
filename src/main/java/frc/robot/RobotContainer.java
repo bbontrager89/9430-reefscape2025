@@ -187,9 +187,7 @@ public class RobotContainer {
                 // Right bumper - Manual mode: Coral manipulator wheels intake
                 c_operatorController.rightBumper()
                         .onTrue(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.startPivotMotor(0.05);
-                        })).onFalse(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.stopPivotMotor();
+                                coralManipulatorSubsystem.movePivotTo(coralManipulatorSubsystem.getPivotMotorPosition() - 0.05);
                         }));
 
                 // Right trigger -
@@ -204,9 +202,7 @@ public class RobotContainer {
                 // Left bumper - Coral manipulator wheels out
                 c_operatorController.leftBumper()
                         .onTrue(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.startPivotMotor(-0.05);
-                        })).onFalse(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.stopPivotMotor();
+                                coralManipulatorSubsystem.movePivotTo(coralManipulatorSubsystem.getPivotMotorPosition() + 0.05);
                         }));
 
                 // Left trigger -
