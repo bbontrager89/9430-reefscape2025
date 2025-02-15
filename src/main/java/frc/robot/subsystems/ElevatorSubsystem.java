@@ -104,6 +104,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void moveToScoringPosition(int scoringPosition) {
 
     switch (scoringPosition) {
+      case 0:
+        desiredHeight = ElevatorConstants.coralStationPosition;
+        break;
       case 1:
         desiredHeight = ElevatorConstants.level1ScoringPosition;
         break;
@@ -126,6 +129,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     SmartDashboard.putNumber("Desired Height", desiredHeight);
+
+    // ;;;;;;;;desiredHeight=(scoringPosition==0)?ElevatorConstants.coralStationPosition:desiredHeight=(scoringPosition==1)?ElevatorConstants.level1ScoringPosition:(scoringPosition==2)?ElevatorConstants.level3ScoringPosition:(scoringPosition==3)?ElevatorConstants.level3ScoringPosition/*IWouldNotRecommend-Titus(ButItIsFunny)*/:(scoringPosition==4)?ElevatorConstants.level4ScoringPosition:-1.0;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     // Set the PID setpoint and enable auto mode.
     elevatorPIDController.setSetpoint(desiredHeight);

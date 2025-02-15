@@ -128,6 +128,8 @@ public final class Constants {
     public static final double minimumElevatorHeight = 0.175; // Furthest possible is 0.166
     public static final double maximumElevatorHeight = 0.675; // Furthest possible is 0.683
 
+    // TODO Assign Correct Heights
+    public static final double coralStationPosition = 0.25;
     public static final double level1ScoringPosition = 0.3;
     public static final double level2ScoringPosition = 0.35;
     public static final double level3ScoringPosition = 0.4;
@@ -141,18 +143,18 @@ public final class Constants {
     public static final double rangeInRevolutions = (maximumElevatorHeight - minimumElevatorHeight) * encoderToRevolutionRatio;
 
     public static final int maximumAutoSpeed = 1; // Range: 0 to 1
+
   }
 
   public static final class CoralManipulatorConstants {
     public static final int PivotMotorCanId = 42;
     public static final int IntakeMotorCanId = 41;
 
-    // TODO: Determine current spike
     public static final double autoStopCurrent = 35;
 
     // TODO: Determine limits
-    public static final double maximumPivotPosition = 0.485;
-    public static final double minimumPivotPosition = 0.15;
+    public static final double maximumPivotPosition = 0.49;
+    public static final double minimumPivotPosition = 0.11;
   }
 
 }

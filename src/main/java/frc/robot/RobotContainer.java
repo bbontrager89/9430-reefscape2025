@@ -24,11 +24,13 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.utils.ControllerUtils.POV;
+import frc.utils.ControllerUtils.AXIS;
 
 import java.util.List;
 
@@ -79,15 +81,6 @@ public class RobotContainer {
 
         /** Represents modes for different controls */
         enum ControlMode {
-                /**
-                 * <p>
-                 * Retract Algae intake
-                 * <p>
-                 * Coral Manipulator to upright position
-                 * <p>
-                 * Elevator to bottom position
-                 */
-                Transit,
                 /**
                  * <p>
                  * Left stick moves elevator up and down
@@ -141,6 +134,51 @@ public class RobotContainer {
                  * OPERATOR BUTTON MAPPING *
                  *                         *
                 \* * * * * * * * * * * * * */
+
+                // Left Stick Vetical Absolute Value Greater Than Threshold
+                c_operatorController.axisGreaterThan(AXIS.LeftVertical.value, OIConstants.kTriggerThreshold).or(
+                c_operatorController.axisLessThan(AXIS.LeftVertical.value, -OIConstants.kTriggerThreshold))
+                        .whileTrue(new RepeatCommand(new InstantCommand(() -> {
+                                if (activeMode == ControlMode.Manual) {
+                                        
+                                }
+                        }))).onFalse(new InstantCommand(() -> {
+
+                        }));
+
+                // Left Stick Horizontal Absolute Value Greater Than Threshold
+                c_operatorController.axisGreaterThan(AXIS.LeftHorizontal.value, OIConstants.kTriggerThreshold).or(
+                c_operatorController.axisLessThan(AXIS.LeftHorizontal.value, -OIConstants.kTriggerThreshold))
+                        .whileTrue(new RepeatCommand(new InstantCommand(() -> {
+                                if (activeMode == ControlMode.Manual) {
+                                        
+                                }
+                        }))).onFalse(new InstantCommand(() -> {
+
+                        }));
+
+                // Right Stick Vetical Absolute Value Greater Than Threshold
+                c_operatorController.axisGreaterThan(AXIS.RightVertical.value, OIConstants.kTriggerThreshold).or(
+                c_operatorController.axisLessThan(AXIS.RightVertical.value, -OIConstants.kTriggerThreshold))
+                        .whileTrue(new RepeatCommand(new InstantCommand(() -> {
+                                if (activeMode == ControlMode.Manual) {
+                                        
+                                }
+                        }))).onFalse(new InstantCommand(() -> {
+
+                        }));
+
+                // Right Stick Horizontal Absolute Value Greater Than Threshold
+                c_operatorController.axisGreaterThan(AXIS.RightHorizontal.value, OIConstants.kTriggerThreshold).or(
+                c_operatorController.axisLessThan(AXIS.RightHorizontal.value, -OIConstants.kTriggerThreshold))
+                        .whileTrue(new RepeatCommand(new InstantCommand(() -> {
+                                if (activeMode == ControlMode.Manual) {
+                                        
+                                }
+                        }))).onFalse(new InstantCommand(() -> {
+
+                        }));
+                
 
                 // Right bumper - Manual mode: Coral manipulator wheels intake
                 /*c_operatorController.rightBumper()
@@ -204,9 +242,7 @@ public class RobotContainer {
 
                 // Right Stick button - Transit mode
                 c_operatorController.rightStick()
-                        .onTrue(new InstantCommand(() ->  {
-                                activeMode = ControlMode.Transit;
-                        }));
+                        .onTrue(new InstantCommand());
 
                 // Left Stick button -
                 c_operatorController.leftStick()
