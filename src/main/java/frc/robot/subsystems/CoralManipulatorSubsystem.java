@@ -54,7 +54,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     pivotEncoder = pivotMotor.getAbsoluteEncoder();
     pivotController = new PIDController(CoralManipulatorConstants.pivotKp, CoralManipulatorConstants.pivotKi, CoralManipulatorConstants.pivotKd);
 
-    pivotController.setTolerance(0);
+    pivotController.setTolerance(0.001);
     pivotController.setIntegratorRange(0.13, 0.47);
   }
 

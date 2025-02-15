@@ -41,6 +41,6 @@ public class PivotCoral extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return coralSubsystem.atPivotPosition();
+    return true; // Pivot motor hold position
   }
 }
