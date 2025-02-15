@@ -142,11 +142,13 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             
             // Normalize to [-180, 180)
             newTagOrientationDeg = Math.IEEEremainder(newTagOrientationDeg + 180.0, 360.0) - 180.0;
+            
+            double newLateralOffset = newDistance * Math.sin(bearingRadians);
 
             // Store updated values
             distanceToTag = newDistance;
             bearingToTagDeg = newBearingDeg;
-            lateralOffsetToTag = translation.getY();
+            lateralOffsetToTag = newLateralOffset;
             xOffsetToTag = translation.getX();
             tagOrientationErrorDeg = newTagOrientationDeg;
 
