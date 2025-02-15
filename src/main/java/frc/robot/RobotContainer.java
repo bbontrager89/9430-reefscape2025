@@ -50,7 +50,7 @@ public class RobotContainer {
 
 
         // The driver's controller
-        CommandXboxController c_driverController = new CommandXboxController(OIConstants.kOperatorControllerPort);
+        CommandXboxController c_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
         // The operator's controller
         CommandXboxController c_operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
@@ -181,7 +181,7 @@ public class RobotContainer {
                 
 
                 // Right bumper - Manual mode: Coral manipulator wheels intake
-                c_operatorController.rightBumper()
+                /*c_operatorController.rightBumper()
                         .onTrue(new InstantCommand(() -> {
                                 coralManipulatorSubsystem.startPivotMotor(0.3);
                         }));
@@ -384,7 +384,7 @@ public class RobotContainer {
 
                 // Back Button button - Cancel all actions?
                 c_operatorController.back()
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand());*/
 
                 /* * * * * * * * * * * * *\
                  *                       *

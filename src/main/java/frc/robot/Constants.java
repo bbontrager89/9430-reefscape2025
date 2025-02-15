@@ -137,6 +137,7 @@ public final class Constants {
     public static final double level5ScoringPosition = maximumElevatorHeight;
 
     public static final boolean elevatorMotorInverted = true;
+    public static final boolean elevatorMotorInverted = true;
 
     public static final double encoderToRevolutionRatio = 200.0;
 
