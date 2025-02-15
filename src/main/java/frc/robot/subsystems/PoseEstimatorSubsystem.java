@@ -128,8 +128,9 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             Rotation3d rotation = robotToTarget.getRotation();
 
             // Calculate distance using X and Y components
-            double newDistance = Math.hypot(translation.getX(), translation.getY());
-
+            // double newDistance = Math.hypot(translation.getX(), translation.getY());
+            double newDistance = Math.sqrt(Math.pow(translation.getX(), 2) + Math.pow(translation.getY(), 2));
+            
             // Calculate bearing to tag center (positive = tag is to the left)
             double bearingRadians = Math.atan2(translation.getY(), translation.getX());
             double newBearingDeg = Math.toDegrees(bearingRadians);
