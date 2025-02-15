@@ -163,7 +163,7 @@ public final class Constants {
     public static final double pivotKi = 0.5;
     public static final double pivotKd = 0.0;
 
-    public static final double maxPivotSpeed = 0.2;
+    public static final double maxPivotSpeed = 0.15;
 
     // TODO: Determine current spike
     public static final double autoStopCurrent = 40;
