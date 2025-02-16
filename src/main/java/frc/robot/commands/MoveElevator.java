@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.utils.Elastic;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class MoveElevator extends Command {
@@ -27,7 +26,6 @@ public class MoveElevator extends Command {
   @Override
   public void initialize() {
     System.out.println("Move Elevator Command init");
-    Elastic.sendInfo("Move Elevator Command", "initializing");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
