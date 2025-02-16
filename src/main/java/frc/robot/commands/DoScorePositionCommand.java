@@ -34,7 +34,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                     new PivotCoral(coralSubsystem, pivotHeight), // TODO make correct
                     new ApproachTagCommand(drive, desiredDistance),
                     new SetCoralSpeed(coralSubsystem, 1),
-                    new WaitCommand(0.5),
+                    new WaitCommand(0.7),
                     new SetCoralSpeed(coralSubsystem, 0)
                 ),
                 // If we don't see a tag, do nothing
