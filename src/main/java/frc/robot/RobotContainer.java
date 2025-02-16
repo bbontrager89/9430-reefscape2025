@@ -492,7 +492,7 @@ public class RobotContainer {
 
                 // A button -
                 c_driverController.a()
-                        .onTrue(new DoScorePositionCommand(elevatorSubsystem, coralManipulatorSubsystem, m_robotDrive, 3, -0.3, 0.5, 0.25));
+                        .onTrue(new InstantCommand());
 
                 // Right Stick button -
                 c_driverController.rightStick()
