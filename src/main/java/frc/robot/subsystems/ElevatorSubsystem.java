@@ -113,10 +113,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         desiredHeight = ElevatorConstants.level3ScoringPosition;
         break;
       case 4:
-        desiredHeight = ElevatorConstants.level4ScoringPosition;
+        desiredHeight = ElevatorConstants.minimumElevatorHeight;
         break;
       case 5:
-        desiredHeight = ElevatorConstants.level5ScoringPosition;
+        desiredHeight = ElevatorConstants.maximumElevatorHeight;
         break;
       default:
         System.out.println("Invalid Scoring Position requested in ElevatorSubsystem");
