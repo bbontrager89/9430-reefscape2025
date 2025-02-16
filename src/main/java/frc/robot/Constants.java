@@ -99,10 +99,10 @@ public final class Constants {
     public static final double scoringDistance = 0.3;
 
     // TODO Determine Offsets
-    public static final double leftScoringOffset = 0;
-    public static final double rightScoringOffset = 0;
+    public static final double leftScoringOffset = -0.1651;
+    public static final double rightScoringOffset = 0.1651;
     
-    public static final double doublePressBuffer = 0.25;
+    public static final double doublePressBuffer = 0.5;
   }
 
   public static final class AutoConstants {
@@ -137,13 +137,10 @@ public final class Constants {
     public static final double minimumElevatorHeight = 0.175; // Furthest possible is 0.166
     public static final double maximumElevatorHeight = 0.675; // Furthest possible is 0.683
 
-    // TODO Assign Correct Heights
-    public static final double coralStationPosition = 0.25;
-    public static final double level1ScoringPosition = 0.3;
-    public static final double level2ScoringPosition = 0.35;
-    public static final double level3ScoringPosition = 0.4;
-    public static final double level4ScoringPosition = minimumElevatorHeight;
-    public static final double level5ScoringPosition = maximumElevatorHeight;
+    public static final double coralStationPosition = 0.398; // Scoring position 0
+    public static final double level1ScoringPosition = 0.316;
+    public static final double level2ScoringPosition = 0.5;
+    public static final double level3ScoringPosition = 0.669;
 
     public static final boolean elevatorMotorInverted = false;
 
@@ -165,17 +162,15 @@ public final class Constants {
 
     public static final double maxPivotSpeed = 0.15;
 
-    // TODO: Determine current spike
     public static final double autoStopCurrent = 40;
 
     // TODO: Determine limits
-    public static final double maximumPivotPosition = 0.0;
-    public static final double minimumPivotPosition = 0.0;
+    public static final double maximumPivotPosition = 0.48;
+    public static final double minimumPivotPosition = 0.095;
 
-    // TODO Determine positions
-    public static final double levelOnePivotPosition = 0;
-    public static final double levelTwoPivotPosition = 0;
-    public static final double levelThreePivotPosition = 0;
+    public static final double levelOnePivotPosition = 0.25;
+    public static final double levelTwoPivotPosition = 0.091; // Motor Off: low hard limit
+    public static final double levelThreePivotPosition = 0.091;
   }
 
 }
