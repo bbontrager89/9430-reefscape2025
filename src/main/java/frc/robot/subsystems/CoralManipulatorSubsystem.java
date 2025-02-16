@@ -60,7 +60,6 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   public void configureDashboardControls() {
 
     pivotCommands = new SendableChooser<Command>();
-
     pivotCommands.setDefaultOption("P 0.2", new InstantCommand(() -> {
       movePivotTo(0.2);
     }));
@@ -74,7 +73,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
       movePivotTo(0.11);
     }));
     pivotCommands.addOption("P max", new InstantCommand(() -> {
-      movePivotTo(0.49);
+      movePivotTo(0.48);
     }));
     pivotCommands.addOption("P Custom", new InstantCommand(() -> {
       movePivotTo(SmartDashboard.getNumber("Custom Pivot Height", 0.2));
@@ -269,7 +268,6 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     if (doAutoCurrentLimit) {
       if (intakeMotor.getOutputCurrent() > CoralManipulatorConstants.autoStopCurrent) {
         stopIntakeMotor();
-        Elastic.sendWarning("Pivot Motor Current Spike", "Likely Coral Fully Intaken");
       }
     }
 
