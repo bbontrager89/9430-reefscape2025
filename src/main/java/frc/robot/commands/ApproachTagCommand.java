@@ -26,9 +26,10 @@ public class ApproachTagCommand extends Command {
     private boolean lateralOffsetInitialized = false;
     private double desiredLateralOffset = 0;
 
-    public ApproachTagCommand(DriveSubsystem drive, double desiredDistance) {
+    public ApproachTagCommand(DriveSubsystem drive, double desiredDistance, double desiredLateralOffset) {
         this.drive = drive;
         this.desiredDistance = desiredDistance;
+        this.desiredLateralOffset = desiredLateralOffset;
         addRequirements(drive);
 
         // PID for forward (distance) control.
@@ -78,7 +79,6 @@ public void execute() {
 
         // Lock in the lateral offset the first time the tag is seen.
         if (!lateralOffsetInitialized) {
-            desiredLateralOffset = currentLateralOffset;
             lateralOffsetInitialized = true;
             System.out.printf("Locked lateral offset at: %.2f meters%n", desiredLateralOffset);
         }
@@ -110,7 +110,7 @@ public void execute() {
                 currentAngle, desiredAngle, rotationError, forwardSpeed, lateralSpeed, rotationSpeed);
 
         // Drive the robot with the computed speeds.
-        drive.driveRobotRelative(new ChassisSpeeds(forwardSpeed, lateralSpeed, rotationSpeed));
+        drive.driveRobotRelative(new ChassisSpeeds(forwardSpeed, lateralSpeed, 0));
     } else {
         // No tag detected; stop the robot.
         drive.driveRobotRelative(new ChassisSpeeds());
