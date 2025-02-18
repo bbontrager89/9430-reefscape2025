@@ -15,25 +15,25 @@ public class ApproachTagCommand extends Command {
     // Tolerances and speed limits
     private static final double DISTANCE_TOLERANCE_METERS = 0.03; // 3cm tolerance
     private static final double LATERAL_TOLERANCE_METERS = 0.03;  // 3cm tolerance
-    private static final double ROTATION_TOLERANCE_DEG = 2.0;       // degrees tolerance for rotation error
+    private static final double ROTATION_TOLERANCE_DEG = 1.0;       // degrees tolerance for rotation error
     private static final double MAX_FORWARD_SPEED = 1.5;            // m/s
     private static final double MAX_LATERAL_SPEED = 1.0;            // m/s
     private static final double MAX_ROTATION_SPEED = 0.3;           // rad/s (small correction)
     private static final double LOST_TAG_TIMEOUT = 0.7;             // seconds
 
     private double lastTagTimestamp = 0;
-    // Lock-in flag for the lateral offset (set by constructor) and heading
-    private boolean lateralOffsetInitialized = false;
-    private boolean headingLocked = false;
-    // The lateral offset is now provided via the constructor.
-    // The lockedAngle is computed once when the tag is first seen.
+    // Flag to lock in the desired lateral offset and rotation target only once
+    private boolean offsetLocked = false;
+    // The desired lateral offset is provided by the constructor.
+    // We also lock in a rotation target (lockedAngle) based on the desired lateral offset.
+    private double desiredLateralOffset = 0;
+    private boolean rotationLocked = false;
     private double lockedAngle = 0;
 
     public ApproachTagCommand(DriveSubsystem drive, double desiredDistance, double desiredLateralOffset) {
         this.drive = drive;
         this.desiredDistance = desiredDistance;
-        // Here, desiredLateralOffset is assumed to be the target lateral offset.
-        // (It could be zero if you want the robot to center on the tag, or a positive/negative value if you want an offset.)
+        this.desiredLateralOffset = desiredLateralOffset;
         addRequirements(drive);
 
         // PID for forward (distance) control.
@@ -55,8 +55,8 @@ public class ApproachTagCommand extends Command {
         distanceController.reset();
         lateralController.reset();
         rotationController.reset();
-        lateralOffsetInitialized = false;
-        headingLocked = false;
+        offsetLocked = false;
+        rotationLocked = false;
         System.out.printf("ApproachTagCommand initialized - Target distance: %.2f meters%n", desiredDistance);
     }
 
@@ -81,33 +81,34 @@ public class ApproachTagCommand extends Command {
             double currentDistance = poseEstimator.getDistanceToTag();
             double currentLateralOffset = poseEstimator.getLateralOffsetToTag();
 
-            // When the tag is first seen, lock in the lateral offset and the desired (locked) heading.
-            if (!lateralOffsetInitialized) {
-                lateralOffsetInitialized = true;
-                // Calculate the offset angle to the tag based on its current measured position.
-                // This angle is relative to the robot's forward axis.
-                double measuredOffsetAngle = Math.toDegrees(Math.atan2(currentLateralOffset, currentDistance));
-                // Lock in the desired heading by adding the measured offset angle to the current heading.
-                lockedAngle = drive.getHeading() + measuredOffsetAngle;
-                System.out.printf("Locked lateral offset. Desired heading locked at: %.2f° (measured offset: %.2f°)%n",
-                        lockedAngle, measuredOffsetAngle);
+            // Lock in the desired lateral offset and compute the locked (target) angle only once.
+            if (!offsetLocked) {
+                offsetLocked = true;
+                // Compute the locked angle from the desired lateral offset.
+                // This is the angle (in degrees) at which the tag should appear when the robot is pointing correctly.
+                lockedAngle = Math.toDegrees(Math.atan2(desiredLateralOffset, currentDistance));
+                System.out.printf("Locked desired lateral offset: %.2f m, Locked angle: %.2f°%n",
+                        desiredLateralOffset, lockedAngle);
             }
 
-            // Compute forward and lateral speed corrections using PID controllers.
+            // Compute forward speed correction (positive drives forward)
             double forwardSpeed = -distanceController.calculate(currentDistance, desiredDistance);
-            double lateralSpeed = -lateralController.calculate(currentLateralOffset, /* target offset */ 0);
-            // (If you want the lateral target to be nonzero, replace the zero above with the desired lateral offset.)
+            // Compute lateral correction (you may choose to drive lateral error to zero or to maintain a specific offset)
+            // Here, we drive the current lateral offset to the desired lateral offset.
+            double lateralSpeed = -lateralController.calculate(currentLateralOffset, desiredLateralOffset);
 
-            // Apply rotation correction only until the robot's heading reaches the locked heading.
+            // Compute the current angle to the tag from its relative measurement.
+            double currentAngle = Math.toDegrees(Math.atan2(currentLateralOffset, currentDistance));
             double rotationSpeed = 0;
-            if (!headingLocked) {
-                double currentHeading = drive.getHeading();
-                double rotationError = normalizeAngle(lockedAngle - currentHeading);
+            // Only apply rotation correction if the robot's tag angle is not yet aligned with the locked angle.
+            if (!rotationLocked) {
+                double rotationError = normalizeAngle(lockedAngle - currentAngle);
                 rotationSpeed = rotationController.calculate(rotationError, 0);
-                if (Math.abs(rotationError) < ROTATION_TOLERANCE_DEG) {
-                    headingLocked = true;
+                if (rotationError < ROTATION_TOLERANCE_DEG) {
+                    rotationLocked = true;
                     rotationSpeed = 0;
-                    System.out.printf("Heading locked at: %.2f°%n", currentHeading);
+                    System.out.printf("Rotation locked. Current angle: %.2f° is within tolerance of locked angle: %.2f°%n",
+                            currentAngle, lockedAngle);
                 }
             }
 
@@ -116,17 +117,17 @@ public class ApproachTagCommand extends Command {
             lateralSpeed = Math.min(Math.max(lateralSpeed, -MAX_LATERAL_SPEED), MAX_LATERAL_SPEED);
             rotationSpeed = Math.min(Math.max(rotationSpeed, -MAX_ROTATION_SPEED), MAX_ROTATION_SPEED);
 
-            System.out.printf("Approach - Dist: %.2f m (Target: %.2f m), Lateral measured: %.2f m, " +
-                            "Gyro: %.2f°, Locked Heading: %.2f°, Error: %.2f°, " +
+            System.out.printf("Approach - Dist: %.2f m (Target: %.2f m), Lateral: %.2f m (Desired: %.2f m), " +
+                            "Angle: Current: %.2f°, Locked: %.2f° (Error: %.2f°), " +
                             "Forward: %.2f m/s, Lateral: %.2f m/s, Rot: %.2f rad/s%n",
-                    currentDistance, desiredDistance, currentLateralOffset,
-                    drive.getHeading(), lockedAngle, normalizeAngle(lockedAngle - drive.getHeading()),
+                    currentDistance, desiredDistance, currentLateralOffset, desiredLateralOffset,
+                    currentAngle, lockedAngle, normalizeAngle(lockedAngle - currentAngle),
                     forwardSpeed, lateralSpeed, rotationSpeed);
 
-            // Drive the robot with the computed speeds.
+            // Command the robot with the computed speeds.
             drive.driveRobotRelative(new ChassisSpeeds(forwardSpeed, lateralSpeed, rotationSpeed));
         } else {
-            // If no tag is detected, stop the robot.
+            // No tag detected; stop the robot.
             drive.driveRobotRelative(new ChassisSpeeds());
         }
     }
@@ -136,14 +137,14 @@ public class ApproachTagCommand extends Command {
         var poseEstimator = drive.getPoseEstimatorSubsystem();
         double currentTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
 
+        // If the tag hasn't been detected recently, finish.
         if (currentTime - lastTagTimestamp > LOST_TAG_TIMEOUT) {
             return true;
         }
 
+        // Finish if the distance is within tolerance.
         if (poseEstimator.getLastDetectedTagId() != -1) {
             double currentDistance = poseEstimator.getDistanceToTag();
-            // We finish when the robot is within the distance tolerance.
-            // (Rotation adjustment is only applied initially, so we don't check it here.)
             return Math.abs(currentDistance - desiredDistance) < DISTANCE_TOLERANCE_METERS;
         }
 
