@@ -12,11 +12,11 @@ public class StrafeToAlignCommand extends Command {
     private final PIDController rotationController;
     
     // Constants
-    private static final double LATERAL_TOLERANCE_METERS = 0.05;  // 5cm
-    private static final double ROTATION_TOLERANCE_DEG = 1.7;
+    private static final double LATERAL_TOLERANCE_METERS = 0.055;  // 4cm
+    private static final double ROTATION_TOLERANCE_DEG = 1.5;
     private static final double MAX_STRAFE_SPEED = 1.0; // m/s
     private static final double MAX_ROTATION_SPEED = 0.5; // rad/s
-    private static final double LOST_TAG_TIMEOUT = 0.5; // seconds
+    private static final double LOST_TAG_TIMEOUT = 0.7; // seconds
     
     private double lastTagTimestamp = 0;
     private double lastStrafeSpeed = 0;
@@ -28,7 +28,7 @@ public class StrafeToAlignCommand extends Command {
         addRequirements(drive);
         
         // PID for strafe control
-        strafeController = new PIDController(3.0, 0.0, 0.0);
+        strafeController = new PIDController(3.8, 0.0, 0.0);
         strafeController.setTolerance(LATERAL_TOLERANCE_METERS);
         // PID for rotation
         rotationController = new PIDController(0.3, 0.0, 0.0);

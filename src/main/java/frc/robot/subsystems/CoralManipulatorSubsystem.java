@@ -53,6 +53,8 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     pivotController = new PIDController(CoralManipulatorConstants.pivotKp, CoralManipulatorConstants.pivotKi, CoralManipulatorConstants.pivotKd);
     pivotController.reset();
 
+    configureDashboardControls();
+
     pivotController.setTolerance(0.001);
     pivotController.setIntegratorRange(0.13, 0.47);
   }
