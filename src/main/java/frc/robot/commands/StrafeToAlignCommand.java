@@ -53,7 +53,7 @@ public class StrafeToAlignCommand extends Command {
             lastTagTimestamp = poseEstimator.getLastDetectionTimestamp();
             
             // Get current errors
-            double currentLateralOffset = poseEstimator.getLateralOffsetToTag();
+            double currentLateralOffset = poseEstimator.getYOffsetToTag();
             double currentOrientation = poseEstimator.getTagOrientationErrorDeg();
             
             // Calculate desired speeds

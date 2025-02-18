@@ -63,6 +63,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     private double bearingToTagDeg = Double.NaN;    
     private double lateralOffsetToTag = Double.NaN; 
     private double xOffsetToTag = Double.NaN;
+    private double yOffsetToTag = Double.NaN;
 
     // Tag orientation difference relative to the robot
     private double tagOrientationErrorDeg = Double.NaN;
@@ -150,6 +151,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             bearingToTagDeg = newBearingDeg;
             lateralOffsetToTag = newLateralOffset;
             xOffsetToTag = translation.getX();
+            yOffsetToTag = translation.getY();
             tagOrientationErrorDeg = newTagOrientationDeg;
 
             // Update the dashboard with the latest values
@@ -175,6 +177,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     }
 
     public double getDistanceToTag() {
+        return distanceToTag;
+    }
+    
+    public double getYOffsetToTag() {
         return distanceToTag;
     }
 
