@@ -75,7 +75,7 @@ public void execute() {
         lastTagTimestamp = poseEstimator.getLastDetectionTimestamp();
 
         double currentDistance = poseEstimator.getDistanceToTag();
-        double currentLateralOffset = poseEstimator.getYOffsetToTag();
+        double currentLateralOffset = poseEstimator.getLateralOffsetToTag();
 
         // Lock in the lateral offset the first time the tag is seen.
         if (!lateralOffsetInitialized) {

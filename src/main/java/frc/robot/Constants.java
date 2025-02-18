@@ -99,7 +99,7 @@ public final class Constants {
     public static final double scoringDistance = 0.02;
 
     // TODO Determine Offsets
-    public static final double leftScoringOffset = -0.165;
+    public static final double leftScoringOffset = -0.13;
     public static final double rightScoringOffset = 0.155;
     
     public static final double doublePressBuffer = 0.5;
