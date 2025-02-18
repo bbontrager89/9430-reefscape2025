@@ -19,7 +19,7 @@ public class ApproachTagCommand extends Command {
     private static final double MAX_FORWARD_SPEED = 1.5; // m/s
     private static final double MAX_LATERAL_SPEED = 1.0; // m/s
     private static final double MAX_ROTATION_SPEED = 0.3; // rad/s (small correction)
-    private static final double LOST_TAG_TIMEOUT = 0.90; // seconds
+    private static final double LOST_TAG_TIMEOUT = 0.5; // seconds
 
     private double lastTagTimestamp = 0;
     // Variables to lock in the initial lateral offset when the tag is first seen
@@ -110,7 +110,7 @@ public void execute() {
                 currentAngle, desiredAngle, rotationError, forwardSpeed, lateralSpeed, rotationSpeed);
 
         // Drive the robot with the computed speeds.
-        drive.driveRobotRelative(new ChassisSpeeds(forwardSpeed, lateralSpeed, 0));
+        drive.driveRobotRelative(new ChassisSpeeds(forwardSpeed, lateralSpeed, ((currentDistance > 1)? -rotationSpeed : 0)));
     } else {
         // No tag detected; stop the robot.
         drive.driveRobotRelative(new ChassisSpeeds());

@@ -623,7 +623,9 @@ public class RobotContainer {
 
                 // Back Button button -
                 c_driverController.back()
-                        .onTrue(new InstantCommand());
+                .onTrue(new InstantCommand(() -> {
+                        CommandScheduler.getInstance().cancelAll();
+                }));
 
         }
 
