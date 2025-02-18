@@ -93,8 +93,7 @@ public class ApproachTagCommand extends Command {
 
             // Compute forward speed correction (positive drives forward)
             double forwardSpeed = -distanceController.calculate(currentDistance, desiredDistance);
-            // Compute lateral correction (you may choose to drive lateral error to zero or to maintain a specific offset)
-            // Here, we drive the current lateral offset to the desired lateral offset.
+            // Compute lateral correction (drive the current lateral offset toward the desired lateral offset)
             double lateralSpeed = -lateralController.calculate(currentLateralOffset, desiredLateralOffset);
 
             // Compute the current angle to the tag from its relative measurement.
@@ -104,7 +103,8 @@ public class ApproachTagCommand extends Command {
             if (!rotationLocked) {
                 double rotationError = normalizeAngle(lockedAngle - currentAngle);
                 rotationSpeed = rotationController.calculate(rotationError, 0);
-                if (rotationError < ROTATION_TOLERANCE_DEG) {
+                // Use the absolute value to check if the error is within tolerance.
+                if (Math.abs(rotationError) < ROTATION_TOLERANCE_DEG) {
                     rotationLocked = true;
                     rotationSpeed = 0;
                     System.out.printf("Rotation locked. Current angle: %.2f° is within tolerance of locked angle: %.2f°%n",
