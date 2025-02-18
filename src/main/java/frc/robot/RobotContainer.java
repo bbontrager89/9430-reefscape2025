@@ -268,7 +268,7 @@ public class RobotContainer {
                                                         0, 
                                                         0.0, 
                                                         OIConstants.scoringDistance, 
-                                                        CoralManipulatorConstants.levelThreePivotPosition)
+                                                        CoralManipulatorConstants.intakePivotPosition)
                                                 .schedule();
                                         }
                                 } else {
