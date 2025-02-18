@@ -101,7 +101,7 @@ public class ApproachTagCommand extends Command {
             double rotationSpeed = 0;
             // Only apply rotation correction if the robot's tag angle is not yet aligned with the locked angle.
             if (!rotationLocked) {
-                double rotationError = normalizeAngle(lockedAngle - currentAngle);
+                double rotationError = lockedAngle - currentAngle;
                 rotationSpeed = rotationController.calculate(rotationError, 0);
                 // Use the absolute value to check if the error is within tolerance.
                 if (Math.abs(rotationError) < ROTATION_TOLERANCE_DEG) {
@@ -121,7 +121,7 @@ public class ApproachTagCommand extends Command {
                             "Angle: Current: %.2f°, Locked: %.2f° (Error: %.2f°), " +
                             "Forward: %.2f m/s, Lateral: %.2f m/s, Rot: %.2f rad/s%n",
                     currentDistance, desiredDistance, currentLateralOffset, desiredLateralOffset,
-                    currentAngle, lockedAngle, normalizeAngle(lockedAngle - currentAngle),
+                    currentAngle, lockedAngle, (lockedAngle - currentAngle),
                     forwardSpeed, lateralSpeed, rotationSpeed);
 
             // Command the robot with the computed speeds.
