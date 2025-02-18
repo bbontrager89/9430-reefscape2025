@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
@@ -115,14 +116,20 @@ public class StrafeToAlignCommand extends Command {
     
     private void executeFinalRotation(PoseEstimatorSubsystem poseEstimator) {
         double currentOrientation = poseEstimator.getTagOrientationErrorDeg();
-        double rotationSpeed = finalRotationController.calculate(currentOrientation, targetFinalAngle);
+        
+        // Normalize the angle difference to ensure shortest path
+        double angleDifference = targetFinalAngle - currentOrientation;
+        angleDifference = MathUtil.inputModulus(angleDifference, -180, 180);
+        
+        double rotationSpeed = finalRotationController.calculate(currentOrientation, 
+            currentOrientation + angleDifference);
         
         // Clamp rotation speed
         rotationSpeed = Math.min(Math.max(rotationSpeed, -MAX_ROTATION_SPEED), MAX_ROTATION_SPEED);
         
         // Log current state
-        System.out.printf("Final Rotation - Current Angle: %.2f deg, Target: %.2f deg, Speed: %.2f rad/s%n",
-            currentOrientation, targetFinalAngle, rotationSpeed);
+        System.out.printf("Final Rotation - Current Angle: %.2f deg, Target: %.2f deg, Diff: %.2f deg, Speed: %.2f rad/s%n",
+            currentOrientation, targetFinalAngle, angleDifference, rotationSpeed);
         
         // Apply rotation only
         drive.driveRobotRelative(new ChassisSpeeds(0, 0, rotationSpeed));
@@ -145,7 +152,8 @@ public class StrafeToAlignCommand extends Command {
             }
             
             double currentOrientation = poseEstimator.getTagOrientationErrorDeg();
-            return Math.abs(currentOrientation - targetFinalAngle) < ROTATION_TOLERANCE_DEG;
+            double angleDifference = MathUtil.inputModulus(targetFinalAngle - currentOrientation, -180, 180);
+            return Math.abs(angleDifference) < ROTATION_TOLERANCE_DEG;
         }
         
         return false;
