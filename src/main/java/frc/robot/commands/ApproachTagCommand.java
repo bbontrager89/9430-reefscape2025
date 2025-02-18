@@ -26,10 +26,6 @@ public class ApproachTagCommand extends Command {
     private boolean lateralOffsetInitialized = false;
     private double desiredLateralOffset = 0;
 
-    // Variables to lock in the initial tag angle error when first detected
-    private boolean angleInitialized = false;
-    private double desiredTagOrientationError = 0;
-
     public ApproachTagCommand(DriveSubsystem drive, double desiredDistance) {
         this.drive = drive;
         this.desiredDistance = desiredDistance;
@@ -44,7 +40,7 @@ public class ApproachTagCommand extends Command {
         lateralController.setTolerance(LATERAL_TOLERANCE_METERS);
 
         // PID for slight rotation correction.
-        // This now corrects towards the locked initial angle error rather than 0°.
+        // This corrects the tag orientation error (in degrees) with a low gain.
         rotationController = new PIDController(0.05, 0.0, 0.005);
         rotationController.setTolerance(ROTATION_TOLERANCE_DEG);
         rotationController.enableContinuousInput(-180, 180); // angle wrap-around
@@ -56,7 +52,6 @@ public class ApproachTagCommand extends Command {
         lateralController.reset();
         rotationController.reset();
         lateralOffsetInitialized = false; // Reset the lateral offset lock each time
-        angleInitialized = false;         // Reset the angle lock as well
         System.out.printf("ApproachTagCommand initialized - Target distance: %.2f meters%n", desiredDistance);
     }
 
@@ -89,19 +84,15 @@ public class ApproachTagCommand extends Command {
                 System.out.printf("Locked lateral offset at: %.2f meters%n", desiredLateralOffset);
             }
 
-            // Lock in the tag angle error the first time the tag is seen.
-            if (!angleInitialized) {
-                desiredTagOrientationError = tagOrientationError;
-                angleInitialized = true;
-                System.out.printf("Locked tag angle error at: %.2f°%n", desiredTagOrientationError);
-            }
-
             // Compute forward speed correction (positive drives forward)
             double forwardSpeed = -distanceController.calculate(currentDistance, desiredDistance);
             // Compute lateral correction to maintain the locked lateral offset
             double lateralSpeed = -lateralController.calculate(currentLateralOffset, desiredLateralOffset);
-            // Compute rotation correction to maintain the locked initial tag angle error
-            double rotationSpeed = rotationController.calculate(tagOrientationError, desiredTagOrientationError);
+
+            double distanceToTag = poseEstimator.getDistanceToTag();
+            double targetAngle = Math.toDegrees(Math.atan2(desiredLateralOffset, distanceToTag));
+            // Compute a slight rotation correction (aiming for 0° error to keep parallel)
+            double rotationSpeed = rotationController.calculate(tagOrientationError, targetAngle);
 
             // Clamp each speed to its maximum limit
             forwardSpeed = Math.min(Math.max(forwardSpeed, -MAX_FORWARD_SPEED), MAX_FORWARD_SPEED);
@@ -109,14 +100,13 @@ public class ApproachTagCommand extends Command {
             rotationSpeed = Math.min(Math.max(rotationSpeed, -MAX_ROTATION_SPEED), MAX_ROTATION_SPEED);
 
             System.out.printf("Approach - Dist: %.2f m (Target: %.2f m), Lateral: %.2f m (Target: %.2f m), " +
-                            "Angle Error: %.2f° (Locked: %.2f°), Forward: %.2f m/s, Lateral: %.2f m/s, Rot: %.2f rad/s%n",
-                    currentDistance, desiredDistance, currentLateralOffset, desiredLateralOffset, 
-                    tagOrientationError, desiredTagOrientationError,
+                    "Angle Error: %.2f°, Forward: %.2f m/s, Lateral: %.2f m/s, Rot: %.2f rad/s%n",
+                    currentDistance, desiredDistance, currentLateralOffset, desiredLateralOffset, tagOrientationError,
                     forwardSpeed, lateralSpeed, rotationSpeed);
 
             // Command the robot to move forward, adjust laterally to maintain the locked offset,
-            // and correct its rotation to remain at the locked tag angle.
-            drive.driveRobotRelative(new ChassisSpeeds(forwardSpeed, lateralSpeed, 0));
+            // and correct its rotation to remain parallel with the tag face.
+            drive.driveRobotRelative(new ChassisSpeeds(forwardSpeed, lateralSpeed, rotationSpeed));
         } else {
             drive.driveRobotRelative(new ChassisSpeeds());
         }
@@ -136,7 +126,7 @@ public class ApproachTagCommand extends Command {
             double tagOrientationError = normalizeAngle(poseEstimator.getTagOrientationErrorDeg());
 
             return Math.abs(currentDistance - desiredDistance) < DISTANCE_TOLERANCE_METERS
-                    && Math.abs(tagOrientationError - desiredTagOrientationError) < ROTATION_TOLERANCE_DEG;
+                && Math.abs(tagOrientationError) < ROTATION_TOLERANCE_DEG;
         }
 
         return false;
