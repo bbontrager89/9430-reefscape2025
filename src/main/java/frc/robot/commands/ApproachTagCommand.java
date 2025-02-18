@@ -67,50 +67,56 @@ public class ApproachTagCommand extends Command {
     }
 
     @Override
-    public void execute() {
-        var poseEstimator = drive.getPoseEstimatorSubsystem();
+public void execute() {
+    var poseEstimator = drive.getPoseEstimatorSubsystem();
 
-        if (poseEstimator.getLastDetectedTagId() != -1) {
-            lastTagTimestamp = poseEstimator.getLastDetectionTimestamp();
+    if (poseEstimator.getLastDetectedTagId() != -1) {
+        lastTagTimestamp = poseEstimator.getLastDetectionTimestamp();
 
-            double currentDistance = poseEstimator.getDistanceToTag();
-            double currentLateralOffset = poseEstimator.getLateralOffsetToTag();
-            double tagOrientationError = normalizeAngle(poseEstimator.getTagOrientationErrorDeg());
+        double currentDistance = poseEstimator.getDistanceToTag();
+        double currentLateralOffset = poseEstimator.getLateralOffsetToTag();
 
-            // Lock in the lateral offset the first time the tag is seen.
-            if (!lateralOffsetInitialized) {
-                desiredLateralOffset = currentLateralOffset;
-                lateralOffsetInitialized = true;
-                System.out.printf("Locked lateral offset at: %.2f meters%n", desiredLateralOffset);
-            }
-
-            // Compute forward speed correction (positive drives forward)
-            double forwardSpeed = -distanceController.calculate(currentDistance, desiredDistance);
-            // Compute lateral correction to maintain the locked lateral offset
-            double lateralSpeed = -lateralController.calculate(currentLateralOffset, desiredLateralOffset);
-
-            double distanceToTag = poseEstimator.getDistanceToTag();
-            double targetAngle = Math.toDegrees(Math.atan2(desiredLateralOffset, distanceToTag));
-            // Compute a slight rotation correction (aiming for 0° error to keep parallel)
-            double rotationSpeed = rotationController.calculate(tagOrientationError, targetAngle);
-
-            // Clamp each speed to its maximum limit
-            forwardSpeed = Math.min(Math.max(forwardSpeed, -MAX_FORWARD_SPEED), MAX_FORWARD_SPEED);
-            lateralSpeed = Math.min(Math.max(lateralSpeed, -MAX_LATERAL_SPEED), MAX_LATERAL_SPEED);
-            rotationSpeed = Math.min(Math.max(rotationSpeed, -MAX_ROTATION_SPEED), MAX_ROTATION_SPEED);
-
-            System.out.printf("Approach - Dist: %.2f m (Target: %.2f m), Lateral: %.2f m (Target: %.2f m), " +
-                    "Angle Error: %.2f°, Forward: %.2f m/s, Lateral: %.2f m/s, Rot: %.2f rad/s%n",
-                    currentDistance, desiredDistance, currentLateralOffset, desiredLateralOffset, tagOrientationError,
-                    forwardSpeed, lateralSpeed, rotationSpeed);
-
-            // Command the robot to move forward, adjust laterally to maintain the locked offset,
-            // and correct its rotation to remain parallel with the tag face.
-            drive.driveRobotRelative(new ChassisSpeeds(forwardSpeed, lateralSpeed, rotationSpeed));
-        } else {
-            drive.driveRobotRelative(new ChassisSpeeds());
+        // Lock in the lateral offset the first time the tag is seen.
+        if (!lateralOffsetInitialized) {
+            desiredLateralOffset = currentLateralOffset;
+            lateralOffsetInitialized = true;
+            System.out.printf("Locked lateral offset at: %.2f meters%n", desiredLateralOffset);
         }
+
+        // Compute forward speed correction (positive drives forward)
+        double forwardSpeed = -distanceController.calculate(currentDistance, desiredDistance);
+        // Compute lateral correction to maintain the locked lateral offset
+        double lateralSpeed = -lateralController.calculate(currentLateralOffset, desiredLateralOffset);
+
+        // Instead of using the tag's face orientation error, compute the current angle of the tag
+        // relative to the robot's forward direction (in degrees) using atan2.
+        double currentAngle = Math.toDegrees(Math.atan2(currentLateralOffset, currentDistance));
+        // Compute the desired angle from the locked lateral offset.
+        // As the robot approaches, the same lateral offset results in a larger angle.
+        double desiredAngle = Math.toDegrees(Math.atan2(desiredLateralOffset, currentDistance));
+        // The rotation error is the difference between these angles.
+        double rotationError = normalizeAngle(currentAngle - desiredAngle);
+        double rotationSpeed = rotationController.calculate(rotationError, 0);
+
+        // Clamp each speed to its maximum limit
+        forwardSpeed = Math.min(Math.max(forwardSpeed, -MAX_FORWARD_SPEED), MAX_FORWARD_SPEED);
+        lateralSpeed = Math.min(Math.max(lateralSpeed, -MAX_LATERAL_SPEED), MAX_LATERAL_SPEED);
+        rotationSpeed = Math.min(Math.max(rotationSpeed, -MAX_ROTATION_SPEED), MAX_ROTATION_SPEED);
+
+        System.out.printf("Approach - Dist: %.2f m (Target: %.2f m), Lateral: %.2f m (Locked: %.2f m), " +
+                "Angle: Current: %.2f°, Desired: %.2f° (Error: %.2f°), " +
+                "Forward: %.2f m/s, Lateral: %.2f m/s, Rot: %.2f rad/s%n",
+                currentDistance, desiredDistance, currentLateralOffset, desiredLateralOffset,
+                currentAngle, desiredAngle, rotationError, forwardSpeed, lateralSpeed, rotationSpeed);
+
+        // Drive the robot with the computed speeds.
+        drive.driveRobotRelative(new ChassisSpeeds(forwardSpeed, lateralSpeed, rotationSpeed));
+    } else {
+        // No tag detected; stop the robot.
+        drive.driveRobotRelative(new ChassisSpeeds());
     }
+}
+
 
     @Override
     public boolean isFinished() {
