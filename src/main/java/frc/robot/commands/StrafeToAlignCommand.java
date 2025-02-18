@@ -121,7 +121,7 @@ public class StrafeToAlignCommand extends Command {
         double angleDifference = targetFinalAngle - currentOrientation;
         angleDifference = MathUtil.inputModulus(angleDifference, -180, 180);
         
-        double rotationSpeed = finalRotationController.calculate(currentOrientation, 
+        double rotationSpeed = -finalRotationController.calculate(currentOrientation, 
             currentOrientation + angleDifference);
         
         // Clamp rotation speed
