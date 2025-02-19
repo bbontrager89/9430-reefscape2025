@@ -160,7 +160,7 @@ public final class Constants {
 
     public static final double maxPivotSpeed = 0.15;
 
-    public static final double autoStopCurrent = 40;
+    public static final double autoStopCurrent = 30;
 
     // TODO: Determine limits
     public static final double maximumPivotPosition = 0.48;
