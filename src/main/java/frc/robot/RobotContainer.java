@@ -97,7 +97,7 @@ public class RobotContainer {
                         coralManipulatorSubsystem, 
                         m_robotDrive,
                         2, 
-                        OIConstants.rightScoringOffset, 
+                        OIConstants.leftScoringOffset, 
                         OIConstants.scoringDistance, 
                         CoralManipulatorConstants.levelTwoPivotPosition));
                 NamedCommands.registerCommand("Elevator to SP1", new MoveElevator(elevatorSubsystem, 1));
