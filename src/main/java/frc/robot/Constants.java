@@ -95,10 +95,8 @@ public final class Constants {
     
     public static final double kTriggerThreshold = 0.1;
 
-    // TODO Determine distance
     public static final double scoringDistance = 0.02;
 
-    // TODO Determine Offsets
     public static final double leftScoringOffset = -0.165;
     public static final double rightScoringOffset = 0.165;
     
@@ -139,7 +137,7 @@ public final class Constants {
 
     public static final double coralStationPosition = 0.398; // Scoring position 0
     public static final double level1ScoringPosition = 0.316;
-    public static final double level2ScoringPosition = 0.55;
+    public static final double level2ScoringPosition = 0.51;
     public static final double level3ScoringPosition = 0.669;
 
     public static final boolean elevatorMotorInverted = false;
