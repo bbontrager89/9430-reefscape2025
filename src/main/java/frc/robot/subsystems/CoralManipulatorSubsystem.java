@@ -37,13 +37,13 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   private double intakeSpeed = 0.0;
   private boolean isIntakeMotorOn = false;
   private boolean isPivotMotorOn = false;
-  private double CurrentLimitTimestamp = 0.0;
 
   private boolean coralIntaken = false;
 
   private CoralManipulatorState intakeState = CoralManipulatorState.Stopped;
 
   private double intakeOnTimestamp = Double.NEGATIVE_INFINITY;
+  private double currentLimitTimestamp = Double.NEGATIVE_INFINITY;
 
   private double desiredPivotPosition = 0.25;
 
@@ -126,7 +126,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
   public void movePivotTo(double pos) {
     pivotController.reset();
-    
+
     desiredPivotPosition = pos;
     pivotController = new PIDController(CoralManipulatorConstants.pivotKp, CoralManipulatorConstants.pivotKi, CoralManipulatorConstants.pivotKd);
     
@@ -148,8 +148,8 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   private void setIntakeMotorSpeed(double speed) {
     if (!(coralIntaken && speed < 0)) {
       intakeMotor.set(speed);
-    } 
-    
+    }
+
     if (speed > 0) {
       coralIntaken = false;
     }
@@ -279,22 +279,22 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
     // Check if motor is stuck to prevent over straining it
     if (doAutoCurrentLimit) {
-      
+
       if (intakeMotor.getOutputCurrent() > CoralManipulatorConstants.autoStopCurrent && intakeSpeed < 0) {
 
-        if (CurrentLimitTimestamp < 0) {
-          CurrentLimitTimestamp = Timer.getFPGATimestamp();
+        if (currentLimitTimestamp < 0) {
+          currentLimitTimestamp = Timer.getFPGATimestamp();
         }
 
-        if (CurrentLimitTimestamp + 0.2 < Timer.getFPGATimestamp()) {
+        if (currentLimitTimestamp + 0.2 < Timer.getFPGATimestamp()) {
           stopIntakeMotor();
           coralIntaken = true;
         }
-        
+
       } else {
-        CurrentLimitTimestamp = Double.NEGATIVE_INFINITY;
+        currentLimitTimestamp = Double.NEGATIVE_INFINITY;
       }
-      
+
     }
 
     // Turn off motor after time has passed
