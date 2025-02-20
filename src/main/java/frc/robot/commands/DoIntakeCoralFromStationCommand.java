@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants.CoralManipulatorConstants;
 import frc.robot.subsystems.CoralManipulatorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -13,7 +14,7 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
     private final double desiredLateralOffset;
     private final double desiredDistance;
 
-    public DoIntakeCoralFromStationCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coralSubsystem, DriveSubsystem drive, int scoringPosition, double desiredLateralOffset, double desiredDistance, double pivotHeight) {
+    public DoIntakeCoralFromStationCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coralSubsystem, DriveSubsystem drive, double desiredLateralOffset, double desiredDistance) {
         this.drive = drive;
         this.desiredLateralOffset = desiredLateralOffset;
         this.desiredDistance = desiredDistance;
@@ -30,8 +31,8 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
                 new SequentialCommandGroup(
                     new RotateToTagCommand(drive),
                     new StrafeToAlignCommand(drive, desiredLateralOffset),
-                    new MoveElevator(elevator, scoringPosition),
-                    new PivotCoral(coralSubsystem, pivotHeight), // TODO make correct
+                    new MoveElevator(elevator, 0),
+                    new PivotCoral(coralSubsystem, CoralManipulatorConstants.intakePivotPosition),
                     new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset),
                     new SetCoralSpeed(coralSubsystem, -1),
                     new WaitCommand(1.3),
