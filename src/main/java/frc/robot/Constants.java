@@ -99,6 +99,11 @@ public final class Constants {
 
     public static final double leftScoringOffset = -0.165;
     public static final double rightScoringOffset = 0.165;
+
+    //TODO tune these offsets to align with the grooves on the intake station
+    public static final double intakePositionLeft = -0.3;
+    public static final double intakePositionMid = 0.0;
+    public static final double intakePositionRight = 0.3;
     
     public static final double doublePressBuffer = 0.5;
   }
