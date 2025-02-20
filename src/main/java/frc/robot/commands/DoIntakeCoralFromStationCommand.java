@@ -33,7 +33,7 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
                     new MoveElevator(elevator, scoringPosition),
                     new PivotCoral(coralSubsystem, pivotHeight), // TODO make correct
                     new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset),
-                    new SetCoralSpeed(coralSubsystem, 1),
+                    new SetCoralSpeed(coralSubsystem, -1),
                     new WaitCommand(1.3),
                     new SetCoralSpeed(coralSubsystem, 0)
                 ),
