@@ -285,13 +285,13 @@ public class RobotContainer {
                                         // on Double Press -
                                         // Coral mode: intake from Coral station
                                         if (operatorLatestPOVButton == POV.Up) {
-                                                new DoScorePositionCommand(
+                                                new DoIntakeCoralFromStationCommand(
                                                         elevatorSubsystem, 
                                                         coralManipulatorSubsystem, 
                                                         m_robotDrive,
-                                                        0, 
-                                                        0.0, 
-                                                        OIConstants.scoringDistance, 
+                                                        ElevatorConstants.coralStationPosition, 
+                                                        OIConstants.intakePositionRight, 
+                                                        OIConstants.coralIntakeDistance, 
                                                         CoralManipulatorConstants.intakePivotPosition)
                                                 .schedule();
                                         }
