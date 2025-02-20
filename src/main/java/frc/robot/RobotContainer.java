@@ -291,8 +291,7 @@ public class RobotContainer {
                                                         elevatorSubsystem, 
                                                         coralManipulatorSubsystem, 
                                                         m_robotDrive,
-                                                        OIConstants.intakePositionRight, 
-                                                        OIConstants.coralIntakeDistance)
+                                                        OIConstants.intakePositionRight)
                                                 .schedule();
                                         }
                                 } else {
