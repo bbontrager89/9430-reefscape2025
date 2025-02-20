@@ -96,7 +96,7 @@ public final class Constants {
     public static final double kTriggerThreshold = 0.1;
 
     public static final double scoringDistance = 0.02;
-    public static final double coralIntakeDistance = 0.5;
+    public static final double coralIntakeDistance = 0.12;
 
     public static final double leftScoringOffset = -0.165;
     public static final double rightScoringOffset = 0.165;
