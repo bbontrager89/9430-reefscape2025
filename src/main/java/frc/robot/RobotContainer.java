@@ -19,8 +19,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CoralManipulatorConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DoScorePositionCommand;
+import frc.robot.commands.DoIntakeCoralFromStationCommand;
 import frc.robot.commands.MoveElevator;
 import frc.robot.commands.TransitModeCommand;
 import frc.robot.subsystems.CoralManipulatorSubsystem;
@@ -289,7 +291,7 @@ public class RobotContainer {
                                                         elevatorSubsystem, 
                                                         coralManipulatorSubsystem, 
                                                         m_robotDrive,
-                                                        ElevatorConstants.coralStationPosition, 
+                                                        0, 
                                                         OIConstants.intakePositionRight, 
                                                         OIConstants.coralIntakeDistance, 
                                                         CoralManipulatorConstants.intakePivotPosition)
