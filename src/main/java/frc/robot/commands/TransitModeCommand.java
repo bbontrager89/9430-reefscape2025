@@ -33,6 +33,7 @@ public class TransitModeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    elevator.moveToScoringPosition(4); // 'SP4' is the minimum position 
     coral.movePivotTo(CoralManipulatorConstants.maximumPivotPosition);
     // algae.retract();
   }
