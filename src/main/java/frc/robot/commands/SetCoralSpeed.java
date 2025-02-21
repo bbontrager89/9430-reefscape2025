@@ -27,7 +27,11 @@ public class SetCoralSpeed extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    coralSubsystem.startIntakeMotor(speed);
+    if (speed == 0) {
+      coralSubsystem.stopIntakeMotor();
+    } else { 
+      coralSubsystem.startIntakeMotor(speed);
+    }
   }
 
   // Called once the command ends or is interrupted.
