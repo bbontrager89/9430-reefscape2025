@@ -1,6 +1,8 @@
 package frc.robot.commands;
 
+import java.io.Console;
 import java.util.Arrays;
+import java.util.List;
 
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -17,34 +19,42 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
     private final double desiredDistance;
 
     @SuppressWarnings("unlikely-arg-type")
-    public DoScorePositionCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coralSubsystem, DriveSubsystem drive, int scoringPosition, double desiredLateralOffset, double desiredDistance, double pivotHeight) {
+    public DoScorePositionCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coralSubsystem,
+            DriveSubsystem drive, int scoringPosition, double desiredLateralOffset, double desiredDistance,
+            double pivotHeight) {
         this.drive = drive;
         this.desiredLateralOffset = desiredLateralOffset;
         this.desiredDistance = desiredDistance;
-        
+
         System.out.printf("ElevatorCommand created - Target lateral offset: %.2f m, Target distance: %.2f m%n",
-            desiredLateralOffset, desiredDistance);
+                desiredLateralOffset, desiredDistance);
 
         // Only proceed if we initially see a tag
         addRequirements(drive, elevator);
-        
+
         addCommands(
-            new ConditionalCommand(
-                // If we see a tag, execute the full alignment sequence
-                new SequentialCommandGroup(
-                    new RotateToTagCommand(drive),
-                    new StrafeToAlignCommand(drive, desiredLateralOffset),
-                    new MoveElevator(elevator, scoringPosition),
-                    new PivotCoral(coralSubsystem, pivotHeight), // TODO make correct
-                    new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset),
-                    new SetCoralSpeed(coralSubsystem, 1),
-                    new WaitCommand(1.3),
-                    new SetCoralSpeed(coralSubsystem, 0)
-                ),
-                // If we don't see a tag, do nothing
-                new InstantCommand(),
-                () -> Arrays.asList(AprilTagConstants.scoringAprilTags).contains(drive.getPoseEstimatorSubsystem().getLastDetectedTagId())
-            )
-        );
+                new ConditionalCommand(
+                        // If we see a tag, execute the full alignment sequence
+                        new SequentialCommandGroup(
+                                new RotateToTagCommand(drive),
+                                new StrafeToAlignCommand(drive, desiredLateralOffset),
+                                new MoveElevator(elevator, scoringPosition),
+                                new PivotCoral(coralSubsystem, pivotHeight), // TODO make correct
+                                new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset),
+                                new SetCoralSpeed(coralSubsystem, 1),
+                                new WaitCommand(1.3),
+                                new SetCoralSpeed(coralSubsystem, 0)),
+                        // If we don't see a tag, do nothing
+                        new InstantCommand(),
+                        () -> {
+                            int detectedTag = drive.getPoseEstimatorSubsystem().getLastDetectedTagId();
+                            List<Integer> scoringTagsList = Arrays.stream(AprilTagConstants.scoringAprilTags).boxed()
+                                    .toList();
+                            System.out.println("Detected Tag ID: " + detectedTag);
+                            System.out.println("Scoring Tags List: " + scoringTagsList);
+                            return scoringTagsList.contains(detectedTag);
+                        }
+
+                ));
     }
 }
