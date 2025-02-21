@@ -100,7 +100,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             visionStdDevs
         );
 
-        CameraServer.startAutomaticCapture("Front Camera", "/dev/v4l/by-path/platform-fc800000.usb-usb-0:1:1.0-video-index0");
+        // CameraServer.startAutomaticCapture("Front Camera", "/dev/v4l/by-path/platform-fc800000.usb-usb-0:1:1.0-video-index0");
     }
 
     public void update(Rotation2d gyroRotation, SwerveModulePosition[] modulePositions) {

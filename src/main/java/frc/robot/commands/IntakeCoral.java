@@ -8,16 +8,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralManipulatorSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class SetCoralSpeed extends Command {
+public class IntakeCoral extends Command {
   CoralManipulatorSubsystem coralSubsystem;
   double speed;
-  /** Creates a new SetCoralSpeed. */
-  public SetCoralSpeed(CoralManipulatorSubsystem coralSubsystem, double speed) {
+  double timeoutDuration;
+  /** Creates a new IntakeCoral. */
+  public IntakeCoral(CoralManipulatorSubsystem coralSubsystem, double speed, double timeoutDuration) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(coralSubsystem);
 
     this.coralSubsystem = coralSubsystem;
     this.speed = speed;
+    this.timeoutDuration = timeoutDuration;
   }
 
   // Called when the command is initially scheduled.
@@ -27,20 +29,18 @@ public class SetCoralSpeed extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (speed == 0) {
-      coralSubsystem.stopIntakeMotor();
-    } else { 
-      coralSubsystem.startIntakeMotor(speed);
-    }
+    coralSubsystem.startIntakeMotor(-Math.abs(speed));
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    coralSubsystem.stopIntakeMotor();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return coralSubsystem.isCoralIntaken() || coralSubsystem.intakeUptime() > timeoutDuration;
   }
 }

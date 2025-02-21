@@ -189,7 +189,9 @@ public class RobotContainer {
                 c_operatorController.axisLessThan(AXIS.RightVertical.value, -OIConstants.kTriggerThreshold))
                         .whileTrue(new RepeatCommand(new InstantCommand(() -> {
                                 if (activeMode == ControlMode.Manual) {
-                                        
+                                        coralManipulatorSubsystem.movePivotTo(
+                                                coralManipulatorSubsystem.getPivotMotorPosition() + -0.025 * c_operatorController.getRightY()
+                                        );
                                 }
                         }))).onFalse(new InstantCommand(() -> {
 
