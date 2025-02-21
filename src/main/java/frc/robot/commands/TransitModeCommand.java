@@ -14,14 +14,16 @@ public class TransitModeCommand extends Command {
 
   ElevatorSubsystem elevator;
   CoralManipulatorSubsystem coral;
+  // AlgaeManipulatorSubsystem algae
 
   /** Creates a new TransitModeCommand. */
-  public TransitModeCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coral) {
+  public TransitModeCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coral /*, AlgaeManipulatorSubsystem algae */) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator, coral);
 
     this.elevator = elevator;
     this.coral = coral;
+    // this.algae = algae
   }
 
   // Called when the command is initially scheduled.
@@ -31,8 +33,8 @@ public class TransitModeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevator.moveToScoringPosition(0);
     coral.movePivotTo(CoralManipulatorConstants.maximumPivotPosition);
+    // algae.retract();
   }
 
   // Called once the command ends or is interrupted.
@@ -42,6 +44,6 @@ public class TransitModeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return elevator.atHeight() && coral.atPivotPosition();
+    return elevator.atHeight() && coral.atPivotPosition() /* && algae.isRetracted() */;
   }
 }
