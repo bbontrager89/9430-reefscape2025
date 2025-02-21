@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.CoralManipulatorConstants;
 import frc.robot.subsystems.CoralManipulatorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -14,14 +15,16 @@ public class TransitModeCommand extends Command {
 
   ElevatorSubsystem elevator;
   CoralManipulatorSubsystem coral;
+  // AlgaeManipulatorSubsystem algae
 
   /** Creates a new TransitModeCommand. */
-  public TransitModeCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coral) {
+  public TransitModeCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coral /*, AlgaeManipulatorSubsystem algae */) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator, coral);
 
     this.elevator = elevator;
     this.coral = coral;
+    // this.algae = algae
   }
 
   // Called when the command is initially scheduled.
@@ -31,8 +34,9 @@ public class TransitModeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevator.moveToScoringPosition(0);
+    elevator.moveToScoringPosition(4); // 'SP4' is the minimum position 
     coral.movePivotTo(CoralManipulatorConstants.maximumPivotPosition);
+    // algae.retract();
   }
 
   // Called once the command ends or is interrupted.
@@ -42,6 +46,6 @@ public class TransitModeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return elevator.atHeight() && coral.atPivotPosition();
+    return true;
   }
 }

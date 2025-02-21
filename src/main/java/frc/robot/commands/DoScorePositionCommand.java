@@ -33,28 +33,30 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
         addRequirements(drive, elevator);
 
         addCommands(
-                new ConditionalCommand(
-                        // If we see a tag, execute the full alignment sequence
-                        new SequentialCommandGroup(
-                                new RotateToTagCommand(drive),
-                                new StrafeToAlignCommand(drive, desiredLateralOffset),
-                                new MoveElevator(elevator, scoringPosition),
-                                new PivotCoral(coralSubsystem, pivotHeight), // TODO make correct
-                                new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset),
-                                new SetCoralSpeed(coralSubsystem, 1),
-                                new WaitCommand(1.3),
-                                new SetCoralSpeed(coralSubsystem, 0)),
-                        // If we don't see a tag, do nothing
-                        new InstantCommand(),
-                        () -> {
-                            int detectedTag = drive.getPoseEstimatorSubsystem().getLastDetectedTagId();
-                            List<Integer> scoringTagsList = Arrays.stream(AprilTagConstants.scoringAprilTags).boxed()
-                                    .toList();
-                            System.out.println("Detected Tag ID: " + detectedTag);
-                            System.out.println("Scoring Tags List: " + scoringTagsList);
-                            return scoringTagsList.contains(detectedTag);
-                        }
-
-                ));
+            new ConditionalCommand(
+                // If we see a tag, execute the full alignment sequence
+                new SequentialCommandGroup(
+                    new RotateToTagCommand(drive),
+                    new StrafeToAlignCommand(drive, desiredLateralOffset),
+                    new MoveElevator(elevator, scoringPosition),
+                    new PivotCoral(coralSubsystem, pivotHeight),
+                    new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset),
+                    new SetCoralSpeed(coralSubsystem, 1),
+                    new WaitCommand(0.7),
+                    new SetCoralSpeed(coralSubsystem, 0),
+                    new InstantCommand(() -> {
+                        drive.drive(-0.2, 0, 0, false);
+                    }),
+                    new WaitCommand(0.25),
+                    new InstantCommand(() -> {
+                        drive.drive(0, 0, 0, false);
+                    }),
+                    new TransitModeCommand(elevator, coralSubsystem)
+                ),
+                // If we don't see a tag, do nothing
+                new InstantCommand(),
+                () -> drive.getPoseEstimatorSubsystem().getLastDetectedTagId() != -1
+            )
+        );
     }
 }
