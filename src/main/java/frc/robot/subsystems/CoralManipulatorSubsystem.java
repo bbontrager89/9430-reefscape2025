@@ -255,6 +255,10 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     return pivotController.atSetpoint();
   }
 
+  public boolean isCoralIntaken() {
+    return coralIntaken;
+  }
+
   @Override
   public void periodic() {
 
