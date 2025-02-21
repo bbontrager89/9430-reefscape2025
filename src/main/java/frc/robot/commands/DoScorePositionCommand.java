@@ -31,11 +31,19 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                     new RotateToTagCommand(drive),
                     new StrafeToAlignCommand(drive, desiredLateralOffset),
                     new MoveElevator(elevator, scoringPosition),
-                    new PivotCoral(coralSubsystem, pivotHeight), // TODO make correct
+                    new PivotCoral(coralSubsystem, pivotHeight),
                     new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset),
                     new SetCoralSpeed(coralSubsystem, 1),
-                    new WaitCommand(1.3),
-                    new SetCoralSpeed(coralSubsystem, 0)
+                    new WaitCommand(0.7),
+                    new SetCoralSpeed(coralSubsystem, 0),
+                    new InstantCommand(() -> {
+                        drive.drive(-0.2, 0, 0, false);
+                    }),
+                    new WaitCommand(0.25),
+                    new InstantCommand(() -> {
+                        drive.drive(0, 0, 0, false);
+                    }),
+                    new TransitModeCommand(elevator, coralSubsystem)
                 ),
                 // If we don't see a tag, do nothing
                 new InstantCommand(),
