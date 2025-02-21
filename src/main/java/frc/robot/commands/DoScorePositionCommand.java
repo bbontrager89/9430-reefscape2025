@@ -1,9 +1,12 @@
 package frc.robot.commands;
 
+import java.util.Arrays;
+
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants.AprilTagConstants;
 import frc.robot.subsystems.CoralManipulatorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -13,6 +16,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
     private final double desiredLateralOffset;
     private final double desiredDistance;
 
+    @SuppressWarnings("unlikely-arg-type")
     public DoScorePositionCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coralSubsystem, DriveSubsystem drive, int scoringPosition, double desiredLateralOffset, double desiredDistance, double pivotHeight) {
         this.drive = drive;
         this.desiredLateralOffset = desiredLateralOffset;
@@ -39,7 +43,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                 ),
                 // If we don't see a tag, do nothing
                 new InstantCommand(),
-                () -> drive.getPoseEstimatorSubsystem().getLastDetectedTagId() != -1
+                () -> Arrays.asList(AprilTagConstants.scoringAprilTags).contains(drive.getPoseEstimatorSubsystem().getLastDetectedTagId())
             )
         );
     }

@@ -1,9 +1,12 @@
 package frc.robot.commands;
 
+import java.util.Arrays;
+
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants.AprilTagConstants;
 import frc.robot.Constants.CoralManipulatorConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.CoralManipulatorSubsystem;
@@ -15,6 +18,7 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
     private final double desiredLateralOffset;
     private final double desiredDistance;
 
+    @SuppressWarnings("unlikely-arg-type")
     public DoIntakeCoralFromStationCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coralSubsystem, DriveSubsystem drive, double desiredLateralOffset) {
         this.drive = drive;
         this.desiredLateralOffset = desiredLateralOffset;
@@ -41,7 +45,7 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
                 ),
                 // If we don't see a tag, do nothing
                 new InstantCommand(),
-                () -> drive.getPoseEstimatorSubsystem().getLastDetectedTagId() != -1
+                () -> Arrays.asList(AprilTagConstants.scoringAprilTags).contains(drive.getPoseEstimatorSubsystem().getLastDetectedTagId())
             )
         );
     }

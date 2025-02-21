@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -92,7 +95,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
     public static final double kDriveDeadband = 0.05;
-    
+
     public static final double kTriggerThreshold = 0.1;
 
     public static final double scoringDistance = 0.02;
@@ -101,10 +104,10 @@ public final class Constants {
     public static final double leftScoringOffset = -0.165;
     public static final double rightScoringOffset = 0.165;
 
-    //TODO tune these offsets to align with the grooves on the intake station
+    // TODO tune these offsets to align with the grooves on the intake station
     public static final double intakePositionLeft = -0.3;
     public static final double intakePositionRight = 0.3;
-    
+
     public static final double doublePressBuffer = 0.5;
   }
 
@@ -149,7 +152,8 @@ public final class Constants {
 
     public static final double encoderToRevolutionRatio = 200.0;
 
-    public static final double rangeInRevolutions = (maximumElevatorHeight - minimumElevatorHeight) * encoderToRevolutionRatio;
+    public static final double rangeInRevolutions = (maximumElevatorHeight - minimumElevatorHeight)
+        * encoderToRevolutionRatio;
 
     public static final int maximumAutoSpeed = 1; // Range: 0 to 1
 
@@ -174,6 +178,16 @@ public final class Constants {
     public static final double levelOnePivotPosition = 0.25;
     public static final double levelTwoPivotPosition = 0.091; // Motor Off: low hard limit
     public static final double levelThreePivotPosition = 0.091;
+  }
+
+  public static final class AprilTagConstants {
+    public static final int[] scoringAprilTags = new int[] {
+        6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22
+    };
+
+    public static final int[] intakeStationAprilTags = new int[] {
+        1, 2, 12, 13
+    };
   }
 
 }
