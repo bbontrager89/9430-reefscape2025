@@ -159,9 +159,9 @@ public final class Constants {
     public static final int PivotMotorCanId = 42;
     public static final int IntakeMotorCanId = 41;
 
-    public static final double pivotKp = 3;
+    public static final double pivotKp = 2.25;
     public static final double pivotKi = 0.5;
-    public static final double pivotKd = 0.05;
+    public static final double pivotKd = 0.11;
 
     public static final double maxPivotSpeed = 0.15;
 
