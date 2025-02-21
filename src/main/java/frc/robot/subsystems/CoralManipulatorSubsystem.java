@@ -108,6 +108,10 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
    * @param speed the speed to set the motor
    */
   private void setPivotMotorSpeed(double speed) {
+    if (speed == 0) {
+      stopIntakeMotor(); 
+      return;
+    }
     if (!(abovePivotMaxHeight && (speed > 0)) && !(belowPivotMinHeight && (speed < 0))) {
      pivotMotor.set(speed);
      pivotSpeed = speed;
