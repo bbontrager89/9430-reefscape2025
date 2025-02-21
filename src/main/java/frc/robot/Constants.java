@@ -96,9 +96,14 @@ public final class Constants {
     public static final double kTriggerThreshold = 0.1;
 
     public static final double scoringDistance = 0.02;
+    public static final double coralIntakeDistance = 0.12;
 
     public static final double leftScoringOffset = -0.165;
     public static final double rightScoringOffset = 0.165;
+
+    //TODO tune these offsets to align with the grooves on the intake station
+    public static final double intakePositionLeft = -0.3;
+    public static final double intakePositionRight = 0.3;
     
     public static final double doublePressBuffer = 0.5;
   }
@@ -154,15 +159,14 @@ public final class Constants {
     public static final int PivotMotorCanId = 42;
     public static final int IntakeMotorCanId = 41;
 
-    public static final double pivotKp = 2;
+    public static final double pivotKp = 3;
     public static final double pivotKi = 0.5;
-    public static final double pivotKd = 0.0;
+    public static final double pivotKd = 0.05;
 
     public static final double maxPivotSpeed = 0.15;
 
-    public static final double autoStopCurrent = 40;
+    public static final double autoStopCurrent = 30;
 
-    // TODO: Determine limits
     public static final double maximumPivotPosition = 0.48;
     public static final double minimumPivotPosition = 0.095;
 

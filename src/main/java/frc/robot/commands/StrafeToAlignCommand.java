@@ -28,7 +28,7 @@ public class StrafeToAlignCommand extends Command {
         addRequirements(drive);
         
         // PID for strafe control
-        strafeController = new PIDController(3.8, 0.0, 0.0);
+        strafeController = new PIDController(3.0, 0.0, 0.0);
         strafeController.setTolerance(LATERAL_TOLERANCE_METERS);
         // PID for rotation
         rotationController = new PIDController(0.3, 0.0, 0.0);

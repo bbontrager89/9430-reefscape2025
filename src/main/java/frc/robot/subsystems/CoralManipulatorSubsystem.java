@@ -38,9 +38,12 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   private boolean isIntakeMotorOn = false;
   private boolean isPivotMotorOn = false;
 
+  private boolean coralIntaken = false;
+
   private CoralManipulatorState intakeState = CoralManipulatorState.Stopped;
 
   private double intakeOnTimestamp = Double.NEGATIVE_INFINITY;
+  private double currentLimitTimestamp = Double.NEGATIVE_INFINITY;
 
   private double desiredPivotPosition = 0.25;
 
@@ -123,7 +126,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
   public void movePivotTo(double pos) {
     pivotController.reset();
-    
+
     desiredPivotPosition = pos;
     pivotController = new PIDController(CoralManipulatorConstants.pivotKp, CoralManipulatorConstants.pivotKi, CoralManipulatorConstants.pivotKd);
     
@@ -143,13 +146,20 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
    * @param speed the speed to set the motor
    */
   private void setIntakeMotorSpeed(double speed) {
-    intakeMotor.set(speed);
+    if (!(coralIntaken && speed < 0)) {
+      intakeMotor.set(speed);
+    }
+
+    if (speed > 0) {
+      coralIntaken = false;
+    }
 
     intakeSpeed = speed;
 
     if (intakeState == CoralManipulatorState.Stopped) {
       intakeOnTimestamp = Timer.getFPGATimestamp();
       isIntakeMotorOn = true;
+      intakeState = CoralManipulatorState.Active;
     }
   }
 
@@ -160,7 +170,6 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
    * @param speed the speed to set the motor
    */
   public void startIntakeMotor(double speed) {
-    intakeState = CoralManipulatorState.Active;
     setIntakeMotorSpeed(speed);
   }
 
@@ -262,15 +271,30 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Intake Motor Speed", intakeSpeed);
     SmartDashboard.putNumber("Pivot Error", pivotController.getError());
     SmartDashboard.putNumber("desiredPivotPosition", desiredPivotPosition);
+    SmartDashboard.putBoolean("Coral Intaken", coralIntaken);
+    SmartDashboard.putNumber("Intake Current", intakeMotor.getOutputCurrent());
 
     pivotMotor.set(Math.min(Math.max(-pivotController.calculate(getPivotMotorPosition(), desiredPivotPosition), -CoralManipulatorConstants.maxPivotSpeed),CoralManipulatorConstants.maxPivotSpeed));
     
 
     // Check if motor is stuck to prevent over straining it
     if (doAutoCurrentLimit) {
-      if (intakeMotor.getOutputCurrent() > CoralManipulatorConstants.autoStopCurrent) {
-        stopIntakeMotor();
+
+      if (intakeMotor.getOutputCurrent() > CoralManipulatorConstants.autoStopCurrent && intakeSpeed < 0) {
+
+        if (currentLimitTimestamp < 0) {
+          currentLimitTimestamp = Timer.getFPGATimestamp();
+        }
+
+        if (currentLimitTimestamp + 0.2 < Timer.getFPGATimestamp()) {
+          stopIntakeMotor();
+          coralIntaken = true;
+        }
+
+      } else {
+        currentLimitTimestamp = Double.NEGATIVE_INFINITY;
       }
+
     }
 
     // Turn off motor after time has passed

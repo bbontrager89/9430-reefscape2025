@@ -9,17 +9,41 @@ import frc.robot.subsystems.CoralManipulatorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class TransitModeCommand extends SequentialCommandGroup {
+public class TransitModeCommand extends Command {
+
+  ElevatorSubsystem elevator;
+  CoralManipulatorSubsystem coral;
+  // AlgaeManipulatorSubsystem algae
 
   /** Creates a new TransitModeCommand. */
-  public TransitModeCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coral) {
+  public TransitModeCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coral /*, AlgaeManipulatorSubsystem algae */) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator, coral);
 
-    addCommands(
-      new SequentialCommandGroup(
-        // new PivotAlgae(algae, 0)
-        new MoveElevator(elevator, 4), 
-        new PivotCoral(coral, 0)));
+    this.elevator = elevator;
+    this.coral = coral;
+    // this.algae = algae
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {}
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    elevator.moveToScoringPosition(4); // 'SP4' is the minimum position 
+    coral.movePivotTo(CoralManipulatorConstants.maximumPivotPosition);
+    // algae.retract();
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {}
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return elevator.atHeight() && coral.atPivotPosition() /* && algae.isRetracted() */;
   }
 }

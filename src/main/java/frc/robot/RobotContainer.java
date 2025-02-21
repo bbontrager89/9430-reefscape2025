@@ -19,8 +19,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CoralManipulatorConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DoScorePositionCommand;
+import frc.robot.commands.DoIntakeCoralFromStationCommand;
+import frc.robot.commands.MoveElevator;
 import frc.robot.commands.TransitModeCommand;
 import frc.robot.subsystems.CoralManipulatorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -29,13 +32,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.utils.ControllerUtils.POV;
 import frc.utils.ControllerUtils.AXIS;
+
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import java.util.List;
 
@@ -65,6 +70,9 @@ public class RobotContainer {
          * The container for the robot. Contains subsystems, OI devices, and commands.
          */
         public RobotContainer() {
+                // Configure command Chooser
+                configureNamedCommands();
+
                 // Configure the button bindings
                 configureButtonBindings();
 
@@ -83,6 +91,20 @@ public class RobotContainer {
                                                                 true),
                                                 m_robotDrive));
         }
+
+        private void configureNamedCommands() {
+                NamedCommands.registerCommand("Score LP2", 
+                new DoScorePositionCommand(
+                        elevatorSubsystem, 
+                        coralManipulatorSubsystem, 
+                        m_robotDrive,
+                        2, 
+                        OIConstants.leftScoringOffset, 
+                        OIConstants.scoringDistance, 
+                        CoralManipulatorConstants.levelTwoPivotPosition));
+                NamedCommands.registerCommand("Elevator to SP1", new MoveElevator(elevatorSubsystem, 1));
+        }
+        
 
         /** Represents modes for different controls */
         enum ControlMode {
@@ -194,8 +216,10 @@ public class RobotContainer {
                 // Right trigger -
                 c_operatorController.rightTrigger(OIConstants.kTriggerThreshold)
                         .whileTrue(new RepeatCommand(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.startIntakeMotor(-1 * c_operatorController.getRightTriggerAxis());
-
+                                if (!(c_operatorController.getLeftTriggerAxis() > OIConstants.kTriggerThreshold))
+                                        coralManipulatorSubsystem.startIntakeMotor(-1 * c_operatorController.getRightTriggerAxis());
+                                else 
+                                        coralManipulatorSubsystem.stopIntakeMotor();
                         }))).onFalse(new InstantCommand(() -> {
                                 coralManipulatorSubsystem.stopIntakeMotor();
                         }));
@@ -209,8 +233,10 @@ public class RobotContainer {
                 // Left trigger -
                 c_operatorController.leftTrigger(OIConstants.kTriggerThreshold)
                         .whileTrue(new RepeatCommand(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.startIntakeMotor(c_operatorController.getLeftTriggerAxis());
-
+                                if (!(c_operatorController.getRightTriggerAxis() > OIConstants.kTriggerThreshold))
+                                        coralManipulatorSubsystem.startIntakeMotor(c_operatorController.getLeftTriggerAxis());
+                                else 
+                                        coralManipulatorSubsystem.stopIntakeMotor();
                         }))).onFalse(new InstantCommand(() -> {
                                 coralManipulatorSubsystem.stopIntakeMotor();
                         }));
@@ -261,14 +287,11 @@ public class RobotContainer {
                                         // on Double Press -
                                         // Coral mode: intake from Coral station
                                         if (operatorLatestPOVButton == POV.Up) {
-                                                new DoScorePositionCommand(
+                                                new DoIntakeCoralFromStationCommand(
                                                         elevatorSubsystem, 
                                                         coralManipulatorSubsystem, 
                                                         m_robotDrive,
-                                                        0, 
-                                                        0.0, 
-                                                        OIConstants.scoringDistance, 
-                                                        CoralManipulatorConstants.intakePivotPosition)
+                                                        OIConstants.intakePositionRight)
                                                 .schedule();
                                         }
                                 } else {
@@ -637,43 +660,6 @@ public class RobotContainer {
          * @return the command to run in autonomous
          */
         public Command getAutonomousCommand() {
-                // Create config for trajectory
-                TrajectoryConfig config = new TrajectoryConfig(
-                                AutoConstants.kMaxSpeedMetersPerSecond,
-                                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                                // Add kinematics to ensure max speed is actually obeyed
-                                .setKinematics(DriveConstants.kDriveKinematics);
-
-                // An example trajectory to follow. All units in meters.
-                Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-                                // Start at the origin facing the +X direction
-                                new Pose2d(0, 0, new Rotation2d(0)),
-                                // Pass through these two interior waypoints, making an 's' curve path
-                                List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-                                // End 3 meters straight ahead of where we started, facing forward
-                                new Pose2d(3, 0, new Rotation2d(0)),
-                                config);
-
-                var thetaController = new ProfiledPIDController(
-                                AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-                thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-                SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-                                exampleTrajectory,
-                                m_robotDrive::getPose, // Functional interface to feed supplier
-                                DriveConstants.kDriveKinematics,
-
-                                // Position controllers
-                                new PIDController(AutoConstants.kPXController, 0, 0),
-                                new PIDController(AutoConstants.kPYController, 0, 0),
-                                thetaController,
-                                m_robotDrive::setModuleStates,
-                                m_robotDrive);
-
-                // Reset odometry to the starting pose of the trajectory.
-                m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
-
-                // Run path following command, then stop at the end.
-                return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+                return new PathPlannerAuto("Default Auto");
         }
 }
