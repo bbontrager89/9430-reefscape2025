@@ -642,7 +642,9 @@ public class RobotContainer {
 
                 // Start Button button -
                 c_driverController.start()
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand(() -> {
+                                m_robotDrive.zeroHeading();
+                        }));
 
                 // Back Button button -
                 c_driverController.back()
