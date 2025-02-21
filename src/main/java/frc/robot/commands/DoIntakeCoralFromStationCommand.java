@@ -36,7 +36,15 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
                     new PivotCoral(coralSubsystem, CoralManipulatorConstants.intakePivotPosition),
                     new ApproachTagCommand(drive, OIConstants.coralIntakeDistance, desiredLateralOffset),
                     new IntakeCoral(coralSubsystem, -1, 1.5),
-                    new SetCoralSpeed(coralSubsystem, 0)
+                    new SetCoralSpeed(coralSubsystem, 0),
+                    new InstantCommand(() -> {
+                        drive.drive(-0.2, 0, 0, false);
+                    }),
+                    new WaitCommand(0.25),
+                    new InstantCommand(() -> {
+                        drive.drive(0, 0, 0, false);
+                    }),
+                    new TransitModeCommand(elevator, coralSubsystem)
                 ),
                 // If we don't see a tag, do nothing
                 new InstantCommand(),
