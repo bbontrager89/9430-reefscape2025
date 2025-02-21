@@ -37,8 +37,12 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                     new WaitCommand(0.7),
                     new SetCoralSpeed(coralSubsystem, 0),
                     new InstantCommand(() -> {
-                        drive.drive(0, -0.1, 0, false);
-                    }).withTimeout(0.2)
+                        drive.drive(-0.2, 0, 0, false);
+                    }),
+                    new WaitCommand(0.35),
+                    new InstantCommand(() -> {
+                        drive.drive(0, 0, 0, false);
+                    })
                 ),
                 // If we don't see a tag, do nothing
                 new InstantCommand(),
