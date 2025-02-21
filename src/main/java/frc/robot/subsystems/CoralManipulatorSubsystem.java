@@ -259,6 +259,10 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     return coralIntaken;
   }
 
+  public double intakeUptime() {
+    return (isIntakeMotorOn) ? Timer.getFPGATimestamp() - intakeOnTimestamp : 0.0;
+  }
+
   @Override
   public void periodic() {
 
