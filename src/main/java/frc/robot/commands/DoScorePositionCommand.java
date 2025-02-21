@@ -35,7 +35,10 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                     new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset),
                     new SetCoralSpeed(coralSubsystem, 1),
                     new WaitCommand(0.7),
-                    new SetCoralSpeed(coralSubsystem, 0)
+                    new SetCoralSpeed(coralSubsystem, 0),
+                    new InstantCommand(() -> {
+                        drive.drive(0, -0.1, 0, false);
+                    }).withTimeout(0.2)
                 ),
                 // If we don't see a tag, do nothing
                 new InstantCommand(),
