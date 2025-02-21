@@ -45,9 +45,14 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   private double intakeOnTimestamp = Double.NEGATIVE_INFINITY;
   private double currentLimitTimestamp = Double.NEGATIVE_INFINITY;
 
+  private boolean abovePivotMaxHeight = false;
+  private boolean belowPivotMinHeight = false;
+
   private double desiredPivotPosition = 0.25;
 
   private static SendableChooser<Command> pivotCommands;
+
+  private double pivotSpeed = 0.0;
 
   /** Creates a new CoralManipulatorSubsystem. */
   public CoralManipulatorSubsystem() {
@@ -103,7 +108,10 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
    * @param speed the speed to set the motor
    */
   private void setPivotMotorSpeed(double speed) {
-    pivotMotor.set(speed);
+    if (!(abovePivotMaxHeight && (speed > 0)) && !(belowPivotMinHeight && (speed < 0))) {
+     pivotMotor.set(speed);
+     pivotSpeed = speed;
+    }
     isPivotMotorOn = true;
   }
 
@@ -121,6 +129,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
    */
   public void stopPivotMotor() {
     pivotMotor.stopMotor();
+    pivotSpeed = 0.0;
     isPivotMotorOn = false;
   }
 
@@ -255,6 +264,14 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     return pivotController.atSetpoint();
   }
 
+  public boolean isCoralIntaken() {
+    return coralIntaken;
+  }
+
+  public double intakeUptime() {
+    return (isIntakeMotorOn) ? Timer.getFPGATimestamp() - intakeOnTimestamp : 0.0;
+  }
+
   @Override
   public void periodic() {
 
@@ -273,6 +290,24 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("desiredPivotPosition", desiredPivotPosition);
     SmartDashboard.putBoolean("Coral Intaken", coralIntaken);
     SmartDashboard.putNumber("Intake Current", intakeMotor.getOutputCurrent());
+
+    if (getPivotMotorPosition() > CoralManipulatorConstants.maximumPivotPosition) {
+      abovePivotMaxHeight = true;
+      if (pivotSpeed > 0) {
+        stopPivotMotor();
+      }
+    } else {
+      abovePivotMaxHeight = false;
+    }
+
+    if (getPivotMotorPosition() < CoralManipulatorConstants.minimumPivotPosition) {
+      belowPivotMinHeight = true;
+      if (pivotSpeed < 0) {
+        stopPivotMotor();
+      }
+    } else {
+      belowPivotMinHeight = false;
+    }
 
     pivotMotor.set(Math.min(Math.max(-pivotController.calculate(getPivotMotorPosition(), desiredPivotPosition), -CoralManipulatorConstants.maxPivotSpeed),CoralManipulatorConstants.maxPivotSpeed));
     
