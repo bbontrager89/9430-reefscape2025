@@ -1,9 +1,14 @@
 package frc.robot.commands;
 
+import java.io.Console;
+import java.util.Arrays;
+import java.util.List;
+
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants.AprilTagConstants;
 import frc.robot.subsystems.CoralManipulatorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -13,17 +18,20 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
     private final double desiredLateralOffset;
     private final double desiredDistance;
 
-    public DoScorePositionCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coralSubsystem, DriveSubsystem drive, int scoringPosition, double desiredLateralOffset, double desiredDistance, double pivotHeight) {
+    @SuppressWarnings("unlikely-arg-type")
+    public DoScorePositionCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coralSubsystem,
+            DriveSubsystem drive, int scoringPosition, double desiredLateralOffset, double desiredDistance,
+            double pivotHeight) {
         this.drive = drive;
         this.desiredLateralOffset = desiredLateralOffset;
         this.desiredDistance = desiredDistance;
-        
+
         System.out.printf("ElevatorCommand created - Target lateral offset: %.2f m, Target distance: %.2f m%n",
-            desiredLateralOffset, desiredDistance);
+                desiredLateralOffset, desiredDistance);
 
         // Only proceed if we initially see a tag
         addRequirements(drive, elevator);
-        
+
         addCommands(
             new ConditionalCommand(
                 // If we see a tag, execute the full alignment sequence
