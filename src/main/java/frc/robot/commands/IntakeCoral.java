@@ -11,13 +11,15 @@ import frc.robot.subsystems.CoralManipulatorSubsystem;
 public class IntakeCoral extends Command {
   CoralManipulatorSubsystem coralSubsystem;
   double speed;
+  double timeoutDuration;
   /** Creates a new IntakeCoral. */
-  public IntakeCoral(CoralManipulatorSubsystem coralSubsystem, double speed) {
+  public IntakeCoral(CoralManipulatorSubsystem coralSubsystem, double speed, double timeoutDuration) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(coralSubsystem);
 
     this.coralSubsystem = coralSubsystem;
     this.speed = speed;
+    this.timeoutDuration = timeoutDuration;
   }
 
   // Called when the command is initially scheduled.
@@ -37,6 +39,6 @@ public class IntakeCoral extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return coralSubsystem.isCoralIntaken();
+    return coralSubsystem.isCoralIntaken() || coralSubsystem.intakeUptime() > timeoutDuration;
   }
 }
