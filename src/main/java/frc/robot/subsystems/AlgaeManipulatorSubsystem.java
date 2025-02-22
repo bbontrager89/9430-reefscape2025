@@ -36,7 +36,9 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
       .apply(
         new SoftLimitConfig()
           .forwardSoftLimit(AlgaeConstants.maximumPivotPosition)
-          .reverseSoftLimit(AlgaeConstants.minimumPivotPosition))
+          .forwardSoftLimitEnabled(true)
+          .reverseSoftLimit(AlgaeConstants.minimumPivotPosition)
+          .reverseSoftLimitEnabled(true))
       .apply(
         new ClosedLoopConfig()
           .pid(AlgaeConstants.kP,AlgaeConstants.kI,AlgaeConstants.kD))
