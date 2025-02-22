@@ -451,19 +451,35 @@ public class RobotContainer {
 
                 // Right bumper -
                 c_driverController.rightBumper()
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand(() -> {
+                                algaeManipulatorSubsystem.setPivotSpeed(0.15);
+                        })).onFalse(new InstantCommand(() -> {
+                                algaeManipulatorSubsystem.stopPivot();
+                        }));
 
                 // Right trigger -
                 c_driverController.rightTrigger(OIConstants.kTriggerThreshold)
-                        .onTrue(new InstantCommand());
+                        .whileTrue(new RepeatCommand(new InstantCommand(() -> {
+                                algaeManipulatorSubsystem.setIntakeSpeed(c_driverController.getRightTriggerAxis());
+                        }))).onFalse(new InstantCommand(() -> {
+                                algaeManipulatorSubsystem.stopIntake();
+                        }));
 
                 // Left bumper -
                 c_driverController.leftBumper()
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand(() -> {
+                                algaeManipulatorSubsystem.setPivotSpeed(-0.15);
+                        })).onFalse(new InstantCommand(() -> {
+                                algaeManipulatorSubsystem.stopPivot();
+                        }));
 
                 // Left trigger -
                 c_driverController.leftTrigger(OIConstants.kTriggerThreshold)
-                        .onTrue(new InstantCommand());
+                        .whileTrue(new RepeatCommand(new InstantCommand(() -> {
+                                algaeManipulatorSubsystem.setIntakeSpeed(-c_driverController.getRightTriggerAxis());
+                        }))).onFalse(new InstantCommand(() -> {
+                                algaeManipulatorSubsystem.stopIntake();
+                        }));
 
                 // Y button -
                 c_driverController.y()
