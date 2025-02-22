@@ -40,13 +40,13 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     // Camera names from your PhotonVision config
     private static final String[] CAMERA_NAMES = {
         "Arducam_3",  // index 0 => front
-        "Arducam_2",  // index 1 => left
-        "Arducam_1"   // index 2 => right
+        "Arducam_1",  // index 1 => left
+        "Arducam_2"   // index 2 => right
     };
     
     // Camera indices for side cameras used in intake operations
-    private static final int LEFT_CAMERA_INDEX = 1;
-    private static final int RIGHT_CAMERA_INDEX = 2;
+    private static final int LEFT_CAMERA_INDEX = 2;
+    private static final int RIGHT_CAMERA_INDEX = 1;
 
     /**
      * Robot-to-Camera transforms.
