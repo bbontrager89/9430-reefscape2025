@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -27,7 +28,7 @@ import frc.robot.Constants;
  */
 public class PoseEstimatorSubsystem extends SubsystemBase {
 
-    private final SwerveDrivePoseEstimator poseEstimator;
+    private final SwerveDriveOdometry poseEstimator;
     private final PhotonCamera[] photonCameras;
 
     // Standard deviations for state and vision measurements
@@ -105,29 +106,15 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             lastTagsDetectedByCamera[i] = -1;
         }
 
-        var stateStdDevs = VecBuilder.fill(
-            STATE_STD_DEV_POS, 
-            STATE_STD_DEV_POS, 
-            STATE_STD_DEV_HEADING
-        );
-        var visionStdDevs = VecBuilder.fill(
-            VISION_STD_DEV_POS, 
-            VISION_STD_DEV_POS, 
-            VISION_STD_DEV_HEADING
-        );
-
-        poseEstimator = new SwerveDrivePoseEstimator(
+        poseEstimator = new SwerveDriveOdometry(
             Constants.DriveConstants.kDriveKinematics,
-            new Rotation2d(),
+            initialPose.getRotation(),
             new SwerveModulePosition[] {
                 new SwerveModulePosition(),
                 new SwerveModulePosition(),
                 new SwerveModulePosition(),
                 new SwerveModulePosition()
-            },
-            initialPose,
-            stateStdDevs,
-            visionStdDevs
+            }
         );
     }
 
@@ -377,7 +364,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     }
 
     public Pose2d getEstimatedPose() {
-        return poseEstimator.getEstimatedPosition();
+        return poseEstimator.getPoseMeters();
     }
 
     public void resetPose(Pose2d newPose, Rotation2d gyroRotation, SwerveModulePosition[] modulePositions) {
