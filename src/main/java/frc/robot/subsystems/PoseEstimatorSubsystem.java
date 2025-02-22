@@ -40,8 +40,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     // Camera names from your PhotonVision config
     private static final String[] CAMERA_NAMES = {
         "Arducam_2",  // index 0 => front
-        "Arducam_1",  // index 1 => left
-        "Arducam_3"   // index 2 => right
+        "Arducam_3",  // index 1 => left
+        "Arducam_1"   // index 2 => right
     };
     
     // Camera indices for side cameras used in intake operations
@@ -59,15 +59,16 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             new Translation3d(0.279, 0.0, 0.1096),
             new Rotation3d(0.0, 1.8326, 0.0)
         ),
-        // Left camera
-        new Transform3d(
-            new Translation3d(0.2018, 0.2612, 0.0561),
-            new Rotation3d(1.3713, 1.15, 1.1665)
-        ),
+        
         // Right camera
         new Transform3d(
             new Translation3d(0.2018, -0.2616, 0.0559),
             new Rotation3d(1.3713, 1.1592, -1.1665)
+        ),
+        // Left camera
+        new Transform3d(
+            new Translation3d(0.2018, 0.2612, 0.0561),
+            new Rotation3d(1.3713, 1.15, 1.1665)
         )
     };
 
