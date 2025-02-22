@@ -185,6 +185,9 @@ public final class Constants {
     public static final int pivotMotorCANid = 31;
     public static final int intakeMotorCANid = 32;
     
+    // TODO Determine actual limits 
+    public static final double maximumPivotPosition = 0.0;
+    public static final double minimumPivotPosition = 0.0;
     
   }
 
