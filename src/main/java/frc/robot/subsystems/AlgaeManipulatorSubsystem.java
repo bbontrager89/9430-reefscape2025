@@ -18,6 +18,8 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
 
   private SparkAbsoluteEncoder pivotEncoder = pivotMotor.getAbsoluteEncoder();
 
+  private Double desiredPivotHeight;
+
   /** Creates a new AlgaeManipulatorSubSystem. */
   public AlgaeManipulatorSubsystem() {
     
@@ -39,6 +41,14 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
     intakeMotor.stopMotor();
   }
 
+  public void setDesiredPivotHeight(double height) {
+    desiredPivotHeight = height;
+  }
+
+  public void disableAutoPivot() {
+    desiredPivotHeight = null;
+  }
+
   public double getPivotEncoderReading() {
     return pivotEncoder.getPosition();
   }
@@ -46,5 +56,12 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    if (desiredPivotHeight != null) {
+      // PID controller to position
+    }
+
+  }
+
   }
 }
