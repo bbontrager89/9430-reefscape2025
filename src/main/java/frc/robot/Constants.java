@@ -182,8 +182,8 @@ public final class Constants {
 
   public static final class AlgaeConstants {
 
-    public static final int RightAlgaeManipulatorCANid = 31;
-    public static final int LeftAlgaeManipulatorCANid = 32;
+    public static final int pivotMotorCANid = 31;
+    public static final int intakeMotorCANid = 32;
     
     
   }

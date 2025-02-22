@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -12,23 +13,34 @@ import frc.robot.Constants.AlgaeConstants;
 
 public class AlgaeManipulatorSubsystem extends SubsystemBase {
 
-  private SparkFlex rightAlgaeManipulatorMotor = new SparkFlex(AlgaeConstants.RightAlgaeManipulatorCANid, MotorType.kBrushless);
-  private SparkFlex leftAlgaeManipulatorMotor = new SparkFlex(AlgaeConstants.LeftAlgaeManipulatorCANid, MotorType.kBrushless);
+  private SparkFlex pivotMotor = new SparkFlex(AlgaeConstants.pivotMotorCANid, MotorType.kBrushless);
+  private SparkFlex intakeMotor = new SparkFlex(AlgaeConstants.intakeMotorCANid, MotorType.kBrushless);
 
+  private SparkAbsoluteEncoder pivotEncoder = pivotMotor.getAbsoluteEncoder();
 
   /** Creates a new AlgaeManipulatorSubSystem. */
   public AlgaeManipulatorSubsystem() {
     
   }
 
-  public void setSpeed(double speed) {
-    rightAlgaeManipulatorMotor.set(speed);
-    leftAlgaeManipulatorMotor.set(speed);
+  public void setPivotSpeed(double speed) {
+    pivotMotor.set(speed);
   }
 
-  public void stop() {
-    rightAlgaeManipulatorMotor.stopMotor();
-    leftAlgaeManipulatorMotor.stopMotor();
+  public void stopPivot() {
+    pivotMotor.stopMotor();
+  }
+
+  public void setIntakeSpeed(double speed) {
+    intakeMotor.set(speed);
+  }
+
+  public void stopIntake() {
+    intakeMotor.stopMotor();
+  }
+
+  public double getPivotEncoderReading() {
+    return pivotEncoder.getPosition();
   }
 
   @Override
