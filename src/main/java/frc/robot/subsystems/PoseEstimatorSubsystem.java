@@ -4,7 +4,6 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -100,7 +99,6 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             visionStdDevs
         );
 
-        // CameraServer.startAutomaticCapture("Front Camera", "/dev/v4l/by-path/platform-fc800000.usb-usb-0:1:1.0-video-index0");
     }
 
     public void update(Rotation2d gyroRotation, SwerveModulePosition[] modulePositions) {
