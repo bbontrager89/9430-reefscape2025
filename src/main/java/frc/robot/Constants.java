@@ -188,6 +188,14 @@ public final class Constants {
     // TODO Determine actual limits 
     public static final double maximumPivotPosition = 0.0;
     public static final double minimumPivotPosition = 0.0;
+
+    public static final double maximumAutoSpeed = 0;
+
+    public static final double pivotTolerence = 0;
+    
+    public static final double kP = 1;
+    public static final double kI = 0;
+    public static final double kD = 0;
     
   }
 
