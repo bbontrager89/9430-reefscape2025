@@ -13,6 +13,7 @@ import frc.robot.commands.DoScorePositionCommand;
 import frc.robot.commands.DoIntakeCoralFromStationCommand;
 import frc.robot.commands.MoveElevator;
 import frc.robot.commands.TransitModeCommand;
+import frc.robot.subsystems.AlgaeManipulatorSubsystem;
 import frc.robot.subsystems.CoralManipulatorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -42,6 +43,8 @@ public class RobotContainer {
         private ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
         private CoralManipulatorSubsystem coralManipulatorSubsystem = new CoralManipulatorSubsystem();
+
+        private AlgaeManipulatorSubsystem algaeManipulatorSubsystem = new AlgaeManipulatorSubsystem();
 
 
         // The driver's controller
