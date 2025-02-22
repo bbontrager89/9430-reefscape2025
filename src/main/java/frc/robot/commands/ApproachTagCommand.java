@@ -16,7 +16,7 @@ public class ApproachTagCommand extends Command {
     private static final double DISTANCE_TOLERANCE_METERS = 0.03; // 3cm
     private static final double LATERAL_TOLERANCE_METERS = 0.03; // 3cm
     private static final double ROTATION_TOLERANCE_DEG = 2.0; // degrees tolerance for rotation error
-    private static final double MAX_FORWARD_SPEED = 1.5; // m/s
+    private static final double MAX_FORWARD_SPEED = 2.0; // m/s
     private static final double MAX_LATERAL_SPEED = 1.0; // m/s
     private static final double MAX_ROTATION_SPEED = 0.3; // rad/s
     private static final double LOST_TAG_TIMEOUT = 0.78; // seconds
@@ -33,7 +33,7 @@ public class ApproachTagCommand extends Command {
         addRequirements(drive);
 
         // PID for forward (distance) control
-        distanceController = new PIDController(2.0, 0.0, 0.00);
+        distanceController = new PIDController(4.0, 0.0, 0.00);
         distanceController.setTolerance(DISTANCE_TOLERANCE_METERS);
 
         // PID for lateral offset correction
