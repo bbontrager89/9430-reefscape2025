@@ -60,16 +60,18 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             new Rotation3d(0.0, 1.8326, 0.0)
         ),
         
-        // Right camera
-        new Transform3d(
-            new Translation3d(0.2018, -0.2616, 0.0559),
-            new Rotation3d(1.3713, 1.1592, -1.1665)
-        ),
-        // Left camera
-        new Transform3d(
-            new Translation3d(0.2018, 0.2612, 0.0561),
-            new Rotation3d(1.3713, 1.15, 1.1665)
-        )
+       
+    // Left camera (index 1) - now with positive Y offset
+    new Transform3d(
+        new Translation3d(0.2018, 0.2616, 0.0559),
+        new Rotation3d(1.3713, 1.1592, 1.1665)  // Adjust yaw as needed
+    ),
+    
+    // Right camera (index 2) - now with negative Y offset
+    new Transform3d(
+        new Translation3d(0.2018, -0.2612, 0.0561),
+        new Rotation3d(1.3713, 1.15, -1.1665)   // Adjust yaw as needed
+    )
     };
 
     // For AlignCommand
