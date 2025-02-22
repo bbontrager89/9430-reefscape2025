@@ -45,8 +45,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     };
     
     // Camera indices for side cameras used in intake operations
-    private static final int LEFT_CAMERA_INDEX = 2;
-    private static final int RIGHT_CAMERA_INDEX = 1;
+    private static final int LEFT_CAMERA_INDEX = 1;
+    private static final int RIGHT_CAMERA_INDEX = 2;
 
     /**
      * Robot-to-Camera transforms.
