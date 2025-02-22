@@ -7,6 +7,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StringTopic;
+import frc.utils.Elastic.ElasticNotification.NotificationLevel;
 
 public final class Elastic {
   private static final StringTopic topic =
@@ -27,6 +28,36 @@ public final class Elastic {
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }
+  }
+
+  /**
+   * Custom quick notification sending for info
+   *
+   * @param title the title of the info 
+   * @param description the description of the info 
+   */
+  public static void sendInfo(String title, String description) {
+    sendAlert(new ElasticNotification(NotificationLevel.INFO, title, description));
+  }
+
+  /**
+   * Custom quick notification sending for warnings
+   *
+   * @param title the title of the warning 
+   * @param description the description of the warning 
+   */
+  public static void sendWarning(String title, String description) {
+    sendAlert(new ElasticNotification(NotificationLevel.WARNING, title, description));
+  }
+
+  /**
+   * Custom quick notification sending for info
+   *
+   * @param title the title of the info 
+   * @param description the description of the info 
+   */
+  public static void sendError(String title, String description) {
+    sendAlert(new ElasticNotification(NotificationLevel.ERROR, title, description));
   }
 
   /**

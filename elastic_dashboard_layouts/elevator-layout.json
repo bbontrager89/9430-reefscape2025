@@ -1,0 +1,138 @@
+{
+  "version": 1.0,
+  "grid_size": 32,
+  "tabs": [
+    {
+      "name": "Elevator",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "Elevator Position",
+            "x": 352.0,
+            "y": 0.0,
+            "width": 192.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator Position",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Elevator Velocity",
+            "x": 0.0,
+            "y": 288.0,
+            "width": 352.0,
+            "height": 288.0,
+            "type": "Radial Gauge",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator Velocity",
+              "period": 0.06,
+              "data_type": "double",
+              "start_angle": -140.0,
+              "end_angle": 140.0,
+              "min_value": -50.0,
+              "max_value": 50.0,
+              "number_of_labels": 8,
+              "wrap_value": false,
+              "show_pointer": true,
+              "show_ticks": true
+            }
+          },
+          {
+            "title": "AutoSpeed",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 352.0,
+            "height": 288.0,
+            "type": "Radial Gauge",
+            "properties": {
+              "topic": "/SmartDashboard/AutoSpeed",
+              "period": 0.06,
+              "data_type": "double",
+              "start_angle": -140.0,
+              "end_angle": 140.0,
+              "min_value": -1.5,
+              "max_value": 1.5,
+              "number_of_labels": 8,
+              "wrap_value": false,
+              "show_pointer": true,
+              "show_ticks": true
+            }
+          },
+          {
+            "title": "Elevator Commands",
+            "x": 832.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Split Button Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator Commands",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "Custom Elevator Height",
+            "x": 640.0,
+            "y": 128.0,
+            "width": 576.0,
+            "height": 128.0,
+            "type": "Number Slider",
+            "properties": {
+              "topic": "/SmartDashboard/Custom Elevator Height",
+              "period": 0.06,
+              "data_type": "double",
+              "min_value": 0.175,
+              "max_value": 0.675,
+              "divisions": 5,
+              "update_continuously": true
+            }
+          },
+          {
+            "title": "Desired Height",
+            "x": 352.0,
+            "y": 128.0,
+            "width": 192.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Desired Height",
+              "period": 0.033,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Run Elevator Command",
+            "x": 640.0,
+            "y": 0.0,
+            "width": 192.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/SmartDashboard/Run Elevator Command",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "Alerts",
+            "x": 1280.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 384.0,
+            "type": "Alerts",
+            "properties": {
+              "topic": "/SmartDashboard/Alerts",
+              "period": 0.06
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
