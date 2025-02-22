@@ -6,15 +6,22 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.SoftLimitConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AlgaeConstants;
 
 public class AlgaeManipulatorSubsystem extends SubsystemBase {
 
-  private SparkFlex pivotMotor = new SparkFlex(AlgaeConstants.pivotMotorCANid, MotorType.kBrushless);
   private SparkFlex intakeMotor = new SparkFlex(AlgaeConstants.intakeMotorCANid, MotorType.kBrushless);
+  private SparkFlex pivotMotor = new SparkFlex(AlgaeConstants.pivotMotorCANid, MotorType.kBrushless);
 
   private SparkAbsoluteEncoder pivotEncoder = pivotMotor.getAbsoluteEncoder();
 
@@ -22,15 +29,19 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
 
   /** Creates a new AlgaeManipulatorSubSystem. */
   public AlgaeManipulatorSubsystem() {
-    
-  }
 
-  public void setPivotSpeed(double speed) {
-    pivotMotor.set(speed);
-  }
-
-  public void stopPivot() {
-    pivotMotor.stopMotor();
+    // Configure pivot motor
+    pivotMotor.configure(
+      new SparkFlexConfig()
+      .apply(
+        new SoftLimitConfig()
+          .forwardSoftLimit(AlgaeConstants.maximumPivotPosition)
+          .reverseSoftLimit(AlgaeConstants.minimumPivotPosition))
+      .apply(
+        new ClosedLoopConfig()
+          .pid(AlgaeConstants.kP,AlgaeConstants.kI,AlgaeConstants.kD))
+      .idleMode(IdleMode.kBrake), 
+    ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public void setIntakeSpeed(double speed) {
@@ -41,6 +52,14 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
     intakeMotor.stopMotor();
   }
 
+  public void setPivotSpeed(double speed) {
+    pivotMotor.set(speed);
+  }
+
+  public void stopPivot() {
+    pivotMotor.stopMotor();
+  }
+
   public void setDesiredPivotHeight(double height) {
     desiredPivotHeight = height;
   }
@@ -49,7 +68,7 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
     desiredPivotHeight = null;
   }
 
-  public double getPivotEncoderReading() {
+  public double getPivotHeight() {
     return pivotEncoder.getPosition();
   }
 
@@ -59,6 +78,24 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
 
     if (desiredPivotHeight != null) {
       // PID controller to position
+
+      // Calculate error
+      double pivotError = (desiredPivotHeight - getPivotHeight());
+
+      // Adjust speed to error
+      double autoSpeed = AlgaeConstants.kP * pivotError;
+      autoSpeed = (autoSpeed > AlgaeConstants.maximumAutoSpeed) ? AlgaeConstants.maximumAutoSpeed
+          : (autoSpeed < -AlgaeConstants.maximumAutoSpeed) ? -AlgaeConstants.maximumAutoSpeed : autoSpeed;
+
+      // Log data
+      SmartDashboard.putNumber("Algae Pivot Error", pivotError);
+
+      // Run or don't run
+      if (Math.abs(pivotError) < AlgaeConstants.pivotTolerence) {
+        disableAutoPivot();
+      } else {
+        setPivotSpeed(autoSpeed);
+      }
     }
 
   }
