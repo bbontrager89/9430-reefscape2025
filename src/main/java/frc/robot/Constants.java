@@ -180,6 +180,14 @@ public final class Constants {
     public static final double levelThreePivotPosition = 0.091;
   }
 
+  public static final class AlgaeConstants {
+
+    public static final int RightAlgaeManipulatorCANid = 31;
+    public static final int LeftAlgaeManipulatorCANid = 32;
+    
+    
+  }
+
   public static final class AprilTagConstants {
     public static final int[] scoringAprilTags = new int[] {
         6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22
