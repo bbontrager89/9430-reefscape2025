@@ -60,7 +60,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                                     .boxed()
                                     .toList();
                             return scoringTagsList.contains(detectedTag)
-                                    && drive.getPoseEstimatorSubsystem().hasCameraDetectedTag(detectedTag);
+                                    && !drive.getPoseEstimatorSubsystem().hasSideCameraDetection();
                         }));
     }
 }

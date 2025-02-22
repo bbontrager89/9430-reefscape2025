@@ -58,7 +58,7 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
                             List<Integer> scoringTagsList = Arrays.stream(AprilTagConstants.intakeStationAprilTags)
                                     .boxed()
                                     .toList();
-                            return scoringTagsList.contains(detectedTag) && drive.getPoseEstimatorSubsystem().hasCameraDetectedTag(detectedTag);
+                            return scoringTagsList.contains(detectedTag) && drive.getPoseEstimatorSubsystem().hasSideCameraDetection();
                         }));
     }
 }
