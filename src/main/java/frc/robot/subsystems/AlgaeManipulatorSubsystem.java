@@ -63,5 +63,17 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
 
   }
 
+  /** <B>Algae Position</B> enum for readability */
+  public static enum AP {
+    maximum(0),
+    minimum(1),
+    transit(2),
+    intaking(3);
+
+    public final int index;
+
+    AP(int index) {
+      this.index = index;
+    }
   }
 }
