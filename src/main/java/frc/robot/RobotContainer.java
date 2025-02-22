@@ -5,21 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CoralManipulatorConstants;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DoScorePositionCommand;
 import frc.robot.commands.DoIntakeCoralFromStationCommand;
@@ -33,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.utils.ControllerUtils.POV;
@@ -41,8 +28,6 @@ import frc.utils.ControllerUtils.AXIS;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-
-import java.util.List;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -92,6 +77,7 @@ public class RobotContainer {
                                                 m_robotDrive));
         }
 
+        /** Configures NamedCommands for pathplanner  */
         private void configureNamedCommands() {
                 NamedCommands.registerCommand("Score LP2", 
                 new DoScorePositionCommand(
@@ -128,7 +114,23 @@ public class RobotContainer {
                  */
                 Manual,
                 /** Robot is controlled by commands mapped to button bindings */
-                SemiAuto
+                SemiAuto;
+
+                /**
+                 * Returns if object is Manual
+                 * @return boolean
+                 */
+                boolean manual() {
+                        return this.equals(Manual);
+                }
+
+                /**
+                 * Returns if object is SemiAuto
+                 * @return boolean
+                 */
+                boolean semiAuto() {
+                        return this.equals(SemiAuto);
+                }
         }
 
         Double driverPOVRecency = null;
@@ -261,17 +263,11 @@ public class RobotContainer {
 
                 // B button - Algae intake mode
                 c_operatorController.b()
-                        .onTrue(new InstantCommand(() -> {
-                                
-
-                        }));
+                        .onTrue(new InstantCommand());
 
                 // A button - Algae intake mode
                 c_operatorController.a()
-                        .onTrue(new InstantCommand(() -> {
-                                
-
-                        }));
+                        .onTrue(new InstantCommand());
 
                 // Right Stick button - Transit mode
                 c_operatorController.rightStick()
@@ -306,17 +302,7 @@ public class RobotContainer {
 
                 // Dpad Up-Right button -
                 c_operatorController.povUpRight()
-                        .onTrue(new InstantCommand(() -> {
-                                if (operatorPOVRecency != null && 
-                                        operatorPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
-                                        // on Double Press
-                                } else {
-                                        // on Single Press
-                                }
-
-                                operatorPOVRecency = Timer.getFPGATimestamp();
-                                operatorLatestPOVButton = POV.UpRight;
-                        }));
+                        .onTrue(new InstantCommand());
 
                 // Dpad Right button -
                 c_operatorController.povRight()
@@ -358,17 +344,7 @@ public class RobotContainer {
 
                 // Dpad Down-Right button -
                 c_operatorController.povDownRight()
-                        .onTrue(new InstantCommand(() -> {
-                                if (operatorPOVRecency != null && 
-                                        operatorPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
-                                        // on Double Press
-                                } else {
-                                        // on Single Press
-                                }
-
-                                operatorPOVRecency = Timer.getFPGATimestamp();
-                                operatorLatestPOVButton = POV.DownRight;
-                        }));
+                        .onTrue(new InstantCommand());
 
                 // Dpad Down button -
                 c_operatorController.povDown()
@@ -397,17 +373,7 @@ public class RobotContainer {
 
                 // Dpad Down-Left button -
                 c_operatorController.povDownLeft()
-                        .onTrue(new InstantCommand(() -> {
-                                if (operatorPOVRecency != null && 
-                                        operatorPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
-                                        // on Double Press
-                                } else {
-                                        // on Single Press
-                                }
-
-                                operatorPOVRecency = Timer.getFPGATimestamp();
-                                operatorLatestPOVButton = POV.DownLeft;
-                        }));
+                        .onTrue(new InstantCommand());
 
                 // Dpad Left button -
                 c_operatorController.povLeft()
@@ -449,17 +415,7 @@ public class RobotContainer {
 
                 // Dpad Up-Left button -
                 c_operatorController.povUpLeft()
-                        .onTrue(new InstantCommand(() -> {
-                                if (operatorPOVRecency != null && 
-                                        operatorPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
-                                        // on Double Press
-                                } else {
-                                        // on Single Press
-                                }
-
-                                operatorPOVRecency = Timer.getFPGATimestamp();
-                                operatorLatestPOVButton = POV.UpLeft;
-                        }));
+                        .onTrue(new InstantCommand());
 
                 // Start Button button - Manual mode on 2 second hold
                 c_operatorController.start()
@@ -533,114 +489,46 @@ public class RobotContainer {
                 // Dpad Up button -
                 c_driverController.povUp()
                         .onTrue(new InstantCommand(() -> {
-                                if (driverPOVRecency != null && 
-                                        driverPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
-                                        // on Double Press
-                                } else {
-                                        // on Single Press
-                                }
-
                                 driverPOVRecency = Timer.getFPGATimestamp();
                                 driverLatestPOVButton = POV.Up;
                         }));
 
                 // Dpad Up-Right button -
                 c_driverController.povUpRight()
-                        .onTrue(new InstantCommand(() -> {
-                                if (driverPOVRecency != null && 
-                                        driverPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
-                                        // on Double Press
-                                } else {
-                                        // on Single Press
-                                }
-
-                                driverPOVRecency = Timer.getFPGATimestamp();
-                                driverLatestPOVButton = POV.UpRight;
-                        }));
+                        .onTrue(new InstantCommand());
 
                 // Dpad Right button -
                 c_driverController.povRight()
                         .onTrue(new InstantCommand(() -> {
-                                if (driverPOVRecency != null && 
-                                        driverPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
-                                        // on Double Press
-                                } else {
-                                        // on Single Press
-                                }
-
                                 driverPOVRecency = Timer.getFPGATimestamp();
                                 driverLatestPOVButton = POV.Right;
                         }));
 
                 // Dpad Down-Right button -
                 c_driverController.povDownRight()
-                        .onTrue(new InstantCommand(() -> {
-                                if (driverPOVRecency != null && 
-                                        driverPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
-                                        // on Double Press
-                                } else {
-                                        // on Single Press
-                                }
-
-                                driverPOVRecency = Timer.getFPGATimestamp();
-                                driverLatestPOVButton = POV.DownRight;
-                        }));
+                        .onTrue(new InstantCommand());
 
                 // Dpad Down button -
                 c_driverController.povDown()
                         .onTrue(new InstantCommand(() -> {
-                                if (driverPOVRecency != null && 
-                                        driverPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
-                                        // on Double Press
-                                } else {
-                                        // on Single Press
-                                }
-
                                 driverPOVRecency = Timer.getFPGATimestamp();
                                 driverLatestPOVButton = POV.Down;
                         }));
 
                 // Dpad Down-Left button -
                 c_driverController.povDownLeft()
-                        .onTrue(new InstantCommand(() -> {
-                                if (driverPOVRecency != null && 
-                                        driverPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
-                                        // on Double Press
-                                } else {
-                                        // on Single Press
-                                }
-
-                                driverPOVRecency = Timer.getFPGATimestamp();
-                                driverLatestPOVButton = POV.DownLeft;
-                        }));
+                        .onTrue(new InstantCommand());
 
                 // Dpad Left button -
                 c_driverController.povLeft()
                         .onTrue(new InstantCommand(() -> {
-                                if (driverPOVRecency != null && 
-                                        driverPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
-                                        // on Double Press
-                                } else {
-                                        // on Single Press
-                                }
-
                                 driverPOVRecency = Timer.getFPGATimestamp();
                                 driverLatestPOVButton = POV.Left;
                         }));
 
                 // Dpad Up-Left button -
                 c_driverController.povUpLeft()
-                        .onTrue(new InstantCommand(() -> {
-                                if (driverPOVRecency != null && 
-                                        driverPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
-                                        // on Double Press
-                                } else {
-                                        // on Single Press
-                                }
-
-                                driverPOVRecency = Timer.getFPGATimestamp();
-                                driverLatestPOVButton = POV.UpLeft;
-                        }));
+                        .onTrue(new InstantCommand());
 
                 // Start Button button -
                 c_driverController.start()
@@ -650,9 +538,9 @@ public class RobotContainer {
 
                 // Back Button button -
                 c_driverController.back()
-                .onTrue(new InstantCommand(() -> {
-                        CommandScheduler.getInstance().cancelAll();
-                }));
+                        .onTrue(new InstantCommand(() -> {
+                                CommandScheduler.getInstance().cancelAll();
+                        }));
 
         }
 
