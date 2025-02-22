@@ -25,7 +25,7 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
 
   private SparkAbsoluteEncoder pivotEncoder = pivotMotor.getAbsoluteEncoder();
 
-  private Double desiredPivotHeight;
+  private Double desiredPivotHeight = null;
 
   /** Creates a new AlgaeManipulatorSubSystem. */
   public AlgaeManipulatorSubsystem() {
