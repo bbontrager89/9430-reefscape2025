@@ -54,11 +54,11 @@ public class DriveSubsystem extends SubsystemBase {
   // with vision (where the cameras think we are) and the gyro (which way we're
   // facing)
   // to come up with a single "best guess" of our position on the field.
-  private final PoseEstimatorSubsystem poseEstimatorSubsystem = new PoseEstimatorSubsystem(new Pose2d());
+  private final PoseEstimatorSubsystem poseEstimatorSubsystem;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-
+    poseEstimatorSubsystem = new PoseEstimatorSubsystem(new Pose2d( new Translation2d(), pigeon.getRotation2d()));
     zeroHeading(); // Reset the gyro so we start facing 'forward' as zero degrees.
     RobotConfig config = null;
     /*
