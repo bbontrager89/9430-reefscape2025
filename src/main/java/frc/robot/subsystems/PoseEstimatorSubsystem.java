@@ -172,11 +172,11 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             double newBearingDeg = Math.toDegrees(bearingRadians);
             
             // Calculate the tag's orientation relative to the robot
-            double tagYawRobotFrame = rotation.getX();  // in radians
+            double tagYawRobotFrame = rotation.getZ();  // in radians
             double newTagOrientationDeg = Math.toDegrees(tagYawRobotFrame);
             
             // Normalize to [-180, 180)
-            newTagOrientationDeg = Math.IEEEremainder(newTagOrientationDeg + 180.0, 360.0) - 180.0;
+            newTagOrientationDeg = normalizeDegrees(newTagOrientationDeg);
             
             // Calculate the lateral offset (perpendicular distance to tag)
             double newLateralOffset = newDistance * Math.sin(bearingRadians);
@@ -199,7 +199,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("Robot Heading", gyroRotation.getDegrees());
         }
     }
-
+    public static double normalizeDegrees(double degrees) {
+        degrees = degrees % 360;
+        return degrees < 0 ? degrees + 360 : degrees;
+    }
     /**
      * Checks if any side camera (left or right) has detected a tag for intake operations
      * @return true if either side camera has detected a tag
