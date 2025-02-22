@@ -33,29 +33,32 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
         addRequirements(drive, elevator);
 
         addCommands(
-            new ConditionalCommand(
-                // If we see a tag, execute the full alignment sequence
-                new SequentialCommandGroup(
-                    new RotateToTagCommand(drive),
-                    new StrafeToAlignCommand(drive, desiredLateralOffset),
-                    new MoveElevator(elevator, 0),
-                    new PivotCoral(coralSubsystem, CoralManipulatorConstants.intakePivotPosition),
-                    new ApproachTagCommand(drive, OIConstants.coralIntakeDistance, desiredLateralOffset),
-                    new IntakeCoral(coralSubsystem, -1, 1.5),
-                    new SetCoralSpeed(coralSubsystem, 0),
-                    new InstantCommand(() -> {
-                        drive.drive(-0.2, 0, 0, false);
-                    }),
-                    new WaitCommand(0.25),
-                    new InstantCommand(() -> {
-                        drive.drive(0, 0, 0, false);
-                    }),
-                    new TransitModeCommand(elevator, coralSubsystem)
-                ),
-                // If we don't see a tag, do nothing
-                new InstantCommand(),
-                () -> drive.getPoseEstimatorSubsystem().getLastDetectedTagId() != -1
-            )
-        );
+                new ConditionalCommand(
+                        // If we see a tag, execute the full alignment sequence
+                        new SequentialCommandGroup(
+                                new RotateToTagCommand(drive),
+                                new StrafeToAlignCommand(drive, desiredLateralOffset),
+                                new MoveElevator(elevator, 0),
+                                new PivotCoral(coralSubsystem, CoralManipulatorConstants.intakePivotPosition),
+                                new ApproachTagCommand(drive, OIConstants.coralIntakeDistance, desiredLateralOffset),
+                                new IntakeCoral(coralSubsystem, -1, 1.5),
+                                new SetCoralSpeed(coralSubsystem, 0),
+                                new InstantCommand(() -> {
+                                    drive.drive(-0.2, 0, 0, false);
+                                }),
+                                new WaitCommand(0.25),
+                                new InstantCommand(() -> {
+                                    drive.drive(0, 0, 0, false);
+                                }),
+                                new TransitModeCommand(elevator, coralSubsystem)),
+                        // If we don't see a tag, do nothing
+                        new InstantCommand(),
+                        () -> {
+                            int detectedTag = drive.getPoseEstimatorSubsystem().getLastDetectedTagId();
+                            List<Integer> scoringTagsList = Arrays.stream(AprilTagConstants.intakeStationAprilTags)
+                                    .boxed()
+                                    .toList();
+                            return scoringTagsList.contains(detectedTag) && drive.getPoseEstimatorSubsystem().hasCameraDetectedTag(detectedTag);
+                        }));
     }
 }
