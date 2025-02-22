@@ -10,12 +10,14 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.CoralManipulatorConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DoScorePositionCommand;
+import frc.robot.commands.ClearAlgaeFromReef;
 import frc.robot.commands.DoIntakeCoralFromStationCommand;
 import frc.robot.commands.MoveElevator;
 import frc.robot.commands.TransitModeCommand;
 import frc.robot.subsystems.CoralManipulatorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem.SP;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -472,11 +474,11 @@ public class RobotContainer {
 
                 // B button -
                 c_driverController.b()
-                        .onTrue(new InstantCommand());
+                        .onTrue(new ClearAlgaeFromReef(elevatorSubsystem, coralManipulatorSubsystem, m_robotDrive, SP.algaeThree));
 
                 // A button -
                 c_driverController.a()
-                        .onTrue(new InstantCommand());
+                        .onTrue(new ClearAlgaeFromReef(elevatorSubsystem, coralManipulatorSubsystem, m_robotDrive, SP.algaeTwo));
 
                 // Right Stick button -
                 c_driverController.rightStick()

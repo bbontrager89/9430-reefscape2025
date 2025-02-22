@@ -104,6 +104,8 @@ public final class Constants {
     public static final double leftScoringOffset = -0.165;
     public static final double rightScoringOffset = 0.165;
 
+    public static final double algaeOffset = 0.25;
+
     // TODO tune these offsets to align with the grooves on the intake station
     public static final double intakePositionLeft = -0.3;
     public static final double intakePositionRight = 0.3;
@@ -148,6 +150,9 @@ public final class Constants {
     public static final double level2ScoringPosition = 0.51;
     public static final double level3ScoringPosition = 0.669;
 
+    public static final double algaeClearLevelTwo = 0.46;
+    public static final double algaeClearLevelThree = 0.6;
+
     public static final boolean elevatorMotorInverted = false;
 
     public static final double encoderToRevolutionRatio = 200.0;
@@ -156,6 +161,7 @@ public final class Constants {
         * encoderToRevolutionRatio;
 
     public static final int maximumAutoSpeed = 1; // Range: 0 to 1
+
 
   }
 
@@ -178,6 +184,8 @@ public final class Constants {
     public static final double levelOnePivotPosition = 0.25;
     public static final double levelTwoPivotPosition = 0.091; // Motor Off: low hard limit
     public static final double levelThreePivotPosition = 0.091;
+
+    public static final double algaeClear = 0.17;
   }
 
   public static final class AprilTagConstants {

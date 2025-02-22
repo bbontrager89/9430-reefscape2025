@@ -131,6 +131,12 @@ public class ElevatorSubsystem extends SubsystemBase {
       case 5:
         desiredHeight = ElevatorConstants.maximumElevatorHeight;
         break;
+      case 6:
+        desiredHeight = ElevatorConstants.algaeClearLevelTwo;
+        break;
+      case 7:
+        desiredHeight = ElevatorConstants.algaeClearLevelThree;
+        break;
       default:
         System.out.println("Invalid Scoring Position requested in ElevatorSubsystem");
         Elastic.sendError("Invalid Scoring Position", "requested in ElevatorSubsystem");
@@ -266,7 +272,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     /** The minimum elevator height */
     min(4),
     /** The maximum elevator height */
-    max(5);
+    max(5),
+    algaeTwo(6),
+    algaeThree(7);
 
     /** The index that the {@Link ElevatorSubsystem} uses */
     public final int index;
