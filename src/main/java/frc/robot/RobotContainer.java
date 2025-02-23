@@ -452,7 +452,7 @@ public class RobotContainer {
                 // Right bumper -
                 c_driverController.rightBumper()
                         .onTrue(new InstantCommand(() -> {
-                                algaeManipulatorSubsystem.setPivotSpeed(0.15);
+                                algaeManipulatorSubsystem.setPivotSpeed(0.30);
                         })).onFalse(new InstantCommand(() -> {
                                 algaeManipulatorSubsystem.stopPivot();
                         }));
@@ -468,7 +468,7 @@ public class RobotContainer {
                 // Left bumper -
                 c_driverController.leftBumper()
                         .onTrue(new InstantCommand(() -> {
-                                algaeManipulatorSubsystem.setPivotSpeed(-0.15);
+                                algaeManipulatorSubsystem.setPivotSpeed(-0.30);
                         })).onFalse(new InstantCommand(() -> {
                                 algaeManipulatorSubsystem.stopPivot();
                         }));
@@ -476,7 +476,7 @@ public class RobotContainer {
                 // Left trigger -
                 c_driverController.leftTrigger(OIConstants.kTriggerThreshold)
                         .whileTrue(new RepeatCommand(new InstantCommand(() -> {
-                                algaeManipulatorSubsystem.setIntakeSpeed(-c_driverController.getRightTriggerAxis());
+                                algaeManipulatorSubsystem.setIntakeSpeed(-c_driverController.getLeftTriggerAxis());
                         }))).onFalse(new InstantCommand(() -> {
                                 algaeManipulatorSubsystem.stopIntake();
                         }));
