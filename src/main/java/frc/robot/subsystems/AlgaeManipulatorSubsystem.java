@@ -17,6 +17,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AlgaeConstants;
+import frc.robot.Constants.ElevatorConstants;
 
 public class AlgaeManipulatorSubsystem extends SubsystemBase {
 
@@ -27,9 +28,14 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
 
   private Double desiredPivotHeight = null;
 
+  private boolean aboveMaxHeight = false;
+  private boolean belowMinHeight = false;
+
+  private double pivotSpeed = 0.0;
+
   /** Creates a new AlgaeManipulatorSubSystem. */
   public AlgaeManipulatorSubsystem() {
-
+    /*
     // Configure pivot motor
     pivotMotor.configure(
       new SparkFlexConfig()
@@ -43,7 +49,7 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
         new ClosedLoopConfig()
           .pid(AlgaeConstants.kP,AlgaeConstants.kI,AlgaeConstants.kD))
       .idleMode(IdleMode.kBrake), 
-    ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); */
   }
 
   public void setIntakeSpeed(double speed) {
@@ -55,11 +61,15 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
   }
 
   public void setPivotSpeed(double speed) {
-    pivotMotor.set(speed);
+    if (!(aboveMaxHeight && speed < 0) && !(belowMinHeight && speed > 0)) {
+      pivotMotor.set(speed);
+      pivotSpeed = speed;
+    }
   }
 
   public void stopPivot() {
     pivotMotor.stopMotor();
+    pivotSpeed = 0.0;
   }
 
   public void setDesiredPivotHeight(double height) {
@@ -77,6 +87,30 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    // Lower soft limit check
+    if (getPivotHeight() > AlgaeConstants.maximumPivotPosition) {
+      if (pivotSpeed < 0) {
+        stopPivot();
+      }
+
+      aboveMaxHeight = true;
+      
+    } else {
+      aboveMaxHeight = false;
+    }
+
+    // Upper soft limit check
+    if (getPivotHeight() < AlgaeConstants.minimumPivotPosition) {
+      if (pivotSpeed > 0) {
+        stopPivot();
+      }
+
+      belowMinHeight = true;
+
+    } else {
+      belowMinHeight = false;
+    }
 
     if (desiredPivotHeight != null) {
       // PID controller to position
