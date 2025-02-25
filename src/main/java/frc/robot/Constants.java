@@ -140,13 +140,16 @@ public final class Constants {
 
     public static final double positionTolerence = 0.01;
 
-    public static final double minimumElevatorHeight = 0.175; // Furthest possible is 0.166
-    public static final double maximumElevatorHeight = 0.675; // Furthest possible is 0.683
+    // Easy value to change between the limits
+    private static final boolean newRobot = true;
 
-    public static final double coralStationPosition = 0.398; // Scoring position 0
-    public static final double level1ScoringPosition = 0.316;
-    public static final double level2ScoringPosition = 0.51;
-    public static final double level3ScoringPosition = 0.669;
+    public static final double minimumElevatorHeight = (newRobot)? 0.175 : 0.175; // Furthest possible is 0.166
+    public static final double maximumElevatorHeight = (newRobot)? 0.98 : 0.675; // Furthest possible is 0.99
+
+    public static final double coralStationPosition = (newRobot)? 0.535 : 0.398; // Scoring position 0
+    public static final double level1ScoringPosition = (newRobot)? 0.405 : 0.316;
+    public static final double level2ScoringPosition = (newRobot)? 0.714 : 0.51;
+    public static final double level3ScoringPosition = (newRobot)? 0.687 : 0.669;
 
     public static final boolean elevatorMotorInverted = false;
 
