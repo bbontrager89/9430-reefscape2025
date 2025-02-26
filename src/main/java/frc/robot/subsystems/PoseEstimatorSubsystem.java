@@ -64,13 +64,13 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     // Left camera (index 1)
     new Transform3d(
         new Translation3d(-0.196, 0.26, 0.140),
-        new Rotation3d(1.3713, 1.1592, 0.3989)  // Adjust yaw as needed
+        new Rotation3d(0, -1.16, 0.434)  // Adjust yaw as needed
     ),
     
     // Right camera (index 2)
     new Transform3d(
         new Translation3d(-0.196, -0.26, 0.140),
-        new Rotation3d(1.3713, , -0.3989)   // Adjust yaw as needed
+        new Rotation3d(0, -1.16, -0.434)   // Adjust yaw as needed
     )
     };
 
@@ -357,11 +357,6 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     }
 
     public double getLateralOffsetToTag() {
-        // Use the adjusted method to handle rotation changes
-        double adjusted = getAdjustedLateralOffsetToTag();
-        if (!Double.isNaN(adjusted)) {
-            return adjusted;
-        }
         return lateralOffsetToTag;
     }
 
