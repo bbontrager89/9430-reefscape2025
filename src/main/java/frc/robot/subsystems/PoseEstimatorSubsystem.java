@@ -166,6 +166,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             Translation3d translation = robotToTarget.getTranslation();
             Rotation3d rotation = robotToTarget.getRotation();
 
+            System.out.println("PES: Translation X: "+translation.getX());
+            System.out.println("PES: Translation Y: "+translation.getY());
+            System.out.println("PES: Translation Z: "+translation.getZ());
+
             // Calculate distance using X and Y components in robot frame
             double newDistance = Math.sqrt(Math.pow(translation.getX(), 2) + Math.pow(translation.getY(), 2));
             
