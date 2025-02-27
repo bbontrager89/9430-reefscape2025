@@ -29,33 +29,39 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
         System.out.printf("ElevatorCommand created - Target lateral offset: %.2f m, Target distance: %.2f m%n",
                 desiredLateralOffset, desiredDistance);
 
-        // Only proceed if we initially see a tag
+        
         addRequirements(drive, elevator);
 
-        addCommands(
-            new ConditionalCommand(
-                // If we see a tag, execute the full alignment sequence
-                new SequentialCommandGroup(
-                    new RotateToTagCommand(drive),
-                    new StrafeToAlignCommand(drive, desiredLateralOffset),
-                    new MoveElevator(elevator, 0),
-                    new PivotCoral(coralSubsystem, CoralManipulatorConstants.intakePivotPosition),
-                    new ApproachTagCommand(drive, OIConstants.coralIntakeDistance, desiredLateralOffset),
-                    new IntakeCoral(coralSubsystem, -1, 1.5),
-                    new SetCoralSpeed(coralSubsystem, 0),
-                    new InstantCommand(() -> {
-                        drive.drive(-0.2, 0, 0, false);
-                    }),
-                    new WaitCommand(0.25),
-                    new InstantCommand(() -> {
-                        drive.drive(0, 0, 0, false);
-                    }),
-                    new TransitModeCommand(elevator, coralSubsystem)
-                ),
-                // If we don't see a tag, do nothing
-                new InstantCommand(),
-                () -> drive.getPoseEstimatorSubsystem().getLastDetectedTagId() != -1
-            )
-        );
+        // Only proceed if we initially see a tag
+        if (drive.getPoseEstimatorSubsystem().getLastDetectedTagId() != -1) {
+            addCommands(
+                new ConditionalCommand(
+                    // If we see a tag, execute the full alignment sequence
+                    new SequentialCommandGroup(
+                        new RotateToTagCommand(drive),
+                        new StrafeToAlignCommand(drive, desiredLateralOffset),
+                        new MoveElevator(elevator, 0),
+                        new PivotCoral(coralSubsystem, CoralManipulatorConstants.intakePivotPosition),
+                        new ApproachTagCommand(drive, OIConstants.coralIntakeDistance, desiredLateralOffset),
+                        new IntakeCoral(coralSubsystem, -1, 1.5),
+                        new SetCoralSpeed(coralSubsystem, 0),
+                        new InstantCommand(() -> {
+                            drive.drive(-0.2, 0, 0, false);
+                        }),
+                        new WaitCommand(0.25),
+                        new InstantCommand(() -> {
+                            drive.drive(0, 0, 0, false);
+                        }),
+                        new TransitModeCommand(elevator, coralSubsystem)
+                    ),
+                    // If we don't see a tag, do nothing
+                    new InstantCommand(),
+                    () -> drive.getPoseEstimatorSubsystem().getLastDetectedTagId() != -1
+                )
+            );
+        } else {
+            addCommands();
+        }
+
     }
 }
