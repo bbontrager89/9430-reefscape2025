@@ -62,5 +62,10 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                             return scoringTagsList.contains(detectedTag)
                                     && !drive.getPoseEstimatorSubsystem().hasSideCameraDetection();
                         }));
+        // Only proceed if we initially see a tag
+        if (drive.getPoseEstimatorSubsystem().getLastDetectedTagId() != -1) {
+        } else {
+            addCommands();
+        }
     }
 }

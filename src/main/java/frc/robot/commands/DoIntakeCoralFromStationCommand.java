@@ -29,7 +29,6 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
         System.out.printf("ElevatorCommand created - Target lateral offset: %.2f m, Target distance: %.2f m%n",
                 desiredLateralOffset, desiredDistance);
 
-        // Only proceed if we initially see a tag
         addRequirements(drive, elevator);
 
         addCommands(
@@ -60,5 +59,11 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
                                     .toList();
                             return scoringTagsList.contains(detectedTag) && drive.getPoseEstimatorSubsystem().hasSideCameraDetection();
                         }));
+        
+        // Only proceed if we initially see a tag
+        if (drive.getPoseEstimatorSubsystem().getLastDetectedTagId() != -1) {
+        } else {
+            addCommands();
+        }
     }
 }
