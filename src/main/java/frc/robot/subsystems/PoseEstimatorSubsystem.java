@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degree;
+import static edu.wpi.first.units.Units.Meter;
+
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -57,20 +60,20 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         // Front camera
         new Transform3d(
             new Translation3d(0.279, 0.0, 0.1096),
-            new Rotation3d(0.0, 1.8326, 0.0)
+            new Rotation3d(0.0, -0.2617, 0.0)
         ),
         
        
     // Left camera (index 1)
     new Transform3d(
-        new Translation3d(-0.196, 0.26, 0.140),
-        new Rotation3d(0, -1.16, 0.434)  // Adjust yaw as needed
+        new Translation3d(-0.196, -0.26, 0.140),
+        new Rotation3d(0, -1.16, -0.434)  // Adjust yaw as needed
     ),
     
     // Right camera (index 2)
     new Transform3d(
-        new Translation3d(-0.196, -0.26, 0.140),
-        new Rotation3d(0, -1.16, -0.434)   // Adjust yaw as needed
+        new Translation3d(-0.196, 0.26, 0.140),
+        new Rotation3d(0, -1.16, 0.434)   // Adjust yaw as needed
     )
     };
 
@@ -166,34 +169,13 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             Translation3d translation = robotToTarget.getTranslation();
             Rotation3d rotation = robotToTarget.getRotation();
 
-            System.out.println("PES: Translation X: "+translation.getX());
-            System.out.println("PES: Translation Y: "+translation.getY());
-            System.out.println("PES: Translation Z: "+translation.getZ());
-
-            // Calculate distance using X and Y components in robot frame
-            double newDistance = Math.sqrt(Math.pow(translation.getX(), 2) + Math.pow(translation.getY(), 2));
-            
-            // Calculate bearing to tag center (positive = tag is to the left)
-            double bearingRadians = Math.atan2(translation.getY(), translation.getX());
-            double newBearingDeg = Math.toDegrees(bearingRadians);
-            
-            // Calculate the tag's orientation relative to the robot
-            double tagYawRobotFrame = rotation.getZ();  // in radians
-            double newTagOrientationDeg = Math.toDegrees(tagYawRobotFrame);
-            
-            // Normalize to [-180, 180)
-            newTagOrientationDeg = normalizeDegrees(newTagOrientationDeg);
-            
-            // Calculate the lateral offset (perpendicular distance to tag)
-            double newLateralOffset = newDistance * Math.sin(bearingRadians);
-
             // Store updated values
-            distanceToTag = newDistance;
-            bearingToTagDeg = newBearingDeg;
-            lateralOffsetToTag = newLateralOffset;
+            distanceToTag = translation.getMeasureX().in(Meter);
+            bearingToTagDeg = rotation.getMeasureZ().in(Degree);
+            lateralOffsetToTag = translation.getMeasureY().in(Meter);
             xOffsetToTag = translation.getX();
             yOffsetToTag = translation.getY();
-            tagOrientationErrorDeg = newTagOrientationDeg;
+            tagOrientationErrorDeg = rotation.getMeasureZ().in(Degree);
 
             // Update the dashboard with the latest values
             SmartDashboard.putNumber("Tag Bearing (Deg)", bearingToTagDeg);
