@@ -33,6 +33,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
         // Only proceed if we initially see a tag
         addRequirements(drive, elevator);
 
+        if (hasTag())
         addCommands(
                 new ConditionalCommand(
                         // If we see a tag, execute the full alignment sequence
@@ -41,16 +42,16 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                                 new InstantCommand(() -> {
                                         drive.drive(0, 0, 0, false);
                                     }),
-                                Commands.either(new MoveElevator(elevator, scoringPosition), new InstantCommand(), () -> hasTag()),
-                                new WaitCommand(0.5),
-                                Commands.either(new PivotCoral(coralSubsystem, pivotHeight), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, false), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new SetCoralSpeed(coralSubsystem, 1), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new WaitCommand(0.7), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new SetCoralSpeed(coralSubsystem, 0), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new InstantCommand(() -> {
+                                new PivotCoral(coralSubsystem, pivotHeight),
+                                new MoveElevator(elevator, scoringPosition),
+                                new StrafeToAlignCommand(drive, desiredLateralOffset),
+                                new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, false),
+                                new SetCoralSpeed(coralSubsystem, 1),
+                                new WaitCommand(0.7),
+                                new SetCoralSpeed(coralSubsystem, 0),
+                                new InstantCommand(() -> {
                                     drive.drive(-0.2, 0, 0, false);
-                                }), new InstantCommand(), () -> hasTag()),
+                                }),
                                 new WaitCommand(0.25),
                                 new InstantCommand(() -> {
                                     drive.drive(0, 0, 0, false);
@@ -59,6 +60,8 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                         // If we don't see a tag, do nothing
                         new InstantCommand(),
                         () -> hasTag()));
+        else 
+        addCommands();
     }
 
     private boolean hasTag() {
@@ -67,7 +70,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                 .boxed()
                 .toList();
         return scoringTagsList.contains(detectedTag)
-                && !drive.getPoseEstimatorSubsystem().hasSideCameraDetection();
+                && drive.getPoseEstimatorSubsystem().hasFrontCameraDetection();
     }
     
 }
