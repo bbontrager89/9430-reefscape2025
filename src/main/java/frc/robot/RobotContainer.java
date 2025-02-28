@@ -288,8 +288,7 @@ public class RobotContainer {
                                                 new DoIntakeCoralFromStationCommand(
                                                         elevatorSubsystem, 
                                                         coralManipulatorSubsystem, 
-                                                        m_robotDrive,
-                                                        OIConstants.intakePositionLeft)
+                                                        m_robotDrive)
                                                 .schedule();
                                         }
                                 } else {
