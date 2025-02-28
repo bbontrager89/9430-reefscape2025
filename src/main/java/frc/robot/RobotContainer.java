@@ -437,6 +437,7 @@ public class RobotContainer {
                 c_operatorController.back()
                         .onTrue(new InstantCommand(() -> {
                                 CommandScheduler.getInstance().cancelAll();
+                                elevatorSubsystem.turnOffAutoMode();
                         }));
 
                 /* * * * * * * * * * * * *\
@@ -539,6 +540,7 @@ public class RobotContainer {
                 c_driverController.back()
                         .onTrue(new InstantCommand(() -> {
                                 CommandScheduler.getInstance().cancelAll();
+                                elevatorSubsystem.turnOffAutoMode();
                         }));
 
         }
