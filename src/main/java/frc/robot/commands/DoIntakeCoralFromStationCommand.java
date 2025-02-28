@@ -23,9 +23,9 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
 
     @SuppressWarnings("unlikely-arg-type")
     public DoIntakeCoralFromStationCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coralSubsystem,
-            DriveSubsystem drive, double desiredLateralOffset) {
+            DriveSubsystem drive) {
         this.drive = drive;
-        this.desiredLateralOffset = desiredLateralOffset;
+        this.desiredLateralOffset = (drive.getPoseEstimatorSubsystem().getLastDetectionCameraIndex() == 1)? OIConstants.intakePositionLeft : OIConstants.intakePositionRight;
         this.desiredDistance = OIConstants.coralIntakeDistance;
 
         System.out.printf("ElevatorCommand created - Target lateral offset: %.2f m, Target distance: %.2f m%n",
