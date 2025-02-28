@@ -175,7 +175,7 @@ public final class Constants {
     public static final double minimumPivotPosition = 0.095;
 
     public static final double intakePivotPosition = 0.375;
-    public static final double levelOnePivotPosition = 0.25;
+    public static final double levelOnePivotPosition = 0.3;
     public static final double levelTwoPivotPosition = 0.091; // Motor Off: low hard limit
     public static final double levelThreePivotPosition = 0.091;
   }
