@@ -4,6 +4,7 @@ import java.io.Console;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -38,29 +39,32 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                         new SequentialCommandGroup(
                                 // new RotateToTagCommand(drive),
                                // new StrafeToAlignCommand(drive, desiredLateralOffset),
-                                new MoveElevator(elevator, scoringPosition),
-                                new PivotCoral(coralSubsystem, pivotHeight),
-                                new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset),
-                                new SetCoralSpeed(coralSubsystem, 1),
-                                new WaitCommand(0.7),
-                                new SetCoralSpeed(coralSubsystem, 0),
-                                new InstantCommand(() -> {
+                                Commands.either(new MoveElevator(elevator, scoringPosition), new InstantCommand(), () -> hasTag()),
+                                Commands.either(new PivotCoral(coralSubsystem, pivotHeight), new InstantCommand(), () -> hasTag()),
+                                Commands.either(new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset), new InstantCommand(), () -> hasTag()),
+                                Commands.either(new SetCoralSpeed(coralSubsystem, 1), new InstantCommand(), () -> hasTag()),
+                                Commands.either(new WaitCommand(0.7), new InstantCommand(), () -> hasTag()),
+                                Commands.either(new SetCoralSpeed(coralSubsystem, 0), new InstantCommand(), () -> hasTag()),
+                                Commands.either(new InstantCommand(() -> {
                                     drive.drive(-0.2, 0, 0, false);
-                                }),
-                                new WaitCommand(0.25),
-                                new InstantCommand(() -> {
+                                }), new InstantCommand(), () -> hasTag()),
+                                Commands.either(new WaitCommand(0.25), new InstantCommand(), () -> hasTag()),
+                                Commands.either(new InstantCommand(() -> {
                                     drive.drive(0, 0, 0, false);
-                                }),
+                                }), new InstantCommand(), () -> hasTag()),
                                 new TransitModeCommand(elevator, coralSubsystem)),
                         // If we don't see a tag, do nothing
                         new InstantCommand(),
-                        () -> {
-                            int detectedTag = drive.getPoseEstimatorSubsystem().getLastDetectedTagId();
-                            List<Integer> scoringTagsList = Arrays.stream(AprilTagConstants.scoringAprilTags)
-                                    .boxed()
-                                    .toList();
-                            return scoringTagsList.contains(detectedTag)
-                                    && !drive.getPoseEstimatorSubsystem().hasSideCameraDetection();
-                        }));
+                        () -> hasTag()));
     }
+
+    private boolean hasTag() {
+        int detectedTag = drive.getPoseEstimatorSubsystem().getLastDetectedTagId();
+        List<Integer> scoringTagsList = Arrays.stream(AprilTagConstants.intakeStationAprilTags)
+                .boxed()
+                .toList();
+        return scoringTagsList.contains(detectedTag)
+                && drive.getPoseEstimatorSubsystem().hasSideCameraDetection();
+    }
+    
 }
