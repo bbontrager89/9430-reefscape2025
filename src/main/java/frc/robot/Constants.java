@@ -143,7 +143,7 @@ public final class Constants {
     public static final double minimumElevatorHeight = 0.175; // Furthest possible is 0.166
     public static final double maximumElevatorHeight = 0.675; // Furthest possible is 0.683
 
-    public static final double coralStationPosition = 0.398; // Scoring position 0
+    public static final double coralStationPosition = 0.405; // Scoring position 0
     public static final double level1ScoringPosition = 0.316;
     public static final double level2ScoringPosition = 0.51;
     public static final double level3ScoringPosition = 0.669;
