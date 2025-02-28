@@ -39,19 +39,19 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                         new SequentialCommandGroup(
                                 // new RotateToTagCommand(drive),
                                // new StrafeToAlignCommand(drive, desiredLateralOffset),
-                                Commands.either(new MoveElevator(elevator, scoringPosition), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new PivotCoral(coralSubsystem, pivotHeight), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, false), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new SetCoralSpeed(coralSubsystem, 1), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new WaitCommand(0.7), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new SetCoralSpeed(coralSubsystem, 0), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new InstantCommand(() -> {
+                                new MoveElevator(elevator, scoringPosition),
+                                new PivotCoral(coralSubsystem, pivotHeight),
+                                new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, false),
+                                new SetCoralSpeed(coralSubsystem, 1),
+                                new WaitCommand(0.7),
+                                new SetCoralSpeed(coralSubsystem, 0),
+                                new InstantCommand(() -> {
                                     drive.drive(-0.2, 0, 0, false);
                                 }), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new WaitCommand(0.25), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new InstantCommand(() -> {
+                                new WaitCommand(0.25),
+                                new InstantCommand(() -> {
                                     drive.drive(0, 0, 0, false);
-                                }), new InstantCommand(), () -> hasTag()),
+                                }),
                                 new TransitModeCommand(elevator, coralSubsystem)),
                         // If we don't see a tag, do nothing
                         new InstantCommand(),
