@@ -267,11 +267,11 @@ public class RobotContainer {
 
                 // A button - Algae intake mode
                 c_operatorController.a()
-                        .onTrue(new InstantCommand());
+                        .onTrue(new TransitModeCommand(elevatorSubsystem, coralManipulatorSubsystem));
 
                 // Right Stick button - Transit mode
                 c_operatorController.rightStick()
-                        .onTrue(new TransitModeCommand(elevatorSubsystem, coralManipulatorSubsystem));
+                        .onTrue(new InstantCommand());
 
                 // Left Stick button -
                 c_operatorController.leftStick()
