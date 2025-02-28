@@ -37,9 +37,9 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                         // If we see a tag, execute the full alignment sequence
                         new SequentialCommandGroup(
                                 // new RotateToTagCommand(drive),
-                                new StrafeToAlignCommand(drive, desiredLateralOffset),
-                                new MoveElevator(elevator, scoringPosition)//,
-                               /* new PivotCoral(coralSubsystem, pivotHeight),
+                               // new StrafeToAlignCommand(drive, desiredLateralOffset),
+                                new MoveElevator(elevator, scoringPosition),
+                                new PivotCoral(coralSubsystem, pivotHeight),
                                 new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset),
                                 new SetCoralSpeed(coralSubsystem, 1),
                                 new WaitCommand(0.7),
@@ -51,7 +51,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                                 new InstantCommand(() -> {
                                     drive.drive(0, 0, 0, false);
                                 }),
-                                new TransitModeCommand(elevator, coralSubsystem) */),
+                                new TransitModeCommand(elevator, coralSubsystem)),
                         // If we don't see a tag, do nothing
                         new InstantCommand(),
                         () -> {

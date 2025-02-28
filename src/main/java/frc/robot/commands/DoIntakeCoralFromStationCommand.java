@@ -36,8 +36,6 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
                 new ConditionalCommand(
                         // If we see a tag, execute the full alignment sequence
                         new SequentialCommandGroup(
-                                // new RotateToTagCommand(drive),
-                                new StrafeToAlignCommand(drive, desiredLateralOffset),
                                 new MoveElevator(elevator, 0),
                                 new PivotCoral(coralSubsystem, CoralManipulatorConstants.intakePivotPosition),
                                 new ApproachTagCommand(drive, OIConstants.coralIntakeDistance, desiredLateralOffset),
@@ -58,7 +56,8 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
                             List<Integer> scoringTagsList = Arrays.stream(AprilTagConstants.intakeStationAprilTags)
                                     .boxed()
                                     .toList();
-                            return scoringTagsList.contains(detectedTag) && drive.getPoseEstimatorSubsystem().hasSideCameraDetection();
+                            return scoringTagsList.contains(detectedTag)
+                                    && drive.getPoseEstimatorSubsystem().hasSideCameraDetection();
                         }));
     }
 }

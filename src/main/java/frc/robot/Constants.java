@@ -99,13 +99,13 @@ public final class Constants {
     public static final double kTriggerThreshold = 0.1;
 
     public static final double scoringDistance = 0.02;
-    public static final double coralIntakeDistance = -1.02;
+    public static final double coralIntakeDistance = 0.395;
 
     public static final double leftScoringOffset = -0.165;
     public static final double rightScoringOffset = 0.165;
 
     // TODO tune these offsets to align with the grooves on the intake station
-    public static final double intakePositionLeft = 0.0;
+    public static final double intakePositionLeft = -0.58;
     public static final double intakePositionRight = 0.3;
 
     public static final double doublePressBuffer = 0.5;

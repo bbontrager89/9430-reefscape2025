@@ -13,10 +13,10 @@ public class ApproachTagCommand extends Command {
     private final PIDController rotationController;
 
     // Tolerances and speed limits
-    private static final double DISTANCE_TOLERANCE_METERS = 0.03; // 3cm
-    private static final double LATERAL_TOLERANCE_METERS = 0.03; // 3cm
+    private static final double DISTANCE_TOLERANCE_METERS = 0.015; // 3cm
+    private static final double LATERAL_TOLERANCE_METERS = 0.015; // 3cm
     private static final double ROTATION_TOLERANCE_DEG = 2.0; // degrees tolerance for rotation error
-    private static final double MAX_FORWARD_SPEED = 1.5; // m/s
+    private static final double MAX_FORWARD_SPEED = 0.5; // m/s
     private static final double MAX_LATERAL_SPEED = 1.0; // m/s
     private static final double MAX_ROTATION_SPEED = 0.3; // rad/s
     private static final double LOST_TAG_TIMEOUT = 0.5; // seconds
@@ -37,11 +37,11 @@ public class ApproachTagCommand extends Command {
         distanceController.setTolerance(DISTANCE_TOLERANCE_METERS);
 
         // PID for lateral offset correction
-        lateralController = new PIDController(0.5, 0.0, 0.0);
+        lateralController = new PIDController(1.5, 0.0, 0.005);
         lateralController.setTolerance(LATERAL_TOLERANCE_METERS);
 
         // PID for rotation to face the desired offset position
-        rotationController = new PIDController(0.05, 0.0, 0.005);
+        rotationController = new PIDController(0.1, 0.0, 0.005);
         rotationController.setTolerance(ROTATION_TOLERANCE_DEG);
         rotationController.enableContinuousInput(-180, 180); // angle wrap-around
     }
@@ -76,38 +76,21 @@ public class ApproachTagCommand extends Command {
 
             double currentDistance = poseEstimator.getDistanceToTag();
             double currentLateralOffset = poseEstimator.getLateralOffsetToTag();
-
-            // Lock in the lateral offset the first time the tag is seen
-            if (!lateralOffsetInitialized) {
-                lateralOffsetInitialized = true;
-                System.out.printf("Locked lateral offset at: %.2f meters%n", desiredLateralOffset);
-            }
+            double currentRotation = poseEstimator.getTagOrientationErrorDeg();
 
             // Compute forward speed correction (positive drives forward)
             double forwardSpeed = -distanceController.calculate(currentDistance, desiredDistance);
             // Compute lateral correction to maintain the locked lateral offset
             double lateralSpeed = -lateralController.calculate(currentLateralOffset, desiredLateralOffset);
 
-            // Compute the angles to current and desired positions relative to tag
-            double currentAngle = Math.toDegrees(Math.atan2(currentLateralOffset, currentDistance));
-            double desiredAngle = Math.toDegrees(Math.atan2(desiredLateralOffset, currentDistance));
-            
-            // Rotation error is how much we need to turn to face the desired position
-            // Note: desiredAngle - currentAngle gives us the turn needed to face the target
-            double rotationError = normalizeAngle(desiredAngle - currentAngle);
-            double rotationSpeed = rotationController.calculate(rotationError, 0);
+            double rotationSpeed = -rotationController.calculate(currentRotation, 180);
 
             // Clamp each speed to its maximum limit
-            forwardSpeed = Math.min(Math.max(forwardSpeed, -MAX_FORWARD_SPEED), MAX_FORWARD_SPEED);
+           forwardSpeed = Math.min(Math.max(forwardSpeed, -MAX_FORWARD_SPEED), MAX_FORWARD_SPEED);
             lateralSpeed = Math.min(Math.max(lateralSpeed, -MAX_LATERAL_SPEED), MAX_LATERAL_SPEED);
             rotationSpeed = Math.min(Math.max(rotationSpeed, -MAX_ROTATION_SPEED), MAX_ROTATION_SPEED);
-
-            System.out.printf("Approach - Dist: %.2f m (Target: %.2f m), Lateral: %.2f m (Locked: %.2f m), " +
-                    "Angle: Current: %.2f°, Desired: %.2f° (Error: %.2f°), " +
-                    "Forward: %.2f m/s, Lateral: %.2f m/s, Rot: %.2f rad/s%n",
-                    currentDistance, desiredDistance, currentLateralOffset, desiredLateralOffset,
-                    currentAngle, desiredAngle, rotationError, forwardSpeed, lateralSpeed, rotationSpeed);
-
+            
+            
             // Drive the robot with the computed speeds
             drive.driveRobotRelative(new ChassisSpeeds(forwardSpeed, lateralSpeed, rotationSpeed));
         } else {
@@ -129,15 +112,13 @@ public class ApproachTagCommand extends Command {
         if (poseEstimator.getLastDetectedTagId() != -1) {
             double currentDistance = poseEstimator.getDistanceToTag();
             double currentLateralOffset = poseEstimator.getLateralOffsetToTag();
-            
+            double currentRotation = poseEstimator.getTagOrientationErrorDeg();
+
             // Check distance and lateral offset are within tolerance
             boolean distanceOk = Math.abs(currentDistance - desiredDistance) < DISTANCE_TOLERANCE_METERS;
             boolean lateralOk = Math.abs(currentLateralOffset - desiredLateralOffset) < LATERAL_TOLERANCE_METERS;
             
-            // Check if we're facing the desired position
-            double currentAngle = Math.toDegrees(Math.atan2(currentLateralOffset, currentDistance));
-            double desiredAngle = Math.toDegrees(Math.atan2(desiredLateralOffset, currentDistance));
-            double rotationError = normalizeAngle(desiredAngle - currentAngle);
+            double rotationError = currentRotation - 180;
             boolean rotationOk = Math.abs(rotationError) < ROTATION_TOLERANCE_DEG;
 
             return distanceOk && lateralOk && rotationOk;
