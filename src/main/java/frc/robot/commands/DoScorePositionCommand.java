@@ -49,10 +49,10 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                                 Commands.either(new InstantCommand(() -> {
                                     drive.drive(-0.2, 0, 0, false);
                                 }), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new WaitCommand(0.25), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new InstantCommand(() -> {
+                                new WaitCommand(0.25),
+                                new InstantCommand(() -> {
                                     drive.drive(0, 0, 0, false);
-                                }), new InstantCommand(), () -> hasTag()),
+                                }),
                                 new TransitModeCommand(elevator, coralSubsystem)),
                         // If we don't see a tag, do nothing
                         new InstantCommand(),

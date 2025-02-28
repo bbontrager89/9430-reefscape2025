@@ -35,27 +35,29 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
         addRequirements(drive, elevator);
 
         
-
+        if (hasTag())
         addCommands(
                 new ConditionalCommand(
                         // If we see a tag, execute the full alignment sequence
                         new SequentialCommandGroup(
-                                Commands.either(new MoveElevator(elevator, 0), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new PivotCoral(coralSubsystem, CoralManipulatorConstants.intakePivotPosition), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new ApproachTagCommand(drive, OIConstants.coralIntakeDistance, desiredLateralOffset, true), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new IntakeCoral(coralSubsystem, -1, 1.5), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new SetCoralSpeed(coralSubsystem, 0), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new InstantCommand(() -> {
+                                new MoveElevator(elevator, 0),
+                                new PivotCoral(coralSubsystem, CoralManipulatorConstants.intakePivotPosition),
+                                new ApproachTagCommand(drive, OIConstants.coralIntakeDistance, desiredLateralOffset, true),
+                                new IntakeCoral(coralSubsystem, -1, 1.5),
+                                new SetCoralSpeed(coralSubsystem, 0),
+                                new InstantCommand(() -> {
                                     drive.drive(-0.2, 0, 0, false);
-                                }), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new WaitCommand(0.25), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new InstantCommand(() -> {
+                                }),
+                                new WaitCommand(0.25),
+                                new InstantCommand(() -> {
                                     drive.drive(0, 0, 0, false);
-                                }), new InstantCommand(), () -> hasTag()),
+                                }),
                                 new TransitModeCommand(elevator, coralSubsystem)),
                         // If we don't see a tag, do nothing
                         new InstantCommand(),
                         () -> hasTag()));
+        else
+        addCommands();
     }
 
     private boolean hasTag() {
