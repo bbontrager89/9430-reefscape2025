@@ -40,6 +40,9 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
                 new ConditionalCommand(
                         // If we see a tag, execute the full alignment sequence
                         new SequentialCommandGroup(
+                                new InstantCommand(() -> {
+                                        drive.drive(0, 0, 0, false);
+                                    }),
                                 new MoveElevator(elevator, 0),
                                 new PivotCoral(coralSubsystem, CoralManipulatorConstants.intakePivotPosition),
                                 new ApproachTagCommand(drive, OIConstants.coralIntakeDistance, desiredLateralOffset, true),
