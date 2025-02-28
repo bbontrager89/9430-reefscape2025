@@ -40,6 +40,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                                 // new RotateToTagCommand(drive),
                                // new StrafeToAlignCommand(drive, desiredLateralOffset),
                                 Commands.either(new MoveElevator(elevator, scoringPosition), new InstantCommand(), () -> hasTag()),
+                                new WaitCommand(0.5),
                                 Commands.either(new PivotCoral(coralSubsystem, pivotHeight), new InstantCommand(), () -> hasTag()),
                                 Commands.either(new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, false), new InstantCommand(), () -> hasTag()),
                                 Commands.either(new SetCoralSpeed(coralSubsystem, 1), new InstantCommand(), () -> hasTag()),
