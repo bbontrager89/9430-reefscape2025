@@ -46,7 +46,7 @@ public class ApproachTagCommand extends Command {
         distanceController.setTolerance(DISTANCE_TOLERANCE_METERS);
 
         // PID for lateral offset correction
-        lateralController = new PIDController(1.5, 0.0, 0.005);
+        lateralController = new PIDController(2.5, 0.0, 0.005);
         lateralController.setTolerance(LATERAL_TOLERANCE_METERS);
 
         // PID for rotation to face the desired offset position
