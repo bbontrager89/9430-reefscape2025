@@ -191,6 +191,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         degrees = degrees % 360;
         return degrees < 0 ? degrees + 360 : degrees;
     }
+
     /**
      * Checks if any side camera (left or right) has detected a tag for intake operations
      * @return true if either side camera has detected a tag
@@ -205,6 +206,20 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         boolean hasRightDetection = rightTimestamp != -1.0 && (currentTime - rightTimestamp) < 1.0;
         
         return hasLeftDetection || hasRightDetection;
+    }
+
+    /**
+     * Checks if any side camera (left or right) has detected a tag for intake operations
+     * @return true if either side camera has detected a tag
+     */
+    public boolean hasFrontCameraDetection() {
+        double currentTime = Timer.getFPGATimestamp();
+        double frontTimestamp = lastCameraDetectionTimestamps[0];
+        
+        // Check if either side camera has a recent detection
+        boolean hasFrontDetection = frontTimestamp != -1.0 && (currentTime - frontTimestamp) < 1.0;
+        
+        return hasFrontDetection;
     }
 
     /**
