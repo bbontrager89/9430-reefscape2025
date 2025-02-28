@@ -42,7 +42,7 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
                         new SequentialCommandGroup(
                                 Commands.either(new MoveElevator(elevator, 0), new InstantCommand(), () -> hasTag()),
                                 Commands.either(new PivotCoral(coralSubsystem, CoralManipulatorConstants.intakePivotPosition), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new ApproachTagCommand(drive, OIConstants.coralIntakeDistance, desiredLateralOffset), new InstantCommand(), () -> hasTag()),
+                                Commands.either(new ApproachTagCommand(drive, OIConstants.coralIntakeDistance, desiredLateralOffset, true), new InstantCommand(), () -> hasTag()),
                                 Commands.either(new IntakeCoral(coralSubsystem, -1, 1.5), new InstantCommand(), () -> hasTag()),
                                 Commands.either(new SetCoralSpeed(coralSubsystem, 0), new InstantCommand(), () -> hasTag()),
                                 Commands.either(new InstantCommand(() -> {

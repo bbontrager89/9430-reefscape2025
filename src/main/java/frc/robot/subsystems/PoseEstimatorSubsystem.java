@@ -64,13 +64,13 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         ),
         
        
-    // Left camera (index 1)
+    // Right camera (index 1)
     new Transform3d(
         new Translation3d(-0.196, -0.26, 0.140),
         new Rotation3d(0, -1.16, -0.434)  // Adjust yaw as needed
     ),
     
-    // Right camera (index 2)
+    // Left camera (index 2)
     new Transform3d(
         new Translation3d(-0.196, 0.26, 0.140),
         new Rotation3d(0, -1.16, 0.434)   // Adjust yaw as needed

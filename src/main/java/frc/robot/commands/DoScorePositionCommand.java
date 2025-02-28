@@ -41,7 +41,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                                // new StrafeToAlignCommand(drive, desiredLateralOffset),
                                 Commands.either(new MoveElevator(elevator, scoringPosition), new InstantCommand(), () -> hasTag()),
                                 Commands.either(new PivotCoral(coralSubsystem, pivotHeight), new InstantCommand(), () -> hasTag()),
-                                Commands.either(new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset), new InstantCommand(), () -> hasTag()),
+                                Commands.either(new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, false), new InstantCommand(), () -> hasTag()),
                                 Commands.either(new SetCoralSpeed(coralSubsystem, 1), new InstantCommand(), () -> hasTag()),
                                 Commands.either(new WaitCommand(0.7), new InstantCommand(), () -> hasTag()),
                                 Commands.either(new SetCoralSpeed(coralSubsystem, 0), new InstantCommand(), () -> hasTag()),
@@ -60,11 +60,11 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
 
     private boolean hasTag() {
         int detectedTag = drive.getPoseEstimatorSubsystem().getLastDetectedTagId();
-        List<Integer> scoringTagsList = Arrays.stream(AprilTagConstants.intakeStationAprilTags)
+        List<Integer> scoringTagsList = Arrays.stream(AprilTagConstants.scoringAprilTags)
                 .boxed()
                 .toList();
         return scoringTagsList.contains(detectedTag)
-                && drive.getPoseEstimatorSubsystem().hasSideCameraDetection();
+                && !drive.getPoseEstimatorSubsystem().hasSideCameraDetection();
     }
     
 }
