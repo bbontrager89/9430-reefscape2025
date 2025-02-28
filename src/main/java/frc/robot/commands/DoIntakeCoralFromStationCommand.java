@@ -2,7 +2,9 @@ package frc.robot.commands;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -32,32 +34,36 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
         // Only proceed if we initially see a tag
         addRequirements(drive, elevator);
 
+        
+
         addCommands(
                 new ConditionalCommand(
                         // If we see a tag, execute the full alignment sequence
                         new SequentialCommandGroup(
-                                new MoveElevator(elevator, 0),
-                                new PivotCoral(coralSubsystem, CoralManipulatorConstants.intakePivotPosition),
-                                new ApproachTagCommand(drive, OIConstants.coralIntakeDistance, desiredLateralOffset),
-                                new IntakeCoral(coralSubsystem, -1, 1.5),
-                                new SetCoralSpeed(coralSubsystem, 0),
-                                new InstantCommand(() -> {
+                                Commands.either(new MoveElevator(elevator, 0), new InstantCommand(), () -> hasTag()),
+                                Commands.either(new PivotCoral(coralSubsystem, CoralManipulatorConstants.intakePivotPosition), new InstantCommand(), () -> hasTag()),
+                                Commands.either(new ApproachTagCommand(drive, OIConstants.coralIntakeDistance, desiredLateralOffset), new InstantCommand(), () -> hasTag()),
+                                Commands.either(new IntakeCoral(coralSubsystem, -1, 1.5), new InstantCommand(), () -> hasTag()),
+                                Commands.either(new SetCoralSpeed(coralSubsystem, 0), new InstantCommand(), () -> hasTag()),
+                                Commands.either(new InstantCommand(() -> {
                                     drive.drive(-0.2, 0, 0, false);
-                                }),
-                                new WaitCommand(0.25),
-                                new InstantCommand(() -> {
+                                }), new InstantCommand(), () -> hasTag()),
+                                Commands.either(new WaitCommand(0.25), new InstantCommand(), () -> hasTag()),
+                                Commands.either(new InstantCommand(() -> {
                                     drive.drive(0, 0, 0, false);
-                                }),
+                                }), new InstantCommand(), () -> hasTag()),
                                 new TransitModeCommand(elevator, coralSubsystem)),
                         // If we don't see a tag, do nothing
                         new InstantCommand(),
-                        () -> {
-                            int detectedTag = drive.getPoseEstimatorSubsystem().getLastDetectedTagId();
-                            List<Integer> scoringTagsList = Arrays.stream(AprilTagConstants.intakeStationAprilTags)
-                                    .boxed()
-                                    .toList();
-                            return scoringTagsList.contains(detectedTag)
-                                    && drive.getPoseEstimatorSubsystem().hasSideCameraDetection();
-                        }));
+                        () -> hasTag()));
+    }
+
+    private boolean hasTag() {
+        int detectedTag = drive.getPoseEstimatorSubsystem().getLastDetectedTagId();
+        List<Integer> scoringTagsList = Arrays.stream(AprilTagConstants.intakeStationAprilTags)
+                .boxed()
+                .toList();
+        return scoringTagsList.contains(detectedTag)
+                && drive.getPoseEstimatorSubsystem().hasSideCameraDetection();
     }
 }
