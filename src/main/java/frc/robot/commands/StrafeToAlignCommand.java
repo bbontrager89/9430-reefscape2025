@@ -13,7 +13,7 @@ public class StrafeToAlignCommand extends Command {
     
     // Constants
     private static final double LATERAL_TOLERANCE_METERS = 0.055;  // 4cm
-    private static final double ROTATION_TOLERANCE_DEG = 1.5;
+    private static final double ROTATION_TOLERANCE_DEG = 2;
     private static final double MAX_STRAFE_SPEED = 1.0; // m/s
     private static final double MAX_ROTATION_SPEED = 0.5; // rad/s
     private static final double LOST_TAG_TIMEOUT = 0.7; // seconds
@@ -99,8 +99,7 @@ public class StrafeToAlignCommand extends Command {
         // Check if we're aligned
         if (poseEstimator.getLastDetectedTagId() != -1) {
             double currentLateralOffset = poseEstimator.getLateralOffsetToTag();
-            double orientationError = poseEstimator.getTagOrientationErrorDeg();
-            
+            double orientationError = poseEstimator.getTagOrientationErrorDeg() - 180;
             // Only finish if we're stable
             return Math.abs(currentLateralOffset - desiredLateralOffset) < LATERAL_TOLERANCE_METERS &&
                    Math.abs(orientationError) < ROTATION_TOLERANCE_DEG &&
