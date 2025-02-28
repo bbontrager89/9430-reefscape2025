@@ -46,7 +46,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                                 new MoveElevator(elevator, scoringPosition),
                                 new StrafeToAlignCommand(drive, desiredLateralOffset),
                                 new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, false),
-                                new SetCoralSpeed(coralSubsystem, 1),
+                                new SetCoralSpeed(coralSubsystem, (scoringPosition == 1)? 0.4 : 1),
                                 new WaitCommand(0.7),
                                 new SetCoralSpeed(coralSubsystem, 0),
                                 new InstantCommand(() -> {
