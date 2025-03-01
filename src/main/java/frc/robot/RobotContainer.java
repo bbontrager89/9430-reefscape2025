@@ -465,6 +465,7 @@ public class RobotContainer {
                         .onTrue(new InstantCommand(() -> {
                                 CommandScheduler.getInstance().cancelAll();
                                 elevatorSubsystem.turnOffAutoMode();
+                                coralManipulatorSubsystem.stopIntakeMotor();
                         }));
 
                 /* * * * * * * * * * * * *\
@@ -568,6 +569,7 @@ public class RobotContainer {
                         .onTrue(new InstantCommand(() -> {
                                 CommandScheduler.getInstance().cancelAll();
                                 elevatorSubsystem.turnOffAutoMode();
+                                coralManipulatorSubsystem.stopIntakeMotor();
                         }));
 
         }
