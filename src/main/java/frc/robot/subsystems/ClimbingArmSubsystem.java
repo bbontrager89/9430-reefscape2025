@@ -19,8 +19,6 @@ public class ClimbingArmSubsystem extends SubsystemBase {
   private SparkFlex motor1 = new SparkFlex(ClimbingArmConstants.motor1CanId, MotorType.kBrushless);
   private SparkFlex motor2 = new SparkFlex(ClimbingArmConstants.motor2CanId, MotorType.kBrushless);
 
-  private SparkAbsoluteEncoder encoder;
-
   private SparkFlexConfig motorConfig;
 
   /** Creates a new ClimbingArmSubsystem. */
