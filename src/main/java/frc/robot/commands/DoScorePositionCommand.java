@@ -30,7 +30,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
         System.out.printf("ElevatorCommand created - Target lateral offset: %.2f m, Target distance: %.2f m%n",
                 desiredLateralOffset, desiredDistance);
 
-        // Only proceed if we initially see a tag
+        
         addRequirements(drive, elevator);
 
         if (hasTag())
@@ -62,6 +62,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                         () -> hasTag()));
         else 
         addCommands();
+
     }
 
     private boolean hasTag() {
