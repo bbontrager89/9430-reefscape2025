@@ -452,33 +452,33 @@ public class RobotContainer {
                 // Right bumper -
                 c_driverController.rightBumper()
                         .onTrue(new InstantCommand(() -> {
-                                algaeManipulatorSubsystem.setPivotSpeed(0.30);
+                                algaeManipulatorSubsystem.setIntakeSpeed(0.30);
                         })).onFalse(new InstantCommand(() -> {
-                                algaeManipulatorSubsystem.stopPivot();
+                                algaeManipulatorSubsystem.stopIntake();
                         }));
 
                 // Right trigger -
                 c_driverController.rightTrigger(OIConstants.kTriggerThreshold)
                         .whileTrue(new RepeatCommand(new InstantCommand(() -> {
-                                algaeManipulatorSubsystem.setIntakeSpeed(c_driverController.getRightTriggerAxis());
+                                algaeManipulatorSubsystem.setPivotSpeed(c_driverController.getRightTriggerAxis());
                         }))).onFalse(new InstantCommand(() -> {
-                                algaeManipulatorSubsystem.stopIntake();
+                                algaeManipulatorSubsystem.stopPivot();
                         }));
 
                 // Left bumper -
                 c_driverController.leftBumper()
                         .onTrue(new InstantCommand(() -> {
-                                algaeManipulatorSubsystem.setPivotSpeed(-0.30);
+                                algaeManipulatorSubsystem.setIntakeSpeed(-0.30);
                         })).onFalse(new InstantCommand(() -> {
-                                algaeManipulatorSubsystem.stopPivot();
+                                algaeManipulatorSubsystem.stopIntake();
                         }));
 
                 // Left trigger -
                 c_driverController.leftTrigger(OIConstants.kTriggerThreshold)
                         .whileTrue(new RepeatCommand(new InstantCommand(() -> {
-                                algaeManipulatorSubsystem.setIntakeSpeed(-c_driverController.getLeftTriggerAxis());
+                                algaeManipulatorSubsystem.setPivotSpeed(-c_driverController.getLeftTriggerAxis());
                         }))).onFalse(new InstantCommand(() -> {
-                                algaeManipulatorSubsystem.stopIntake();
+                                algaeManipulatorSubsystem.stopPivot();
                         }));
 
                 // Y button -
