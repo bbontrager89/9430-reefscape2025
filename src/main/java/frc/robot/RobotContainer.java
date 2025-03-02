@@ -7,7 +7,9 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CoralManipulatorConstants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DoScorePositionCommand;
 import frc.robot.commands.DoIntakeCoralFromStationCommand;
@@ -16,6 +18,7 @@ import frc.robot.commands.TransitModeCommand;
 import frc.robot.subsystems.CoralManipulatorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem.SP;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -24,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.utils.ControllerUtils.POV;
+import frc.utils.ControllerUtils;
 import frc.utils.ControllerUtils.AXIS;
 
 import com.pathplanner.lib.auto.NamedCommands;
@@ -86,7 +90,7 @@ public class RobotContainer {
                         m_robotDrive,
                         2, 
                         OIConstants.leftScoringOffset, 
-                        OIConstants.scoringDistance, 
+                        OIConstants.scoringDistanceRight, 
                         CoralManipulatorConstants.levelTwoPivotPosition));
                 NamedCommands.registerCommand("Elevator to SP1", new MoveElevator(elevatorSubsystem, 1));
         }
@@ -95,25 +99,13 @@ public class RobotContainer {
         /** Represents modes for different controls */
         enum ControlMode {
                 /**
-                 * <p>
-                 * Left stick moves elevator up and down
-                 * <p>
-                 * Right stick moves coral manipulator up and down
-                 * <p>
-                 * D-Pad right pivots algae intake out
-                 * <p>
-                 * D-Pad left pivots algae intake in
-                 * <p>
-                 * RB hold - Algae intake wheels spin out
-                 * <p>
-                 * LB hold - Algae intake wheels spin in
-                 * <p>
-                 * RT hold - Coral manipulator wheels intake
-                 * <p>
-                 * LT hold - Coral manipulator wheels out
+                 * Elevator and coral manipulator move but robot does not
+                 * approach automatically after d-pad mapping
                  */
                 Manual,
-                /** Robot is controlled by commands mapped to button bindings */
+                /** Robot automatically scores / intakes coral after
+                 * d-pad mapping
+                 */
                 SemiAuto;
 
                 /**
@@ -139,7 +131,7 @@ public class RobotContainer {
         Double operatorPOVRecency = null;
         POV operatorLatestPOVButton = POV.None;
 
-        ControlMode activeMode = ControlMode.Manual;
+        ControlMode activeMode = ControlMode.SemiAuto;
 
         double operatorStartButtonTimestamp = Double.NEGATIVE_INFINITY;
 
@@ -267,11 +259,11 @@ public class RobotContainer {
 
                 // A button - Algae intake mode
                 c_operatorController.a()
-                        .onTrue(new InstantCommand());
+                        .onTrue(new TransitModeCommand(elevatorSubsystem, coralManipulatorSubsystem));
 
                 // Right Stick button - Transit mode
                 c_operatorController.rightStick()
-                        .onTrue(new TransitModeCommand(elevatorSubsystem, coralManipulatorSubsystem));
+                        .onTrue(new InstantCommand());
 
                 // Left Stick button -
                 c_operatorController.leftStick()
@@ -285,12 +277,16 @@ public class RobotContainer {
                                         // on Double Press -
                                         // Coral mode: intake from Coral station
                                         if (operatorLatestPOVButton == POV.Up) {
-                                                new DoIntakeCoralFromStationCommand(
-                                                        elevatorSubsystem, 
-                                                        coralManipulatorSubsystem, 
-                                                        m_robotDrive,
-                                                        OIConstants.intakePositionRight)
-                                                .schedule();
+                                                if (activeMode.semiAuto()) {
+                                                        new DoIntakeCoralFromStationCommand(
+                                                                elevatorSubsystem, 
+                                                                coralManipulatorSubsystem, 
+                                                                m_robotDrive)
+                                                        .schedule();
+                                                } else if (activeMode.manual()) {
+                                                        elevatorSubsystem.moveToPosition(ElevatorConstants.coralStationPosition);
+                                                        coralManipulatorSubsystem.movePivotTo(CoralManipulatorConstants.intakePivotPosition);
+                                                }
                                         }
                                 } else {
                                         // on Single Press
@@ -313,26 +309,36 @@ public class RobotContainer {
                                         // Coral mode: after down press: score L2 right
                                         // Coral mode: after up press: score L3 right
                                         if (operatorLatestPOVButton == POV.Down) {
-                                                new DoScorePositionCommand(
-                                                        elevatorSubsystem, 
-                                                        coralManipulatorSubsystem, 
-                                                        m_robotDrive,
-                                                        2, 
-                                                        OIConstants.rightScoringOffset, 
-                                                        OIConstants.scoringDistance, 
-                                                        CoralManipulatorConstants.levelTwoPivotPosition)
-                                                .schedule();
+                                                if (activeMode.semiAuto()) {
+                                                        new DoScorePositionCommand(
+                                                                elevatorSubsystem, 
+                                                                coralManipulatorSubsystem, 
+                                                                m_robotDrive,
+                                                                2, 
+                                                                OIConstants.rightScoringOffset, 
+                                                                OIConstants.scoringDistanceRight, 
+                                                                CoralManipulatorConstants.levelTwoPivotPosition)
+                                                        .schedule();
+                                                } else if (activeMode.manual()) {
+                                                        elevatorSubsystem.moveToScoringPosition(SP.two);
+                                                        coralManipulatorSubsystem.movePivotTo(CoralManipulatorConstants.levelTwoPivotPosition);
+                                                }
                                         }
                                         if (operatorLatestPOVButton == POV.Up) {
-                                                new DoScorePositionCommand(
-                                                        elevatorSubsystem, 
-                                                        coralManipulatorSubsystem, 
-                                                        m_robotDrive,
-                                                        3, 
-                                                        OIConstants.rightScoringOffset, 
-                                                        OIConstants.scoringDistance, 
-                                                        CoralManipulatorConstants.levelThreePivotPosition)
-                                                .schedule();
+                                                if (activeMode.semiAuto()) {
+                                                        new DoScorePositionCommand(
+                                                                elevatorSubsystem, 
+                                                                coralManipulatorSubsystem, 
+                                                                m_robotDrive,
+                                                                3, 
+                                                                OIConstants.rightScoringOffset, 
+                                                                OIConstants.scoringDistanceRight, 
+                                                                CoralManipulatorConstants.levelThreePivotPosition)
+                                                        .schedule();
+                                                } else if (activeMode.manual()) {
+                                                        elevatorSubsystem.moveToScoringPosition(SP.three);
+                                                        coralManipulatorSubsystem.movePivotTo(CoralManipulatorConstants.levelThreePivotPosition);
+                                                }
                                         }
                                 } else {
                                         // on Single Press
@@ -353,15 +359,20 @@ public class RobotContainer {
                                         operatorPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
                                         // on Double Press - Coral mode: after down press: score L1
                                         if (operatorLatestPOVButton == POV.Down) {
-                                                new DoScorePositionCommand(
-                                                        elevatorSubsystem, 
-                                                        coralManipulatorSubsystem, 
-                                                        m_robotDrive,
-                                                        1, 
-                                                        0.0, 
-                                                        OIConstants.scoringDistance, 
-                                                        CoralManipulatorConstants.levelOnePivotPosition)
-                                                .schedule();
+                                                if (activeMode.semiAuto()) {
+                                                        new DoScorePositionCommand(
+                                                                elevatorSubsystem, 
+                                                                coralManipulatorSubsystem, 
+                                                                m_robotDrive,
+                                                                1, 
+                                                                0.0, 
+                                                                OIConstants.scoringDistanceRight, 
+                                                                CoralManipulatorConstants.levelOnePivotPosition)
+                                                        .schedule();
+                                                } else if (activeMode.manual()) {
+                                                        elevatorSubsystem.moveToScoringPosition(SP.one);
+                                                        coralManipulatorSubsystem.movePivotTo(CoralManipulatorConstants.levelOnePivotPosition);
+                                                }
                                         }
                                 } else {
                                         // on Single Press
@@ -384,26 +395,36 @@ public class RobotContainer {
                                         // Coral mode: after down press: score L2 left
                                         // Coral mode: after up press: score L3 left
                                         if (operatorLatestPOVButton == POV.Down) {
-                                                new DoScorePositionCommand(
-                                                        elevatorSubsystem, 
-                                                        coralManipulatorSubsystem, 
-                                                        m_robotDrive,
-                                                        2, 
-                                                        OIConstants.leftScoringOffset, 
-                                                        OIConstants.scoringDistance, 
-                                                        CoralManipulatorConstants.levelTwoPivotPosition)
-                                                .schedule();
+                                                if (activeMode.semiAuto()) {
+                                                        new DoScorePositionCommand(
+                                                                elevatorSubsystem, 
+                                                                coralManipulatorSubsystem, 
+                                                                m_robotDrive,
+                                                                2, 
+                                                                OIConstants.leftScoringOffset, 
+                                                                OIConstants.scoringDistanceLeft, 
+                                                                CoralManipulatorConstants.levelTwoPivotPosition)
+                                                        .schedule();
+                                                } else if (activeMode.manual()) {
+                                                        elevatorSubsystem.moveToScoringPosition(SP.two);
+                                                        coralManipulatorSubsystem.movePivotTo(CoralManipulatorConstants.levelTwoPivotPosition);
+                                                }
                                         }
                                         if (operatorLatestPOVButton == POV.Up) {
-                                                new DoScorePositionCommand(
-                                                        elevatorSubsystem, 
-                                                        coralManipulatorSubsystem, 
-                                                        m_robotDrive,
-                                                        3, 
-                                                        OIConstants.leftScoringOffset, 
-                                                        OIConstants.scoringDistance, 
-                                                        CoralManipulatorConstants.levelThreePivotPosition)
-                                                .schedule();
+                                                if (activeMode.semiAuto()) {
+                                                        new DoScorePositionCommand(
+                                                                elevatorSubsystem, 
+                                                                coralManipulatorSubsystem, 
+                                                                m_robotDrive,
+                                                                3, 
+                                                                OIConstants.leftScoringOffset, 
+                                                                OIConstants.scoringDistanceLeft, 
+                                                                CoralManipulatorConstants.levelThreePivotPosition)
+                                                        .schedule();
+                                                } else if (activeMode.manual()) {
+                                                        elevatorSubsystem.moveToScoringPosition(SP.three);
+                                                        coralManipulatorSubsystem.movePivotTo(CoralManipulatorConstants.levelThreePivotPosition);
+                                                }
                                         }
                                 } else {
                                         // on Single Press
@@ -417,34 +438,40 @@ public class RobotContainer {
                 c_operatorController.povUpLeft()
                         .onTrue(new InstantCommand());
 
-                // Start Button button - Manual mode on 2 second hold
+                SmartDashboard.putBoolean("Manual Mode", activeMode.manual());
+
+                // Start Button button - Manual mode on 0.5 second hold
                 c_operatorController.start()
                         .onTrue(new InstantCommand(() -> {
                                 operatorStartButtonTimestamp = Timer.getFPGATimestamp();
 
                         })).onFalse(new InstantCommand(() -> {
-                                operatorStartButtonTimestamp = Double.NEGATIVE_INFINITY;
+                                if (Timer.getFPGATimestamp() > operatorStartButtonTimestamp + 0.5) {
 
-                        })).whileTrue(new InstantCommand(() -> {
-                                if (operatorStartButtonTimestamp + 2 < Timer.getFPGATimestamp()) {
-                                        if (activeMode == ControlMode.SemiAuto)
-                                                activeMode = ControlMode.Manual;
-                                        else 
-                                                activeMode = ControlMode.SemiAuto;
+                                        activeMode = (activeMode == ControlMode.SemiAuto) ? 
+                                                ControlMode.Manual : ControlMode.SemiAuto;
+                                                
+                                        ControllerUtils.Rumble(c_operatorController.getHID(), 0.5);
+                                        SmartDashboard.putBoolean("Manual Mode", activeMode.manual());
+                                        operatorStartButtonTimestamp = Double.NEGATIVE_INFINITY;
+
                                 }
+
                         }));
 
-                // Back Button button - Cancel all actions?
+                // Back Button button - Cancel all actions
                 c_operatorController.back()
                         .onTrue(new InstantCommand(() -> {
                                 CommandScheduler.getInstance().cancelAll();
+                                elevatorSubsystem.turnOffAutoMode();
+                                coralManipulatorSubsystem.stopIntakeMotor();
                         }));
 
                 /* * * * * * * * * * * * *\
                  *                       *
                  * DRIVER BUTTON MAPPING *
                  *                       *
-                 * * * * * * * * * * * * */
+                \* * * * * * * * * * * * */
 
                 // Right bumper -
                 c_driverController.rightBumper()
@@ -540,6 +567,8 @@ public class RobotContainer {
                 c_driverController.back()
                         .onTrue(new InstantCommand(() -> {
                                 CommandScheduler.getInstance().cancelAll();
+                                elevatorSubsystem.turnOffAutoMode();
+                                coralManipulatorSubsystem.stopIntakeMotor();
                         }));
 
         }

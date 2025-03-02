@@ -5,6 +5,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 
+
 public class ApproachTagCommand extends Command {
     private final DriveSubsystem drive;
     private final double desiredDistance;
@@ -13,35 +14,45 @@ public class ApproachTagCommand extends Command {
     private final PIDController rotationController;
 
     // Tolerances and speed limits
-    private static final double DISTANCE_TOLERANCE_METERS = 0.03; // 3cm
-    private static final double LATERAL_TOLERANCE_METERS = 0.03; // 3cm
-    private static final double ROTATION_TOLERANCE_DEG = 2.0; // degrees tolerance for rotation error
+    private static final double DISTANCE_TOLERANCE_METERS = 0.015; // 1.5cm tolerance (example)
+    private static final double LATERAL_TOLERANCE_METERS = 0.015; // 1.5cm
+    private static final double ROTATION_TOLERANCE_DEG = 2.0; // degrees tolerance
     private static final double MAX_FORWARD_SPEED = 1.5; // m/s
     private static final double MAX_LATERAL_SPEED = 1.0; // m/s
     private static final double MAX_ROTATION_SPEED = 0.3; // rad/s
-    private static final double LOST_TAG_TIMEOUT = 0.78; // seconds
+    private static final double LOST_TAG_TIMEOUT = 0.5; // seconds
+
+    // Camera indices matching those in PoseEstimatorSubsystem
+    private static final int LEFT_CAMERA_INDEX = 2;  // for intake mode when target is right-side
+    private static final int RIGHT_CAMERA_INDEX = 1; // for intake mode when target is left-side
 
     private double lastTagTimestamp = 0;
     // Variables to lock in the initial lateral offset when the tag is first seen
     private boolean lateralOffsetInitialized = false;
     private double desiredLateralOffset = 0;
+    private boolean isIntake = false;
+    
+    // Camera selection for both intake and non-intake modes.
+    // In non-intake mode, front camera indices are used (0 for right side, 3 for left side)
+    private int selectedCameraIndex = -1; // Default to no specific camera
 
-    public ApproachTagCommand(DriveSubsystem drive, double desiredDistance, double desiredLateralOffset) {
+    public ApproachTagCommand(DriveSubsystem drive, double desiredDistance, double desiredLateralOffset, boolean isIntake) {
         this.drive = drive;
         this.desiredDistance = desiredDistance;
         this.desiredLateralOffset = desiredLateralOffset;
+        this.isIntake = isIntake;
         addRequirements(drive);
 
         // PID for forward (distance) control
-        distanceController = new PIDController(2.0, 0.0, 0.00);
+        distanceController = new PIDController(3.5, 0.0, 0.00);
         distanceController.setTolerance(DISTANCE_TOLERANCE_METERS);
 
         // PID for lateral offset correction
-        lateralController = new PIDController(0.5, 0.0, 0.0);
+        lateralController = new PIDController(2.5, 0.0, 0.05);
         lateralController.setTolerance(LATERAL_TOLERANCE_METERS);
 
         // PID for rotation to face the desired offset position
-        rotationController = new PIDController(0.05, 0.0, 0.005);
+        rotationController = new PIDController(0.4, 0.0, 0.005);
         rotationController.setTolerance(ROTATION_TOLERANCE_DEG);
         rotationController.enableContinuousInput(-180, 180); // angle wrap-around
     }
@@ -52,66 +63,78 @@ public class ApproachTagCommand extends Command {
         lateralController.reset();
         rotationController.reset();
         lateralOffsetInitialized = false;
-        System.out.printf("ApproachTagCommand initialized - Target distance: %.2f meters, Lateral offset: %.2f meters%n", 
-            desiredDistance, desiredLateralOffset);
-    }
-
-    // Helper: Normalize angle to [-180, 180)
-    private double normalizeAngle(double angle) {
-        angle = angle % 360;
-        if (angle > 180) {
-            angle -= 360;
-        } else if (angle <= -180) {
-            angle += 360;
+        
+        // Select the camera based on mode and desired lateral offset
+        if (isIntake) {
+            // In intake mode: use the dedicated intake camera selection.
+            // Positive offset means target is to the right so use left intake camera.
+            if (desiredLateralOffset > 0) {
+                selectedCameraIndex = LEFT_CAMERA_INDEX;
+                System.out.println("Intake mode: Using left camera (index " + LEFT_CAMERA_INDEX + ") for right-side approach");
+            } else {
+                selectedCameraIndex = RIGHT_CAMERA_INDEX;
+                System.out.println("Intake mode: Using right camera (index " + RIGHT_CAMERA_INDEX + ") for left-side approach");
+            }
+        } else {
+            // In non-intake mode: if there is a lateral offset, use a front camera.
+            if (desiredLateralOffset > 0) {
+                selectedCameraIndex = 0;  // Front camera for right-side approach
+                System.out.println("Non-intake mode: Using front camera index 0 for right-side approach");
+            } else if (desiredLateralOffset < 0) {
+                selectedCameraIndex = 3;  // Front camera for left-side approach
+                System.out.println("Non-intake mode: Using front camera index 3 for left-side approach");
+            } else {
+                selectedCameraIndex = -1; // No specific camera selected; use any available detection
+                System.out.println("Non-intake mode: No lateral offset specified, using any available camera");
+            }
         }
-        return angle;
+        
+        System.out.printf("ApproachTagCommand initialized - Target distance: %.2f m, Lateral offset: %.2f m, Intake mode: %b%n", 
+            desiredDistance, desiredLateralOffset, isIntake);
     }
 
     @Override
     public void execute() {
         var poseEstimator = drive.getPoseEstimatorSubsystem();
+        boolean validTagDetection = false;
+        
+        // Use selected camera if one is set (applies to both intake and non-intake modes)
+        if (selectedCameraIndex != -1) {
+            int detectedTag = poseEstimator.getLastTagDetectedByCamera(selectedCameraIndex);
+            double lastDetectionTime = poseEstimator.getLastCameraDetectionTimestamp(selectedCameraIndex);
+            double currentTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+            
+            if (detectedTag != -1 && (currentTime - lastDetectionTime) < LOST_TAG_TIMEOUT) {
+                validTagDetection = true;
+                lastTagTimestamp = lastDetectionTime;
+            }
+        } else {
+            // Otherwise, use any camera detection available.
+            if (poseEstimator.getLastDetectedTagId() != -1) {
+                validTagDetection = true;
+                lastTagTimestamp = poseEstimator.getLastDetectionTimestamp();
+            }
+        }
 
-        if (poseEstimator.getLastDetectedTagId() != -1) {
-            lastTagTimestamp = poseEstimator.getLastDetectionTimestamp();
-
+        if (validTagDetection) {
             double currentDistance = poseEstimator.getDistanceToTag();
             double currentLateralOffset = poseEstimator.getLateralOffsetToTag();
+            double currentRotation = poseEstimator.getTagOrientationErrorDeg();
 
-            // Lock in the lateral offset the first time the tag is seen
-            if (!lateralOffsetInitialized) {
-                lateralOffsetInitialized = true;
-                System.out.printf("Locked lateral offset at: %.2f meters%n", desiredLateralOffset);
-            }
-
-            // Compute forward speed correction (positive drives forward)
+            // Compute corrections using PID controllers
             double forwardSpeed = -distanceController.calculate(currentDistance, desiredDistance);
-            // Compute lateral correction to maintain the locked lateral offset
             double lateralSpeed = -lateralController.calculate(currentLateralOffset, desiredLateralOffset);
+            double rotationSpeed = -rotationController.calculate(currentRotation, 180);
 
-            // Compute the angles to current and desired positions relative to tag
-            double currentAngle = Math.toDegrees(Math.atan2(currentLateralOffset, currentDistance));
-            double desiredAngle = Math.toDegrees(Math.atan2(desiredLateralOffset, currentDistance));
-            
-            // Rotation error is how much we need to turn to face the desired position
-            // Note: desiredAngle - currentAngle gives us the turn needed to face the target
-            double rotationError = normalizeAngle(desiredAngle - currentAngle);
-            double rotationSpeed = rotationController.calculate(rotationError, 0);
-
-            // Clamp each speed to its maximum limit
+            // Clamp speeds to maximum limits
             forwardSpeed = Math.min(Math.max(forwardSpeed, -MAX_FORWARD_SPEED), MAX_FORWARD_SPEED);
             lateralSpeed = Math.min(Math.max(lateralSpeed, -MAX_LATERAL_SPEED), MAX_LATERAL_SPEED);
             rotationSpeed = Math.min(Math.max(rotationSpeed, -MAX_ROTATION_SPEED), MAX_ROTATION_SPEED);
-
-            System.out.printf("Approach - Dist: %.2f m (Target: %.2f m), Lateral: %.2f m (Locked: %.2f m), " +
-                    "Angle: Current: %.2f°, Desired: %.2f° (Error: %.2f°), " +
-                    "Forward: %.2f m/s, Lateral: %.2f m/s, Rot: %.2f rad/s%n",
-                    currentDistance, desiredDistance, currentLateralOffset, desiredLateralOffset,
-                    currentAngle, desiredAngle, rotationError, forwardSpeed, lateralSpeed, rotationSpeed);
-
-            // Drive the robot with the computed speeds
+            
+            // Drive the robot with computed speeds
             drive.driveRobotRelative(new ChassisSpeeds(forwardSpeed, lateralSpeed, rotationSpeed));
         } else {
-            // No tag detected; stop the robot
+            // No valid tag detected; stop the robot
             drive.driveRobotRelative(new ChassisSpeeds());
         }
     }
@@ -126,18 +149,35 @@ public class ApproachTagCommand extends Command {
             return true;
         }
 
-        if (poseEstimator.getLastDetectedTagId() != -1) {
-            double currentDistance = poseEstimator.getDistanceToTag();
-            double currentLateralOffset = poseEstimator.getLateralOffsetToTag();
+        boolean validTagDetection = false;
+        double currentDistance = 0;
+        double currentLateralOffset = 0;
+        double currentRotation = 0;
+        
+        if (selectedCameraIndex != -1) {
+            int detectedTag = poseEstimator.getLastTagDetectedByCamera(selectedCameraIndex);
+            double lastDetectionTime = poseEstimator.getLastCameraDetectionTimestamp(selectedCameraIndex);
             
-            // Check distance and lateral offset are within tolerance
+            if (detectedTag != -1 && (currentTime - lastDetectionTime) < LOST_TAG_TIMEOUT) {
+                validTagDetection = true;
+                currentDistance = poseEstimator.getDistanceToTag();
+                currentLateralOffset = poseEstimator.getLateralOffsetToTag();
+                currentRotation = poseEstimator.getTagOrientationErrorDeg();
+            }
+        } else {
+            if (poseEstimator.getLastDetectedTagId() != -1) {
+                validTagDetection = true;
+                currentDistance = poseEstimator.getDistanceToTag();
+                currentLateralOffset = poseEstimator.getLateralOffsetToTag();
+                currentRotation = poseEstimator.getTagOrientationErrorDeg();
+            }
+        }
+
+        if (validTagDetection) {
+            // Check if the distance, lateral offset, and rotation are within tolerance.
             boolean distanceOk = Math.abs(currentDistance - desiredDistance) < DISTANCE_TOLERANCE_METERS;
             boolean lateralOk = Math.abs(currentLateralOffset - desiredLateralOffset) < LATERAL_TOLERANCE_METERS;
-            
-            // Check if we're facing the desired position
-            double currentAngle = Math.toDegrees(Math.atan2(currentLateralOffset, currentDistance));
-            double desiredAngle = Math.toDegrees(Math.atan2(desiredLateralOffset, currentDistance));
-            double rotationError = normalizeAngle(desiredAngle - currentAngle);
+            double rotationError = (currentRotation - 180);
             boolean rotationOk = Math.abs(rotationError) < ROTATION_TOLERANCE_DEG;
 
             return distanceOk && lateralOk && rotationOk;

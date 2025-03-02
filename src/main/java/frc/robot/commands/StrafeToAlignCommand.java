@@ -13,7 +13,7 @@ public class StrafeToAlignCommand extends Command {
     
     // Constants
     private static final double LATERAL_TOLERANCE_METERS = 0.055;  // 4cm
-    private static final double ROTATION_TOLERANCE_DEG = 1.5;
+    private static final double ROTATION_TOLERANCE_DEG = 2;
     private static final double MAX_STRAFE_SPEED = 1.0; // m/s
     private static final double MAX_ROTATION_SPEED = 0.5; // rad/s
     private static final double LOST_TAG_TIMEOUT = 0.7; // seconds
@@ -28,7 +28,7 @@ public class StrafeToAlignCommand extends Command {
         addRequirements(drive);
         
         // PID for strafe control
-        strafeController = new PIDController(3.0, 0.0, 0.0);
+        strafeController = new PIDController(2.5, 0.0, 0.0);
         strafeController.setTolerance(LATERAL_TOLERANCE_METERS);
         // PID for rotation
         rotationController = new PIDController(0.3, 0.0, 0.0);
@@ -59,7 +59,7 @@ public class StrafeToAlignCommand extends Command {
             // Calculate desired speeds
             // Note: strafeSpeed is negated because positive lateral offset means robot needs to move left (negative Y)
             double strafeSpeed = -strafeController.calculate(currentLateralOffset, desiredLateralOffset);
-            double rotationSpeed = rotationController.calculate(currentOrientation, 0);
+            double rotationSpeed = -rotationController.calculate(currentOrientation, 180);
             
             // Apply acceleration limiting to strafe
            /* double period = 0.04; // Assuming 50Hz
@@ -99,8 +99,7 @@ public class StrafeToAlignCommand extends Command {
         // Check if we're aligned
         if (poseEstimator.getLastDetectedTagId() != -1) {
             double currentLateralOffset = poseEstimator.getLateralOffsetToTag();
-            double orientationError = poseEstimator.getTagOrientationErrorDeg();
-            
+            double orientationError = poseEstimator.getTagOrientationErrorDeg() - 180;
             // Only finish if we're stable
             return Math.abs(currentLateralOffset - desiredLateralOffset) < LATERAL_TOLERANCE_METERS &&
                    Math.abs(orientationError) < ROTATION_TOLERANCE_DEG &&

@@ -2,7 +2,9 @@ package frc.robot.commands;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -21,9 +23,9 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
 
     @SuppressWarnings("unlikely-arg-type")
     public DoIntakeCoralFromStationCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coralSubsystem,
-            DriveSubsystem drive, double desiredLateralOffset) {
+            DriveSubsystem drive) {
         this.drive = drive;
-        this.desiredLateralOffset = desiredLateralOffset;
+        this.desiredLateralOffset = (drive.getPoseEstimatorSubsystem().getLastDetectionCameraIndex() == 1)? OIConstants.intakePositionLeft : OIConstants.intakePositionRight;
         this.desiredDistance = OIConstants.coralIntakeDistance;
 
         System.out.printf("ElevatorCommand created - Target lateral offset: %.2f m, Target distance: %.2f m%n",
@@ -31,37 +33,40 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
 
         
         addRequirements(drive, elevator);
-
-        // Only proceed if we initially see a tag
-        if (drive.getPoseEstimatorSubsystem().getLastDetectedTagId() != -1) {
-            addCommands(
+        
+        addCommands(
                 new ConditionalCommand(
-                    // If we see a tag, execute the full alignment sequence
-                    new SequentialCommandGroup(
-                        new RotateToTagCommand(drive),
-                        new StrafeToAlignCommand(drive, desiredLateralOffset),
-                        new MoveElevator(elevator, 0),
-                        new PivotCoral(coralSubsystem, CoralManipulatorConstants.intakePivotPosition),
-                        new ApproachTagCommand(drive, OIConstants.coralIntakeDistance, desiredLateralOffset),
-                        new IntakeCoral(coralSubsystem, -1, 1.5),
-                        new SetCoralSpeed(coralSubsystem, 0),
-                        new InstantCommand(() -> {
-                            drive.drive(-0.2, 0, 0, false);
-                        }),
-                        new WaitCommand(0.25),
-                        new InstantCommand(() -> {
-                            drive.drive(0, 0, 0, false);
-                        }),
-                        new TransitModeCommand(elevator, coralSubsystem)
-                    ),
-                    // If we don't see a tag, do nothing
-                    new InstantCommand(),
-                    () -> drive.getPoseEstimatorSubsystem().getLastDetectedTagId() != -1
-                )
-            );
-        } else {
-            addCommands();
-        }
+                        // If we see a tag, execute the full alignment sequence
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> {
+                                        drive.drive(0, 0, 0, false);
+                                    }),
+                                new MoveElevator(elevator, 0),
+                                new PivotCoral(coralSubsystem, CoralManipulatorConstants.intakePivotPosition),
+                                new ApproachTagCommand(drive, OIConstants.coralIntakeDistance, desiredLateralOffset, true),
+                                new IntakeCoral(coralSubsystem, -1, 1.5),
+                                new SetCoralSpeed(coralSubsystem, 0),
+                                new InstantCommand(() -> {
+                                    drive.drive(-0.2, 0, 0, false);
+                                }),
+                                new WaitCommand(0.25),
+                                new InstantCommand(() -> {
+                                    drive.drive(0, 0, 0, false);
+                                }),
+                                new TransitModeCommand(elevator, coralSubsystem)),
+                        // If we don't see a tag, do nothing
+                        new InstantCommand(),
+                        () -> hasTag()));
+
+    }
+
+    private boolean hasTag() {
+        int detectedTag = drive.getPoseEstimatorSubsystem().getLastDetectedTagId();
+        List<Integer> scoringTagsList = Arrays.stream(AprilTagConstants.intakeStationAprilTags)
+                .boxed()
+                .toList();
+        return scoringTagsList.contains(detectedTag)
+                && drive.getPoseEstimatorSubsystem().hasSideCameraDetection();
 
     }
 }
