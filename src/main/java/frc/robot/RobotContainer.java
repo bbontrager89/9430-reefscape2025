@@ -439,25 +439,24 @@ public class RobotContainer {
                         .onTrue(new InstantCommand());
 
                 SmartDashboard.putBoolean("Manual Mode", activeMode.manual());
+
                 // Start Button button - Manual mode on 0.5 second hold
                 c_operatorController.start()
                         .onTrue(new InstantCommand(() -> {
                                 operatorStartButtonTimestamp = Timer.getFPGATimestamp();
 
                         })).onFalse(new InstantCommand(() -> {
-                                operatorStartButtonTimestamp = Double.NEGATIVE_INFINITY;
+                                if (Timer.getFPGATimestamp() > operatorStartButtonTimestamp + 0.5) {
 
-                        })).whileTrue(new InstantCommand(() -> {
-                                if (operatorStartButtonTimestamp + 0.5 < Timer.getFPGATimestamp()) {
-                                        if (activeMode == ControlMode.SemiAuto)
-                                                activeMode = ControlMode.Manual;
-                                        else 
-                                                activeMode = ControlMode.SemiAuto;
-
+                                        activeMode = (activeMode == ControlMode.SemiAuto) ? 
+                                                ControlMode.Manual : ControlMode.SemiAuto;
+                                                
                                         ControllerUtils.Rumble(c_operatorController.getHID(), 0.5);
                                         SmartDashboard.putBoolean("Manual Mode", activeMode.manual());
                                         operatorStartButtonTimestamp = Double.NEGATIVE_INFINITY;
+
                                 }
+
                         }));
 
                 // Back Button button - Cancel all actions
