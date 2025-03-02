@@ -452,7 +452,7 @@ public class RobotContainer {
                 // Right bumper -
                 c_driverController.rightBumper()
                         .onTrue(new InstantCommand(() -> {
-                                algaeManipulatorSubsystem.setIntakeSpeed(0.30);
+                                algaeManipulatorSubsystem.setIntakeSpeed(1);
                         })).onFalse(new InstantCommand(() -> {
                                 algaeManipulatorSubsystem.stopIntake();
                         }));
@@ -468,7 +468,7 @@ public class RobotContainer {
                 // Left bumper -
                 c_driverController.leftBumper()
                         .onTrue(new InstantCommand(() -> {
-                                algaeManipulatorSubsystem.setIntakeSpeed(-0.30);
+                                algaeManipulatorSubsystem.setIntakeSpeed(-1);
                         })).onFalse(new InstantCommand(() -> {
                                 algaeManipulatorSubsystem.stopIntake();
                         }));
