@@ -58,7 +58,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     private final Transform3d[] robotToCams = {
         // Front Left camera
         new Transform3d(
-            new Translation3d(0.288, -0.1397, 0.119),
+            new Translation3d(0.288, 0.1397, 0.119),
             new Rotation3d(0.0, -0.2617, 0.0)
         ),
        
@@ -75,7 +75,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     ),
     //Front Right Camera
     new Transform3d(
-        new Translation3d(0.288, 0.1397, 0.119),
+        new Translation3d(0.288, -0.1397, 0.119),
         new Rotation3d(0.0, -0.2617, 0.0)
     ), 
     };
@@ -217,12 +217,14 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
      */
     public boolean hasFrontCameraDetection() {
         double currentTime = Timer.getFPGATimestamp();
-        double frontTimestamp = lastCameraDetectionTimestamps[0];
+        double leftTimestamp = lastCameraDetectionTimestamps[0];
+        double rightTimestamp = lastCameraDetectionTimestamps[3];
         
         // Check if either side camera has a recent detection
-        boolean hasFrontDetection = frontTimestamp != -1.0 && (currentTime - frontTimestamp) < 1.0;
+        boolean hasLeftDetection = leftTimestamp != -1.0 && (currentTime - leftTimestamp) < 1.0;
+        boolean hasRightDetection = rightTimestamp != -1.0 && (currentTime - rightTimestamp) < 1.0;
         
-        return hasFrontDetection;
+        return hasLeftDetection || hasRightDetection;
     }
 
     /**
@@ -249,7 +251,11 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         if (cameraIndex < 0 || cameraIndex >= CAMERA_NAMES.length) {
             return false;
         }
-        return cameraHasDetectedTag[cameraIndex];
+        double currentTime = Timer.getFPGATimestamp();
+       
+        double timestamp = lastCameraDetectionTimestamps[cameraIndex];
+        boolean valid = timestamp != -1.0 && (currentTime - timestamp) < 0.3;
+        return valid;
     }
 
     /**
