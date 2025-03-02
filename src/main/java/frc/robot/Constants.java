@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -91,20 +94,21 @@ public final class Constants {
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
-    public static final double kDriveDeadband = 0.05;
-    
+    public static final double kDriveDeadband = 0.08;
+
     public static final double kTriggerThreshold = 0.1;
 
-    public static final double scoringDistance = 0.02;
-    public static final double coralIntakeDistance = 0.12;
+    public static final double scoringDistanceRight = 0.62;
+    public static final double scoringDistanceLeft = 0.54;
+    public static final double coralIntakeDistance = 0.375;
 
-    public static final double leftScoringOffset = -0.165;
+    public static final double leftScoringOffset = -0.164;
     public static final double rightScoringOffset = 0.165;
 
-    //TODO tune these offsets to align with the grooves on the intake station
-    public static final double intakePositionLeft = -0.3;
-    public static final double intakePositionRight = 0.3;
-    
+    // TODO tune these offsets to align with the grooves on the intake station
+    public static final double intakePositionLeft = -0.5;
+    public static final double intakePositionRight = 0.5;
+
     public static final double doublePressBuffer = 0.5;
   }
 
@@ -140,16 +144,17 @@ public final class Constants {
     public static final double minimumElevatorHeight = 0.175; // Furthest possible is 0.166
     public static final double maximumElevatorHeight = 0.675; // Furthest possible is 0.683
 
-    public static final double coralStationPosition = 0.398; // Scoring position 0
-    public static final double level1ScoringPosition = 0.316;
-    public static final double level2ScoringPosition = 0.51;
-    public static final double level3ScoringPosition = 0.669;
+    public static final double coralStationPosition = 0.39; // Scoring position 0
+    public static final double level1ScoringPosition = 0.32;
+    public static final double level2ScoringPosition = 0.42;
+    public static final double level3ScoringPosition = 0.59;
 
     public static final boolean elevatorMotorInverted = false;
 
     public static final double encoderToRevolutionRatio = 200.0;
 
-    public static final double rangeInRevolutions = (maximumElevatorHeight - minimumElevatorHeight) * encoderToRevolutionRatio;
+    public static final double rangeInRevolutions = (maximumElevatorHeight - minimumElevatorHeight)
+        * encoderToRevolutionRatio;
 
     public static final int maximumAutoSpeed = 1; // Range: 0 to 1
 
@@ -159,9 +164,9 @@ public final class Constants {
     public static final int PivotMotorCanId = 42;
     public static final int IntakeMotorCanId = 41;
 
-    public static final double pivotKp = 3;
+    public static final double pivotKp = 2.25;
     public static final double pivotKi = 0.5;
-    public static final double pivotKd = 0.05;
+    public static final double pivotKd = 0.11;
 
     public static final double maxPivotSpeed = 0.15;
 
@@ -171,9 +176,26 @@ public final class Constants {
     public static final double minimumPivotPosition = 0.095;
 
     public static final double intakePivotPosition = 0.375;
-    public static final double levelOnePivotPosition = 0.25;
-    public static final double levelTwoPivotPosition = 0.091; // Motor Off: low hard limit
-    public static final double levelThreePivotPosition = 0.091;
+    public static final double levelOnePivotPosition = 0.3;
+    public static final double levelTwoPivotPosition = 0.24; // Motor Off: low hard limit
+    public static final double levelThreePivotPosition = 0.24;
+  }
+  
+  public static final class ClimbingArmConstants {
+
+    public static final int motor1CanId = 51;
+    public static final int motor2CanId = 52;
+    
+  }
+
+  public static final class AprilTagConstants {
+    public static final int[] scoringAprilTags = new int[] {
+        6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22
+    };
+
+    public static final int[] intakeStationAprilTags = new int[] {
+        1, 2, 12, 13
+    };
   }
 
 }

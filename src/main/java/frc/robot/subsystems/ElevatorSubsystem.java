@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
 import frc.utils.Elastic;
 
+/** Subsystem for interfacing with motors and logic for the Robot's elevator */
 public class ElevatorSubsystem extends SubsystemBase {
 
   private SparkFlex elevatorMotor = new SparkFlex(ElevatorConstants.elevatorMotorCanId, MotorType.kBrushless);
@@ -47,6 +48,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   
     }
   
+    /** Puts commands on smartdashboard */
     public void configureDashboardControls() {
   
       elevatorCommands = new SendableChooser<Command>();
@@ -85,6 +87,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     }
 
+  /**
+   * Sets the speed of the elevator motor
+   * 
+   * @param speed speed of the motor 
+   */
   public void setMotorSpeed(double speed) {
     currentSpeed = speed;
     if (!(aboveMaxHeight && (speed < 0)) && !(belowMinHeight && (speed > 0))) {
@@ -92,11 +99,17 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
   }
 
+  /** Stops elevator movement */
   public void stopMotor() {
     currentSpeed = 0.0;
     elevatorMotor.stopMotor();
   }
 
+  /**
+   * Sets the desired height for the PID controller given index
+   * 
+   * @param scoringPosition the index that relates to scoring position
+   */
   public void moveToScoringPosition(int scoringPosition) {
 
     switch (scoringPosition) {
@@ -132,23 +145,49 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   }
 
+  /** Calls moveToScoringPosition with the index of given SP
+   * 
+   * @param sp the desired scoring position
+   */
+  public void moveToScoringPosition(SP sp) {
+    moveToScoringPosition(sp.index);
+  }
+
+  /** Sets the desired elevator height position to given double
+   * 
+   * @param position the absolute encoder reading of the desired position
+   */
   public void moveToPosition(double position) {
 
-    desiredHeight = position;
+    // Ensure that the desired postion is within bounds of the elevator
+    desiredHeight = Math.min(Math.max(position, ElevatorConstants.minimumElevatorHeight), ElevatorConstants.maximumElevatorHeight);
     autoMode = true;
+
     SmartDashboard.putNumber("Desired Height", desiredHeight);
 
   }
 
+  /** Disable autonomous PID movement */
   public void turnOffAutoMode() {
     autoMode = false;
     stopMotor();
   }
 
+  /**
+   * Gets the double representing the absolute encoder postion of the elevator
+   * 
+   * @return absolute encoder reading
+   */
   public double getHeight() {
     return absoluteEncoder.getPosition();
   }
 
+  /**
+   * Boolean representing if the elevator height is within 
+   * the tolerence threshold of the desired height for autonomous PID movement
+   * 
+   * @return boolean
+   */
   public boolean atHeight() {
     return (Math.abs(getHeight() - desiredHeight) < ElevatorConstants.positionTolerence);
   }
@@ -214,5 +253,26 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     }
 
+  }
+
+  /** Enum usful for readability for <strong>Scoring Position</strong> elevator movement calls */
+  public static enum SP {
+    /** SP1 */
+    one(1),
+    /** SP2 */
+    two(2),
+    /** SP3 */
+    three(3),
+    /** The minimum elevator height */
+    min(4),
+    /** The maximum elevator height */
+    max(5);
+
+    /** The index that the {@Link ElevatorSubsystem} uses */
+    public final int index;
+
+    SP(int index) {
+      this.index = index;
+    }
   }
 }
