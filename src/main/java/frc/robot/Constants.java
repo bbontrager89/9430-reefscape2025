@@ -25,6 +25,11 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  // Easy value to change between the limits
+  private static final boolean newRobot = true;
+
+
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
@@ -140,11 +145,9 @@ public final class Constants {
 
     public static final double positionTolerence = 0.01;
 
-    // Easy value to change between the limits
-    private static final boolean newRobot = true;
 
-    public static final double minimumElevatorHeight = (newRobot)? 0.175 : 0.175; // Furthest possible is 0.166
-    public static final double maximumElevatorHeight = (newRobot)? 0.98 : 0.675; // Furthest possible is 0.99
+    public static final double minimumElevatorHeight = (newRobot)? 0.17 : 0.175; // Furthest possible is 0.166
+    public static final double maximumElevatorHeight = (newRobot)? 0.975 : 0.675; // Furthest possible is 0.99
 
     public static final double coralStationPosition = (newRobot)? 0.535 : 0.398; // Scoring position 0
     public static final double level1ScoringPosition = (newRobot)? 0.405 : 0.316;
