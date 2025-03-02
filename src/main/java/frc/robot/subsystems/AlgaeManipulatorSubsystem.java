@@ -6,18 +6,10 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.ClosedLoopConfig;
-import com.revrobotics.spark.config.SoftLimitConfig;
-import com.revrobotics.spark.config.SparkFlexConfig;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AlgaeConstants;
-import frc.robot.Constants.ElevatorConstants;
 
 public class AlgaeManipulatorSubsystem extends SubsystemBase {
 
@@ -34,33 +26,29 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
   private double pivotSpeed = 0.0;
 
   /** Creates a new AlgaeManipulatorSubSystem. */
-  public AlgaeManipulatorSubsystem() {
-    /*
-     * // Configure pivot motor
-     * pivotMotor.configure(
-     * new SparkFlexConfig()
-     * .apply(
-     * new SoftLimitConfig()
-     * .forwardSoftLimit(AlgaeConstants.maximumPivotPosition)
-     * .forwardSoftLimitEnabled(true)
-     * .reverseSoftLimit(AlgaeConstants.minimumPivotPosition)
-     * .reverseSoftLimitEnabled(true))
-     * .apply(
-     * new ClosedLoopConfig()
-     * .pid(AlgaeConstants.kP,AlgaeConstants.kI,AlgaeConstants.kD))
-     * .idleMode(IdleMode.kBrake),
-     * ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-     */
-  }
+  public AlgaeManipulatorSubsystem() {}
 
+  /**
+   * Sets the speed of the intake motor
+   * @param speed
+   */
   public void setIntakeSpeed(double speed) {
     intakeMotor.set(speed);
   }
 
+  /**
+   * Stops the intake motor
+   */
   public void stopIntake() {
     intakeMotor.stopMotor();
   }
 
+  /**
+   * Sets the speed of the pivot motor
+   * <p>
+   * <b>Don't manully use without first running {@link AlgaeManipulatorSubsystem#disableAutoPivot()} </b>
+   * @param speed
+   */
   public void setPivotSpeed(double speed) {
     if (!(aboveMaxHeight && speed < 0) && !(belowMinHeight && speed > 0)) {
       pivotMotor.set(speed);
@@ -68,11 +56,18 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
     }
   }
 
+  /**
+   * Stops the pivot motor
+   */
   public void stopPivot() {
     pivotMotor.stopMotor();
     pivotSpeed = 0.0;
   }
 
+  /**
+   * Sets the disired height of the pivot
+   * @param height double representing the height
+   */
   public void setDesiredPivotHeight(double height) {
     desiredPivotHeight = 
       Math.min(Math.max(height, 
@@ -80,11 +75,47 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
         AlgaeConstants.maximumPivotPosition);
   }
 
+  /**
+   * Sets the disired height of the pivot
+   * uses enum {@link AP} for setting the position
+   * @param ap the Algae Position
+   */
+  public void setDesiredPivotHeight(AP ap) {
+    switch (ap) {
+      case intaking:
+        desiredPivotHeight = AlgaeConstants.intakeHeight;
+        break;
+
+      case transit:
+        desiredPivotHeight = AlgaeConstants.transitHeight;
+        break;
+
+      case minimum:
+        desiredPivotHeight = AlgaeConstants.minimumPivotPosition;
+        break;
+
+      case maximum:
+        desiredPivotHeight = AlgaeConstants.maximumPivotPosition;
+        break;
+    
+      default:
+        desiredPivotHeight = null;
+        break;
+    };
+  }
+
+  /**
+   * Disables auto pivot movment and stops motor
+   */
   public void disableAutoPivot() {
     desiredPivotHeight = null;
     stopPivot();
   }
 
+  /**
+   * The absolute encoder reading of the pivot motor
+   * @return double representing position
+   */
   public double getPivotHeight() {
     return pivotEncoder.getPosition();
   }
