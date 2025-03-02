@@ -54,21 +54,24 @@ public class DriveSubsystem extends SubsystemBase {
   // with vision (where the cameras think we are) and the gyro (which way we're
   // facing)
   // to come up with a single "best guess" of our position on the field.
-  private final PoseEstimatorSubsystem poseEstimatorSubsystem = new PoseEstimatorSubsystem(new Pose2d());
+  private final PoseEstimatorSubsystem poseEstimatorSubsystem;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-
+    poseEstimatorSubsystem = new PoseEstimatorSubsystem(new Pose2d( new Translation2d(), pigeon.getRotation2d()));
     zeroHeading(); // Reset the gyro so we start facing 'forward' as zero degrees.
-
-    RobotConfig config = new RobotConfig(24.13, 6.883,
-        new ModuleConfig(0.0362,
-            4.46, 1.2, DCMotor.getNeoVortex(4),
-            60.0, 4),
-        new Translation2d[] { new Translation2d(0.286, 0.286), new Translation2d(0.286, -0.286),
-            new Translation2d(-0.286, 0.286), new Translation2d(-0.286, -0.286) });
+    RobotConfig config = null;
+    /*
+     * RobotConfig config = new RobotConfig(24.13, 6.883,
+     * new ModuleConfig(0.0362,
+     * 4.46, 1.2, DCMotor.getNeoVortex(4),
+     * 60.0, 4),
+     * new Translation2d[] { new Translation2d(0.286, 0.286), new
+     * Translation2d(0.286, -0.286),
+     * new Translation2d(-0.286, 0.286), new Translation2d(-0.286, -0.286) });
+     */
     try {
-      // config = RobotConfig.fromGUISettings();
+      config = RobotConfig.fromGUISettings();
     } catch (Exception e) {
       // Handle exception as needed
       e.printStackTrace();
@@ -157,7 +160,7 @@ public class DriveSubsystem extends SubsystemBase {
     double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = rot * DriveConstants.kMaxAngularSpeed;
-    //TODO: FIX TO USE TO ROBOT RELATIVE SPEEDS
+    // TODO: FIX TO USE TO ROBOT RELATIVE SPEEDS
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
