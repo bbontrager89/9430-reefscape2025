@@ -5,8 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CoralManipulatorConstants;
 import frc.robot.Constants.ElevatorConstants;
@@ -31,14 +34,19 @@ import frc.utils.ControllerUtils.POV;
 import frc.utils.ControllerUtils;
 import frc.utils.ControllerUtils.AXIS;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 /**
- * This class is where the bulk of the robot should be declared.  Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls).  Instead, the structure of the robot
- * (including subsystems, commands, and button mappings) should be declared here.
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot
+ * (including subsystems, commands, and button mappings) should be declared
+ * here.
  */
 public class RobotContainer {
         // The robot's subsystems
@@ -50,13 +58,13 @@ public class RobotContainer {
 
         private AlgaeManipulatorSubsystem algaeManipulatorSubsystem = new AlgaeManipulatorSubsystem();
 
+        private final SendableChooser<Command> autoChooser;
 
         // The driver's controller
         CommandXboxController c_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
         // The operator's controller
         CommandXboxController c_operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
-
 
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -67,7 +75,11 @@ public class RobotContainer {
 
                 // Configure the button bindings
                 configureButtonBindings();
+                
+                autoChooser = AutoBuilder.buildAutoChooser("2 Coral Auto "
+                                + (DriverStation.getAlliance().get() == Alliance.Blue ? "Blue" : "Red"));
 
+                SmartDashboard.putData("Auto Chooser", autoChooser);
                 // Configure default commands
                 m_robotDrive.setDefaultCommand(
                                 // The left stick controls translation of the robot.
@@ -82,22 +94,69 @@ public class RobotContainer {
                                                                                 OIConstants.kDriveDeadband),
                                                                 true),
                                                 m_robotDrive));
+
         }
 
-        /** Configures NamedCommands for pathplanner  */
+        /** Configures NamedCommands for pathplanner */
         private void configureNamedCommands() {
-                NamedCommands.registerCommand("Score LP2", 
-                new DoScorePositionCommand(
-                        elevatorSubsystem, 
-                        coralManipulatorSubsystem, 
-                        m_robotDrive,
-                        2, 
-                        OIConstants.leftScoringOffset, 
-                        OIConstants.scoringDistanceRight, 
-                        CoralManipulatorConstants.levelTwoPivotPosition));
-                NamedCommands.registerCommand("Elevator to SP1", new MoveElevator(elevatorSubsystem, 1));
+
+                // Register Intake Coral Station
+                NamedCommands.registerCommand("Intake Coral Station",
+                                new DoIntakeCoralFromStationCommand(
+                                                elevatorSubsystem,
+                                                coralManipulatorSubsystem,
+                                                m_robotDrive));
+                // Register Intake Coral Station
+                NamedCommands.registerCommand("Transit Mode",
+                                new TransitModeCommand(
+                                                elevatorSubsystem,
+                                                coralManipulatorSubsystem));
+                                                
+                // Register Score LP2 Left
+                NamedCommands.registerCommand("Score LP2 Left",
+                                new DoScorePositionCommand(
+                                                elevatorSubsystem,
+                                                coralManipulatorSubsystem,
+                                                m_robotDrive,
+                                                2, // Level 2 scoring position
+                                                OIConstants.leftScoringOffset,
+                                                OIConstants.scoringDistanceLeft,
+                                                CoralManipulatorConstants.levelTwoPivotPosition));
+
+                // Register Score LP3 Left
+                NamedCommands.registerCommand("Score LP3 Left",
+                                new DoScorePositionCommand(
+                                                elevatorSubsystem,
+                                                coralManipulatorSubsystem,
+                                                m_robotDrive,
+                                                3, // Level 3 scoring position
+                                                OIConstants.leftScoringOffset,
+                                                OIConstants.scoringDistanceLeft,
+                                                CoralManipulatorConstants.levelThreePivotPosition));
+
+                // Register Score LP2 Right
+                NamedCommands.registerCommand("Score LP2 Right",
+                                new DoScorePositionCommand(
+                                                elevatorSubsystem,
+                                                coralManipulatorSubsystem,
+                                                m_robotDrive,
+                                                2, // Level 2 scoring position
+                                                OIConstants.rightScoringOffset,
+                                                OIConstants.scoringDistanceRight,
+                                                CoralManipulatorConstants.levelTwoPivotPosition));
+
+                // Register Score LP3 Right
+                NamedCommands.registerCommand("Score LP3 Right",
+                                new DoScorePositionCommand(
+                                                elevatorSubsystem,
+                                                coralManipulatorSubsystem,
+                                                m_robotDrive,
+                                                3, // Level 3 scoring position
+                                                OIConstants.rightScoringOffset,
+                                                OIConstants.scoringDistanceRight,
+                                                CoralManipulatorConstants.levelThreePivotPosition));
+
         }
-        
 
         /** Represents modes for different controls */
         enum ControlMode {
@@ -106,13 +165,15 @@ public class RobotContainer {
                  * approach automatically after d-pad mapping
                  */
                 Manual,
-                /** Robot automatically scores / intakes coral after
+                /**
+                 * Robot automatically scores / intakes coral after
                  * d-pad mapping
                  */
                 SemiAuto;
 
                 /**
                  * Returns if object is Manual
+                 * 
                  * @return boolean
                  */
                 boolean manual() {
@@ -121,6 +182,7 @@ public class RobotContainer {
 
                 /**
                  * Returns if object is SemiAuto
+                 * 
                  * @return boolean
                  */
                 boolean semiAuto() {
@@ -140,125 +202,137 @@ public class RobotContainer {
 
         /**
          * ~~Use this method to define your button->command mappings. Buttons can be
-         * created by instantiating a {@link edu.wpi.first.wpilibj.GenericHID} 
-         * or one of its subclasses ({@link edu.wpi.first.wpilibj.Joystick} or 
+         * created by instantiating a {@link edu.wpi.first.wpilibj.GenericHID}
+         * or one of its subclasses ({@link edu.wpi.first.wpilibj.Joystick} or
          * {@link XboxController}), and then calling passing it to a
          * {@link JoystickButton}.~~
          * 
          * <p>
-         * Binds Commands to Xbox controller buttons using 
+         * Binds Commands to Xbox controller buttons using
          * {@link CommandXboxController} methods
          * <p>
          * This method should only be run once by the constructer
          */
         private void configureButtonBindings() {
 
-                /* * * * * * * * * * * * * *\
-                 *                         *
+                /*
+                 * * * * * * * * * * * * * *\
+                 * *
                  * OPERATOR BUTTON MAPPING *
-                 *                         *
-                \* * * * * * * * * * * * * */
+                 * *
+                 * \* * * * * * * * * * * * *
+                 */
 
                 // Left Stick Vetical Absolute Value Greater Than Threshold
                 c_operatorController.axisGreaterThan(AXIS.LeftVertical.value, OIConstants.kTriggerThreshold).or(
-                c_operatorController.axisLessThan(AXIS.LeftVertical.value, -OIConstants.kTriggerThreshold))
-                        .whileTrue(new RepeatCommand(new InstantCommand(() -> {
-                                if (activeMode == ControlMode.Manual) {
-                                      elevatorSubsystem.setMotorSpeed(c_operatorController.getLeftY());  
-                                }
-                        }))).onFalse(new InstantCommand(() -> {
-                                elevatorSubsystem.setMotorSpeed(0); 
-                        }));
+                                c_operatorController.axisLessThan(AXIS.LeftVertical.value,
+                                                -OIConstants.kTriggerThreshold))
+                                .whileTrue(new RepeatCommand(new InstantCommand(() -> {
+                                        if (activeMode == ControlMode.Manual) {
+                                                elevatorSubsystem.setMotorSpeed(c_operatorController.getLeftY());
+                                        }
+                                }))).onFalse(new InstantCommand(() -> {
+                                        elevatorSubsystem.setMotorSpeed(0);
+                                }));
 
                 // Left Stick Horizontal Absolute Value Greater Than Threshold
                 c_operatorController.axisGreaterThan(AXIS.LeftHorizontal.value, OIConstants.kTriggerThreshold).or(
-                c_operatorController.axisLessThan(AXIS.LeftHorizontal.value, -OIConstants.kTriggerThreshold))
-                        .whileTrue(new RepeatCommand(new InstantCommand(() -> {
-                                if (activeMode == ControlMode.Manual) {
-                                        
-                                }
-                        }))).onFalse(new InstantCommand(() -> {
+                                c_operatorController.axisLessThan(AXIS.LeftHorizontal.value,
+                                                -OIConstants.kTriggerThreshold))
+                                .whileTrue(new RepeatCommand(new InstantCommand(() -> {
+                                        if (activeMode == ControlMode.Manual) {
 
-                        }));
+                                        }
+                                }))).onFalse(new InstantCommand(() -> {
+
+                                }));
 
                 // Right Stick Vetical Absolute Value Greater Than Threshold
                 c_operatorController.axisGreaterThan(AXIS.RightVertical.value, OIConstants.kTriggerThreshold).or(
-                c_operatorController.axisLessThan(AXIS.RightVertical.value, -OIConstants.kTriggerThreshold))
-                        .whileTrue(new RepeatCommand(new InstantCommand(() -> {
-                                if (activeMode == ControlMode.Manual) {
-                                        coralManipulatorSubsystem.movePivotTo(
-                                                coralManipulatorSubsystem.getPivotMotorPosition() + -0.025 * c_operatorController.getRightY()
-                                        );
-                                }
-                        }))).onFalse(new InstantCommand(() -> {
+                                c_operatorController.axisLessThan(AXIS.RightVertical.value,
+                                                -OIConstants.kTriggerThreshold))
+                                .whileTrue(new RepeatCommand(new InstantCommand(() -> {
+                                        if (activeMode == ControlMode.Manual) {
+                                                coralManipulatorSubsystem.movePivotTo(
+                                                                coralManipulatorSubsystem.getPivotMotorPosition()
+                                                                                + -0.025 * c_operatorController
+                                                                                                .getRightY());
+                                        }
+                                }))).onFalse(new InstantCommand(() -> {
 
-                        }));
+                                }));
 
                 // Right Stick Horizontal Absolute Value Greater Than Threshold
                 c_operatorController.axisGreaterThan(AXIS.RightHorizontal.value, OIConstants.kTriggerThreshold).or(
-                c_operatorController.axisLessThan(AXIS.RightHorizontal.value, -OIConstants.kTriggerThreshold))
-                        .whileTrue(new RepeatCommand(new InstantCommand(() -> {
-                                if (activeMode == ControlMode.Manual) {
-                                        
-                                }
-                        }))).onFalse(new InstantCommand(() -> {
+                                c_operatorController.axisLessThan(AXIS.RightHorizontal.value,
+                                                -OIConstants.kTriggerThreshold))
+                                .whileTrue(new RepeatCommand(new InstantCommand(() -> {
+                                        if (activeMode == ControlMode.Manual) {
 
-                        }));
-                
+                                        }
+                                }))).onFalse(new InstantCommand(() -> {
+
+                                }));
 
                 // Right bumper - Manual mode: Coral manipulator wheels intake
                 c_operatorController.rightBumper()
-                        .onTrue(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.movePivotTo(coralManipulatorSubsystem.getPivotMotorPosition() - 0.05);
-                        }));
+                                .onTrue(new InstantCommand(() -> {
+                                        coralManipulatorSubsystem.movePivotTo(
+                                                        coralManipulatorSubsystem.getPivotMotorPosition() - 0.05);
+                                }));
 
                 // Right trigger -
                 c_operatorController.rightTrigger(OIConstants.kTriggerThreshold)
-                        .whileTrue(new RepeatCommand(new InstantCommand(() -> {
-                                if (!(c_operatorController.getLeftTriggerAxis() > OIConstants.kTriggerThreshold))
-                                        coralManipulatorSubsystem.startIntakeMotor(-1 * c_operatorController.getRightTriggerAxis());
-                                else 
+                                .whileTrue(new RepeatCommand(new InstantCommand(() -> {
+                                        if (!(c_operatorController
+                                                        .getLeftTriggerAxis() > OIConstants.kTriggerThreshold))
+                                                coralManipulatorSubsystem.startIntakeMotor(
+                                                                -1 * c_operatorController.getRightTriggerAxis());
+                                        else
+                                                coralManipulatorSubsystem.stopIntakeMotor();
+                                }))).onFalse(new InstantCommand(() -> {
                                         coralManipulatorSubsystem.stopIntakeMotor();
-                        }))).onFalse(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.stopIntakeMotor();
-                        }));
+                                }));
 
                 // Left bumper - Coral manipulator wheels out
                 c_operatorController.leftBumper()
-                        .onTrue(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.movePivotTo(coralManipulatorSubsystem.getPivotMotorPosition() + 0.05);
-                        }));
+                                .onTrue(new InstantCommand(() -> {
+                                        coralManipulatorSubsystem.movePivotTo(
+                                                        coralManipulatorSubsystem.getPivotMotorPosition() + 0.05);
+                                }));
 
                 // Left trigger -
                 c_operatorController.leftTrigger(OIConstants.kTriggerThreshold)
-                        .whileTrue(new RepeatCommand(new InstantCommand(() -> {
-                                if (!(c_operatorController.getRightTriggerAxis() > OIConstants.kTriggerThreshold))
-                                        coralManipulatorSubsystem.startIntakeMotor(c_operatorController.getLeftTriggerAxis());
-                                else 
+                                .whileTrue(new RepeatCommand(new InstantCommand(() -> {
+                                        if (!(c_operatorController
+                                                        .getRightTriggerAxis() > OIConstants.kTriggerThreshold))
+                                                coralManipulatorSubsystem.startIntakeMotor(
+                                                                c_operatorController.getLeftTriggerAxis());
+                                        else
+                                                coralManipulatorSubsystem.stopIntakeMotor();
+                                }))).onFalse(new InstantCommand(() -> {
                                         coralManipulatorSubsystem.stopIntakeMotor();
-                        }))).onFalse(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.stopIntakeMotor();
-                        }));
+                                }));
 
                 // Y button - Toggle Coral Mode
                 c_operatorController.y()
-                        .whileTrue(new InstantCommand(() -> {
-                                if (c_operatorController.getLeftY() > 0.1)
-                                        elevatorSubsystem.setMotorSpeed(-c_operatorController.getLeftY());
-                                else 
-                                        elevatorSubsystem.setMotorSpeed(0);
+                                .whileTrue(new InstantCommand(() -> {
+                                        if (c_operatorController.getLeftY() > 0.1)
+                                                elevatorSubsystem.setMotorSpeed(-c_operatorController.getLeftY());
+                                        else
+                                                elevatorSubsystem.setMotorSpeed(0);
 
-                        })).onFalse(new InstantCommand(() -> {
-                                elevatorSubsystem.setMotorSpeed(0);
-                        }));
+                                })).onFalse(new InstantCommand(() -> {
+                                        elevatorSubsystem.setMotorSpeed(0);
+                                }));
 
                 // X button - Algae Reef Clear Mode
                 c_operatorController.x()
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 // B button - Algae intake mode
                 c_operatorController.b()
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 // A button - Algae intake mode
                 c_operatorController.a()
@@ -266,313 +340,326 @@ public class RobotContainer {
 
                 // Right Stick button - Transit mode
                 c_operatorController.rightStick()
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 // Left Stick button -
                 c_operatorController.leftStick()
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 // Dpad Up button -
                 c_operatorController.povUp()
-                        .onTrue(new InstantCommand(() -> {
-                                if (operatorPOVRecency != null && 
-                                        operatorPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
-                                        // on Double Press -
-                                        // Coral mode: intake from Coral station
-                                        if (operatorLatestPOVButton == POV.Up) {
-                                                if (activeMode.semiAuto()) {
-                                                        new DoIntakeCoralFromStationCommand(
-                                                                elevatorSubsystem, 
-                                                                coralManipulatorSubsystem, 
-                                                                m_robotDrive)
-                                                        .schedule();
-                                                } else if (activeMode.manual()) {
-                                                        elevatorSubsystem.moveToPosition(ElevatorConstants.coralStationPosition);
-                                                        coralManipulatorSubsystem.movePivotTo(CoralManipulatorConstants.intakePivotPosition);
+                                .onTrue(new InstantCommand(() -> {
+                                        if (operatorPOVRecency != null &&
+                                                        operatorPOVRecency + OIConstants.doublePressBuffer > Timer
+                                                                        .getFPGATimestamp()) {
+                                                // on Double Press -
+                                                // Coral mode: intake from Coral station
+                                                if (operatorLatestPOVButton == POV.Up) {
+                                                        if (activeMode.semiAuto()) {
+                                                                new DoIntakeCoralFromStationCommand(
+                                                                                elevatorSubsystem,
+                                                                                coralManipulatorSubsystem,
+                                                                                m_robotDrive)
+                                                                                .schedule();
+                                                        } else if (activeMode.manual()) {
+                                                                elevatorSubsystem.moveToPosition(
+                                                                                ElevatorConstants.coralStationPosition);
+                                                                coralManipulatorSubsystem.movePivotTo(
+                                                                                CoralManipulatorConstants.intakePivotPosition);
+                                                        }
                                                 }
+                                        } else {
+                                                // on Single Press
                                         }
-                                } else {
-                                        // on Single Press
-                                }
 
-                                operatorPOVRecency = Timer.getFPGATimestamp();
-                                operatorLatestPOVButton = POV.Up;
-                        }));
+                                        operatorPOVRecency = Timer.getFPGATimestamp();
+                                        operatorLatestPOVButton = POV.Up;
+                                }));
 
                 // Dpad Up-Right button -
                 c_operatorController.povUpRight()
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 // Dpad Right button -
                 c_operatorController.povRight()
-                        .onTrue(new InstantCommand(() -> {
-                                if (operatorPOVRecency != null && 
-                                        operatorPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
-                                        // on Double Press -
-                                        // Coral mode: after down press: score L2 right
-                                        // Coral mode: after up press: score L3 right
-                                        if (operatorLatestPOVButton == POV.Down) {
-                                                if (activeMode.semiAuto()) {
-                                                        new DoScorePositionCommand(
-                                                                elevatorSubsystem, 
-                                                                coralManipulatorSubsystem, 
-                                                                m_robotDrive,
-                                                                2, 
-                                                                OIConstants.rightScoringOffset, 
-                                                                OIConstants.scoringDistanceRight, 
-                                                                CoralManipulatorConstants.levelTwoPivotPosition)
-                                                        .schedule();
-                                                } else if (activeMode.manual()) {
-                                                        elevatorSubsystem.moveToScoringPosition(SP.two);
-                                                        coralManipulatorSubsystem.movePivotTo(CoralManipulatorConstants.levelTwoPivotPosition);
+                                .onTrue(new InstantCommand(() -> {
+                                        if (operatorPOVRecency != null &&
+                                                        operatorPOVRecency + OIConstants.doublePressBuffer > Timer
+                                                                        .getFPGATimestamp()) {
+                                                // on Double Press -
+                                                // Coral mode: after down press: score L2 right
+                                                // Coral mode: after up press: score L3 right
+                                                if (operatorLatestPOVButton == POV.Down) {
+                                                        if (activeMode.semiAuto()) {
+                                                                new DoScorePositionCommand(
+                                                                                elevatorSubsystem,
+                                                                                coralManipulatorSubsystem,
+                                                                                m_robotDrive,
+                                                                                2,
+                                                                                OIConstants.rightScoringOffset,
+                                                                                OIConstants.scoringDistanceRight,
+                                                                                CoralManipulatorConstants.levelTwoPivotPosition)
+                                                                                .schedule();
+                                                        } else if (activeMode.manual()) {
+                                                                elevatorSubsystem.moveToScoringPosition(SP.two);
+                                                                coralManipulatorSubsystem.movePivotTo(
+                                                                                CoralManipulatorConstants.levelTwoPivotPosition);
+                                                        }
                                                 }
-                                        }
-                                        if (operatorLatestPOVButton == POV.Up) {
-                                                if (activeMode.semiAuto()) {
-                                                        new DoScorePositionCommand(
-                                                                elevatorSubsystem, 
-                                                                coralManipulatorSubsystem, 
-                                                                m_robotDrive,
-                                                                3, 
-                                                                OIConstants.rightScoringOffset, 
-                                                                OIConstants.scoringDistanceRight, 
-                                                                CoralManipulatorConstants.levelThreePivotPosition)
-                                                        .schedule();
-                                                } else if (activeMode.manual()) {
-                                                        elevatorSubsystem.moveToScoringPosition(SP.three);
-                                                        coralManipulatorSubsystem.movePivotTo(CoralManipulatorConstants.levelThreePivotPosition);
+                                                if (operatorLatestPOVButton == POV.Up) {
+                                                        if (activeMode.semiAuto()) {
+                                                                new DoScorePositionCommand(
+                                                                                elevatorSubsystem,
+                                                                                coralManipulatorSubsystem,
+                                                                                m_robotDrive,
+                                                                                3,
+                                                                                OIConstants.rightScoringOffset,
+                                                                                OIConstants.scoringDistanceRight,
+                                                                                CoralManipulatorConstants.levelThreePivotPosition)
+                                                                                .schedule();
+                                                        } else if (activeMode.manual()) {
+                                                                elevatorSubsystem.moveToScoringPosition(SP.three);
+                                                                coralManipulatorSubsystem.movePivotTo(
+                                                                                CoralManipulatorConstants.levelThreePivotPosition);
+                                                        }
                                                 }
+                                        } else {
+                                                // on Single Press
                                         }
-                                } else {
-                                        // on Single Press
-                                }
 
-                                operatorPOVRecency = Timer.getFPGATimestamp();
-                                operatorLatestPOVButton = POV.Right;
-                        }));
+                                        operatorPOVRecency = Timer.getFPGATimestamp();
+                                        operatorLatestPOVButton = POV.Right;
+                                }));
 
                 // Dpad Down-Right button -
                 c_operatorController.povDownRight()
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 // Dpad Down button -
                 c_operatorController.povDown()
-                        .onTrue(new InstantCommand(() -> {
-                                if (operatorPOVRecency != null && 
-                                        operatorPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
-                                        // on Double Press - Coral mode: after down press: score L1
-                                        if (operatorLatestPOVButton == POV.Down) {
-                                                if (activeMode.semiAuto()) {
-                                                        new DoScorePositionCommand(
-                                                                elevatorSubsystem, 
-                                                                coralManipulatorSubsystem, 
-                                                                m_robotDrive,
-                                                                1, 
-                                                                0.0, 
-                                                                OIConstants.scoringDistanceRight, 
-                                                                CoralManipulatorConstants.levelOnePivotPosition)
-                                                        .schedule();
-                                                } else if (activeMode.manual()) {
-                                                        elevatorSubsystem.moveToScoringPosition(SP.one);
-                                                        coralManipulatorSubsystem.movePivotTo(CoralManipulatorConstants.levelOnePivotPosition);
+                                .onTrue(new InstantCommand(() -> {
+                                        if (operatorPOVRecency != null &&
+                                                        operatorPOVRecency + OIConstants.doublePressBuffer > Timer
+                                                                        .getFPGATimestamp()) {
+                                                // on Double Press - Coral mode: after down press: score L1
+                                                if (operatorLatestPOVButton == POV.Down) {
+                                                        if (activeMode.semiAuto()) {
+                                                                new DoScorePositionCommand(
+                                                                                elevatorSubsystem,
+                                                                                coralManipulatorSubsystem,
+                                                                                m_robotDrive,
+                                                                                1,
+                                                                                0.0,
+                                                                                OIConstants.scoringDistanceRight,
+                                                                                CoralManipulatorConstants.levelOnePivotPosition)
+                                                                                .schedule();
+                                                        } else if (activeMode.manual()) {
+                                                                elevatorSubsystem.moveToScoringPosition(SP.one);
+                                                                coralManipulatorSubsystem.movePivotTo(
+                                                                                CoralManipulatorConstants.levelOnePivotPosition);
+                                                        }
                                                 }
+                                        } else {
+                                                // on Single Press
                                         }
-                                } else {
-                                        // on Single Press
-                                }
 
-                                operatorPOVRecency = Timer.getFPGATimestamp();
-                                operatorLatestPOVButton = POV.Down;
-                        }));
+                                        operatorPOVRecency = Timer.getFPGATimestamp();
+                                        operatorLatestPOVButton = POV.Down;
+                                }));
 
                 // Dpad Down-Left button -
                 c_operatorController.povDownLeft()
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 // Dpad Left button -
                 c_operatorController.povLeft()
-                        .onTrue(new InstantCommand(() -> {
-                                if (operatorPOVRecency != null && 
-                                        operatorPOVRecency + OIConstants.doublePressBuffer > Timer.getFPGATimestamp()) {
-                                        // on Double Press -
-                                        // Coral mode: after down press: score L2 left
-                                        // Coral mode: after up press: score L3 left
-                                        if (operatorLatestPOVButton == POV.Down) {
-                                                if (activeMode.semiAuto()) {
-                                                        new DoScorePositionCommand(
-                                                                elevatorSubsystem, 
-                                                                coralManipulatorSubsystem, 
-                                                                m_robotDrive,
-                                                                2, 
-                                                                OIConstants.leftScoringOffset, 
-                                                                OIConstants.scoringDistanceLeft, 
-                                                                CoralManipulatorConstants.levelTwoPivotPosition)
-                                                        .schedule();
-                                                } else if (activeMode.manual()) {
-                                                        elevatorSubsystem.moveToScoringPosition(SP.two);
-                                                        coralManipulatorSubsystem.movePivotTo(CoralManipulatorConstants.levelTwoPivotPosition);
+                                .onTrue(new InstantCommand(() -> {
+                                        if (operatorPOVRecency != null &&
+                                                        operatorPOVRecency + OIConstants.doublePressBuffer > Timer
+                                                                        .getFPGATimestamp()) {
+                                                // on Double Press -
+                                                // Coral mode: after down press: score L2 left
+                                                // Coral mode: after up press: score L3 left
+                                                if (operatorLatestPOVButton == POV.Down) {
+                                                        if (activeMode.semiAuto()) {
+                                                                new DoScorePositionCommand(
+                                                                                elevatorSubsystem,
+                                                                                coralManipulatorSubsystem,
+                                                                                m_robotDrive,
+                                                                                2,
+                                                                                OIConstants.leftScoringOffset,
+                                                                                OIConstants.scoringDistanceLeft,
+                                                                                CoralManipulatorConstants.levelTwoPivotPosition)
+                                                                                .schedule();
+                                                        } else if (activeMode.manual()) {
+                                                                elevatorSubsystem.moveToScoringPosition(SP.two);
+                                                                coralManipulatorSubsystem.movePivotTo(
+                                                                                CoralManipulatorConstants.levelTwoPivotPosition);
+                                                        }
                                                 }
-                                        }
-                                        if (operatorLatestPOVButton == POV.Up) {
-                                                if (activeMode.semiAuto()) {
-                                                        new DoScorePositionCommand(
-                                                                elevatorSubsystem, 
-                                                                coralManipulatorSubsystem, 
-                                                                m_robotDrive,
-                                                                3, 
-                                                                OIConstants.leftScoringOffset, 
-                                                                OIConstants.scoringDistanceLeft, 
-                                                                CoralManipulatorConstants.levelThreePivotPosition)
-                                                        .schedule();
-                                                } else if (activeMode.manual()) {
-                                                        elevatorSubsystem.moveToScoringPosition(SP.three);
-                                                        coralManipulatorSubsystem.movePivotTo(CoralManipulatorConstants.levelThreePivotPosition);
+                                                if (operatorLatestPOVButton == POV.Up) {
+                                                        if (activeMode.semiAuto()) {
+                                                                new DoScorePositionCommand(
+                                                                                elevatorSubsystem,
+                                                                                coralManipulatorSubsystem,
+                                                                                m_robotDrive,
+                                                                                3,
+                                                                                OIConstants.leftScoringOffset,
+                                                                                OIConstants.scoringDistanceLeft,
+                                                                                CoralManipulatorConstants.levelThreePivotPosition)
+                                                                                .schedule();
+                                                        } else if (activeMode.manual()) {
+                                                                elevatorSubsystem.moveToScoringPosition(SP.three);
+                                                                coralManipulatorSubsystem.movePivotTo(
+                                                                                CoralManipulatorConstants.levelThreePivotPosition);
+                                                        }
                                                 }
+                                        } else {
+                                                // on Single Press
                                         }
-                                } else {
-                                        // on Single Press
-                                }
 
-                                operatorPOVRecency = Timer.getFPGATimestamp();
-                                operatorLatestPOVButton = POV.Left;
-                        }));
+                                        operatorPOVRecency = Timer.getFPGATimestamp();
+                                        operatorLatestPOVButton = POV.Left;
+                                }));
 
                 // Dpad Up-Left button -
                 c_operatorController.povUpLeft()
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 SmartDashboard.putBoolean("Manual Mode", activeMode.manual());
 
                 // Start Button button - Manual mode on 0.5 second hold
                 c_operatorController.start()
-                        .onTrue(new InstantCommand(() -> {
-                                operatorStartButtonTimestamp = Timer.getFPGATimestamp();
+                                .onTrue(new InstantCommand(() -> {
+                                        operatorStartButtonTimestamp = Timer.getFPGATimestamp();
 
-                        })).onFalse(new InstantCommand(() -> {
-                                if (Timer.getFPGATimestamp() > operatorStartButtonTimestamp + 0.5) {
+                                })).onFalse(new InstantCommand(() -> {
+                                        if (Timer.getFPGATimestamp() > operatorStartButtonTimestamp + 0.5) {
 
-                                        activeMode = (activeMode == ControlMode.SemiAuto) ? 
-                                                ControlMode.Manual : ControlMode.SemiAuto;
-                                                
-                                        ControllerUtils.Rumble(c_operatorController.getHID(), 0.5);
-                                        SmartDashboard.putBoolean("Manual Mode", activeMode.manual());
-                                        operatorStartButtonTimestamp = Double.NEGATIVE_INFINITY;
+                                                activeMode = (activeMode == ControlMode.SemiAuto) ? ControlMode.Manual
+                                                                : ControlMode.SemiAuto;
 
-                                }
+                                                ControllerUtils.Rumble(c_operatorController.getHID(), 0.5);
+                                                SmartDashboard.putBoolean("Manual Mode", activeMode.manual());
+                                                operatorStartButtonTimestamp = Double.NEGATIVE_INFINITY;
 
-                        }));
+                                        }
+
+                                }));
 
                 // Back Button button - Cancel all actions
                 c_operatorController.back()
-                        .onTrue(new InstantCommand(() -> {
-                                CommandScheduler.getInstance().cancelAll();
-                                elevatorSubsystem.turnOffAutoMode();
-                                coralManipulatorSubsystem.stopIntakeMotor();
-                        }));
+                                .onTrue(new InstantCommand(() -> {
+                                        CommandScheduler.getInstance().cancelAll();
+                                        elevatorSubsystem.turnOffAutoMode();
+                                        coralManipulatorSubsystem.stopIntakeMotor();
+                                }));
 
-                /* * * * * * * * * * * * *\
-                 *                       *
+                /*
+                 * * * * * * * * * * * * *\
+                 * *
                  * DRIVER BUTTON MAPPING *
-                 *                       *
-                \* * * * * * * * * * * * */
+                 * *
+                 * \* * * * * * * * * * * *
+                 */
 
                 // Right bumper -
                 c_driverController.rightBumper()
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 // Right trigger -
                 c_driverController.rightTrigger(OIConstants.kTriggerThreshold)
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 // Left bumper -
                 c_driverController.leftBumper()
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 // Left trigger -
                 c_driverController.leftTrigger(OIConstants.kTriggerThreshold)
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 // Y button -
                 c_driverController.y()
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 // X button -
                 c_driverController.x()
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 // B button -
                 c_driverController.b()
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 // A button -
                 c_driverController.a()
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 // Right Stick button -
                 c_driverController.rightStick()
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 // Left Stick button -
                 c_driverController.leftStick()
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 // Dpad Up button -
                 c_driverController.povUp()
-                        .onTrue(new InstantCommand(() -> {
-                                driverPOVRecency = Timer.getFPGATimestamp();
-                                driverLatestPOVButton = POV.Up;
-                        }));
+                                .onTrue(new InstantCommand(() -> {
+                                        driverPOVRecency = Timer.getFPGATimestamp();
+                                        driverLatestPOVButton = POV.Up;
+                                }));
 
                 // Dpad Up-Right button -
                 c_driverController.povUpRight()
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 // Dpad Right button -
                 c_driverController.povRight()
-                        .onTrue(new InstantCommand(() -> {
-                                driverPOVRecency = Timer.getFPGATimestamp();
-                                driverLatestPOVButton = POV.Right;
-                        }));
+                                .onTrue(new InstantCommand(() -> {
+                                        driverPOVRecency = Timer.getFPGATimestamp();
+                                        driverLatestPOVButton = POV.Right;
+                                }));
 
                 // Dpad Down-Right button -
                 c_driverController.povDownRight()
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 // Dpad Down button -
                 c_driverController.povDown()
-                        .onTrue(new InstantCommand(() -> {
-                                driverPOVRecency = Timer.getFPGATimestamp();
-                                driverLatestPOVButton = POV.Down;
-                        }));
+                                .onTrue(new InstantCommand(() -> {
+                                        driverPOVRecency = Timer.getFPGATimestamp();
+                                        driverLatestPOVButton = POV.Down;
+                                }));
 
                 // Dpad Down-Left button -
                 c_driverController.povDownLeft()
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 // Dpad Left button -
                 c_driverController.povLeft()
-                        .onTrue(new InstantCommand(() -> {
-                                driverPOVRecency = Timer.getFPGATimestamp();
-                                driverLatestPOVButton = POV.Left;
-                        }));
+                                .onTrue(new InstantCommand(() -> {
+                                        driverPOVRecency = Timer.getFPGATimestamp();
+                                        driverLatestPOVButton = POV.Left;
+                                }));
 
                 // Dpad Up-Left button -
                 c_driverController.povUpLeft()
-                        .onTrue(new InstantCommand());
+                                .onTrue(new InstantCommand());
 
                 // Start Button button -
                 c_driverController.start()
-                        .onTrue(new InstantCommand(() -> {
-                                m_robotDrive.zeroHeading();
-                        }));
+                                .onTrue(new InstantCommand(() -> {
+                                        m_robotDrive.zeroHeading();
+                                }));
 
                 // Back Button button -
                 c_driverController.back()
-                        .onTrue(new InstantCommand(() -> {
-                                CommandScheduler.getInstance().cancelAll();
-                                elevatorSubsystem.turnOffAutoMode();
-                                coralManipulatorSubsystem.stopIntakeMotor();
-                        }));
+                                .onTrue(new InstantCommand(() -> {
+                                        CommandScheduler.getInstance().cancelAll();
+                                        elevatorSubsystem.turnOffAutoMode();
+                                        coralManipulatorSubsystem.stopIntakeMotor();
+                                }));
 
         }
 
@@ -582,6 +669,6 @@ public class RobotContainer {
          * @return the command to run in autonomous
          */
         public Command getAutonomousCommand() {
-                return new PathPlannerAuto("Default Auto");
+                return autoChooser.getSelected();
         }
 }
