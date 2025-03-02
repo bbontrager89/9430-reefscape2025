@@ -90,7 +90,7 @@ public class RobotContainer {
                         m_robotDrive,
                         2, 
                         OIConstants.leftScoringOffset, 
-                        OIConstants.scoringDistance, 
+                        OIConstants.scoringDistanceRight, 
                         CoralManipulatorConstants.levelTwoPivotPosition));
                 NamedCommands.registerCommand("Elevator to SP1", new MoveElevator(elevatorSubsystem, 1));
         }
@@ -131,7 +131,7 @@ public class RobotContainer {
         Double operatorPOVRecency = null;
         POV operatorLatestPOVButton = POV.None;
 
-        ControlMode activeMode = ControlMode.Manual;
+        ControlMode activeMode = ControlMode.SemiAuto;
 
         double operatorStartButtonTimestamp = Double.NEGATIVE_INFINITY;
 
@@ -316,7 +316,7 @@ public class RobotContainer {
                                                                 m_robotDrive,
                                                                 2, 
                                                                 OIConstants.rightScoringOffset, 
-                                                                OIConstants.scoringDistance, 
+                                                                OIConstants.scoringDistanceRight, 
                                                                 CoralManipulatorConstants.levelTwoPivotPosition)
                                                         .schedule();
                                                 } else if (activeMode.manual()) {
@@ -332,7 +332,7 @@ public class RobotContainer {
                                                                 m_robotDrive,
                                                                 3, 
                                                                 OIConstants.rightScoringOffset, 
-                                                                OIConstants.scoringDistance, 
+                                                                OIConstants.scoringDistanceRight, 
                                                                 CoralManipulatorConstants.levelThreePivotPosition)
                                                         .schedule();
                                                 } else if (activeMode.manual()) {
@@ -366,7 +366,7 @@ public class RobotContainer {
                                                                 m_robotDrive,
                                                                 1, 
                                                                 0.0, 
-                                                                OIConstants.scoringDistance, 
+                                                                OIConstants.scoringDistanceRight, 
                                                                 CoralManipulatorConstants.levelOnePivotPosition)
                                                         .schedule();
                                                 } else if (activeMode.manual()) {
@@ -402,7 +402,7 @@ public class RobotContainer {
                                                                 m_robotDrive,
                                                                 2, 
                                                                 OIConstants.leftScoringOffset, 
-                                                                OIConstants.scoringDistance, 
+                                                                OIConstants.scoringDistanceLeft, 
                                                                 CoralManipulatorConstants.levelTwoPivotPosition)
                                                         .schedule();
                                                 } else if (activeMode.manual()) {
@@ -418,7 +418,7 @@ public class RobotContainer {
                                                                 m_robotDrive,
                                                                 3, 
                                                                 OIConstants.leftScoringOffset, 
-                                                                OIConstants.scoringDistance, 
+                                                                OIConstants.scoringDistanceLeft, 
                                                                 CoralManipulatorConstants.levelThreePivotPosition)
                                                         .schedule();
                                                 } else if (activeMode.manual()) {
