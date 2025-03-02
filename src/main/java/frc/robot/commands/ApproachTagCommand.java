@@ -5,6 +5,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 
+
 public class ApproachTagCommand extends Command {
     private final DriveSubsystem drive;
     private final double desiredDistance;
@@ -13,17 +14,17 @@ public class ApproachTagCommand extends Command {
     private final PIDController rotationController;
 
     // Tolerances and speed limits
-    private static final double DISTANCE_TOLERANCE_METERS = 0.015; // 3cm
-    private static final double LATERAL_TOLERANCE_METERS = 0.015; // 3cm
-    private static final double ROTATION_TOLERANCE_DEG = 2.0; // degrees tolerance for rotation error
-    private static final double MAX_FORWARD_SPEED = 0.5; // m/s
+    private static final double DISTANCE_TOLERANCE_METERS = 0.015; // 1.5cm tolerance (example)
+    private static final double LATERAL_TOLERANCE_METERS = 0.015; // 1.5cm
+    private static final double ROTATION_TOLERANCE_DEG = 2.0; // degrees tolerance
+    private static final double MAX_FORWARD_SPEED = 1.5; // m/s
     private static final double MAX_LATERAL_SPEED = 1.0; // m/s
     private static final double MAX_ROTATION_SPEED = 0.3; // rad/s
     private static final double LOST_TAG_TIMEOUT = 0.5; // seconds
 
     // Camera indices matching those in PoseEstimatorSubsystem
-    private static final int LEFT_CAMERA_INDEX = 2; // Matches index in PoseEstimatorSubsystem
-    private static final int RIGHT_CAMERA_INDEX = 1; // Matches index in PoseEstimatorSubsystem
+    private static final int LEFT_CAMERA_INDEX = 2;  // for intake mode when target is right-side
+    private static final int RIGHT_CAMERA_INDEX = 1; // for intake mode when target is left-side
 
     private double lastTagTimestamp = 0;
     // Variables to lock in the initial lateral offset when the tag is first seen
@@ -31,7 +32,8 @@ public class ApproachTagCommand extends Command {
     private double desiredLateralOffset = 0;
     private boolean isIntake = false;
     
-    // Camera selection for intake mode
+    // Camera selection for both intake and non-intake modes.
+    // In non-intake mode, front camera indices are used (0 for right side, 3 for left side)
     private int selectedCameraIndex = -1; // Default to no specific camera
 
     public ApproachTagCommand(DriveSubsystem drive, double desiredDistance, double desiredLateralOffset, boolean isIntake) {
@@ -46,11 +48,11 @@ public class ApproachTagCommand extends Command {
         distanceController.setTolerance(DISTANCE_TOLERANCE_METERS);
 
         // PID for lateral offset correction
-        lateralController = new PIDController(2.5, 0.0, 0.005);
+        lateralController = new PIDController(2.5, 0.0, 0.05);
         lateralController.setTolerance(LATERAL_TOLERANCE_METERS);
 
         // PID for rotation to face the desired offset position
-        rotationController = new PIDController(0.1, 0.0, 0.005);
+        rotationController = new PIDController(0.4, 0.0, 0.005);
         rotationController.setTolerance(ROTATION_TOLERANCE_DEG);
         rotationController.enableContinuousInput(-180, 180); // angle wrap-around
     }
@@ -62,22 +64,32 @@ public class ApproachTagCommand extends Command {
         rotationController.reset();
         lateralOffsetInitialized = false;
         
-        // If in intake mode, select the appropriate camera based on lateral offset
+        // Select the camera based on mode and desired lateral offset
         if (isIntake) {
-            // If lateral offset is positive (to the right), use left camera (index 2)
-            // If lateral offset is negative (to the left), use right camera (index 1)
+            // In intake mode: use the dedicated intake camera selection.
+            // Positive offset means target is to the right so use left intake camera.
             if (desiredLateralOffset > 0) {
                 selectedCameraIndex = LEFT_CAMERA_INDEX;
-                System.out.println("Intake mode: Using left camera for right-side approach");
+                System.out.println("Intake mode: Using left camera (index " + LEFT_CAMERA_INDEX + ") for right-side approach");
             } else {
                 selectedCameraIndex = RIGHT_CAMERA_INDEX;
-                System.out.println("Intake mode: Using right camera for left-side approach");
+                System.out.println("Intake mode: Using right camera (index " + RIGHT_CAMERA_INDEX + ") for left-side approach");
             }
         } else {
-            selectedCameraIndex = -1; // No specific camera in non-intake mode
+            // In non-intake mode: if there is a lateral offset, use a front camera.
+            if (desiredLateralOffset > 0) {
+                selectedCameraIndex = 0;  // Front camera for right-side approach
+                System.out.println("Non-intake mode: Using front camera index 0 for right-side approach");
+            } else if (desiredLateralOffset < 0) {
+                selectedCameraIndex = 3;  // Front camera for left-side approach
+                System.out.println("Non-intake mode: Using front camera index 3 for left-side approach");
+            } else {
+                selectedCameraIndex = -1; // No specific camera selected; use any available detection
+                System.out.println("Non-intake mode: No lateral offset specified, using any available camera");
+            }
         }
         
-        System.out.printf("ApproachTagCommand initialized - Target distance: %.2f meters, Lateral offset: %.2f meters, Intake mode: %b%n", 
+        System.out.printf("ApproachTagCommand initialized - Target distance: %.2f m, Lateral offset: %.2f m, Intake mode: %b%n", 
             desiredDistance, desiredLateralOffset, isIntake);
     }
 
@@ -86,20 +98,18 @@ public class ApproachTagCommand extends Command {
         var poseEstimator = drive.getPoseEstimatorSubsystem();
         boolean validTagDetection = false;
         
-        // Handle tag detection based on mode
-        if (isIntake && selectedCameraIndex != -1) {
-            // In intake mode, only use the selected camera
+        // Use selected camera if one is set (applies to both intake and non-intake modes)
+        if (selectedCameraIndex != -1) {
             int detectedTag = poseEstimator.getLastTagDetectedByCamera(selectedCameraIndex);
             double lastDetectionTime = poseEstimator.getLastCameraDetectionTimestamp(selectedCameraIndex);
             double currentTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
             
-            // Check if we have a recent detection from the selected camera
             if (detectedTag != -1 && (currentTime - lastDetectionTime) < LOST_TAG_TIMEOUT) {
                 validTagDetection = true;
                 lastTagTimestamp = lastDetectionTime;
             }
         } else {
-            // In standard mode, use any camera
+            // Otherwise, use any camera detection available.
             if (poseEstimator.getLastDetectedTagId() != -1) {
                 validTagDetection = true;
                 lastTagTimestamp = poseEstimator.getLastDetectionTimestamp();
@@ -111,19 +121,17 @@ public class ApproachTagCommand extends Command {
             double currentLateralOffset = poseEstimator.getLateralOffsetToTag();
             double currentRotation = poseEstimator.getTagOrientationErrorDeg();
 
-            // Compute forward speed correction (positive drives forward)
+            // Compute corrections using PID controllers
             double forwardSpeed = -distanceController.calculate(currentDistance, desiredDistance);
-            // Compute lateral correction to maintain the locked lateral offset
             double lateralSpeed = -lateralController.calculate(currentLateralOffset, desiredLateralOffset);
-
             double rotationSpeed = -rotationController.calculate(currentRotation, 180);
 
-            // Clamp each speed to its maximum limit
+            // Clamp speeds to maximum limits
             forwardSpeed = Math.min(Math.max(forwardSpeed, -MAX_FORWARD_SPEED), MAX_FORWARD_SPEED);
             lateralSpeed = Math.min(Math.max(lateralSpeed, -MAX_LATERAL_SPEED), MAX_LATERAL_SPEED);
             rotationSpeed = Math.min(Math.max(rotationSpeed, -MAX_ROTATION_SPEED), MAX_ROTATION_SPEED);
             
-            // Drive the robot with the computed speeds
+            // Drive the robot with computed speeds
             drive.driveRobotRelative(new ChassisSpeeds(forwardSpeed, lateralSpeed, rotationSpeed));
         } else {
             // No valid tag detected; stop the robot
@@ -146,8 +154,7 @@ public class ApproachTagCommand extends Command {
         double currentLateralOffset = 0;
         double currentRotation = 0;
         
-        // Check for valid tag based on mode
-        if (isIntake && selectedCameraIndex != -1) {
+        if (selectedCameraIndex != -1) {
             int detectedTag = poseEstimator.getLastTagDetectedByCamera(selectedCameraIndex);
             double lastDetectionTime = poseEstimator.getLastCameraDetectionTimestamp(selectedCameraIndex);
             
@@ -167,10 +174,9 @@ public class ApproachTagCommand extends Command {
         }
 
         if (validTagDetection) {
-            // Check distance and lateral offset are within tolerance
+            // Check if the distance, lateral offset, and rotation are within tolerance.
             boolean distanceOk = Math.abs(currentDistance - desiredDistance) < DISTANCE_TOLERANCE_METERS;
             boolean lateralOk = Math.abs(currentLateralOffset - desiredLateralOffset) < LATERAL_TOLERANCE_METERS;
-            
             double rotationError = (currentRotation - 180);
             boolean rotationOk = Math.abs(rotationError) < ROTATION_TOLERANCE_DEG;
 
