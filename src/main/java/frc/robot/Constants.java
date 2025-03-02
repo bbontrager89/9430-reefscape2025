@@ -147,7 +147,7 @@ public final class Constants {
     public static final double positionTolerence = 0.01;
 
 
-    public static final double minimumElevatorHeight = (newRobot)? 0.17 : 0.175; // Furthest possible is 0.166
+    public static final double minimumElevatorHeight = (newRobot)? 0.165 : 0.175; // Furthest possible is 0.164
     public static final double maximumElevatorHeight = (newRobot)? 0.975 : 0.675; // Furthest possible is 0.99
 
     public static final double coralStationPosition = (newRobot)? 0.535 : 0.405; // Scoring position 0
