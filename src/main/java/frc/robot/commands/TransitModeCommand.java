@@ -20,6 +20,16 @@ public class TransitModeCommand extends Command {
   AlgaeManipulatorSubsystem algae;
 
   /** Creates a new TransitModeCommand. */
+  public TransitModeCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coral) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(elevator, coral);
+
+    this.elevator = elevator;
+    this.coral = coral;
+    this.algae = null;
+  }
+
+  /** Creates a new TransitModeCommand. */
   public TransitModeCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coral, AlgaeManipulatorSubsystem algae ) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator, coral);
@@ -38,7 +48,8 @@ public class TransitModeCommand extends Command {
   public void execute() {
     elevator.moveToScoringPosition(SP.min); 
     coral.movePivotTo(CoralManipulatorConstants.maximumPivotPosition);
-    algae.setDesiredPivotHeight(AP.transit);
+    if (algae != null)
+      algae.setDesiredPivotHeight(AP.transit);
   }
 
   // Called once the command ends or is interrupted.
