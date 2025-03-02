@@ -36,20 +36,21 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
   /** Creates a new AlgaeManipulatorSubSystem. */
   public AlgaeManipulatorSubsystem() {
     /*
-    // Configure pivot motor
-    pivotMotor.configure(
-      new SparkFlexConfig()
-      .apply(
-        new SoftLimitConfig()
-          .forwardSoftLimit(AlgaeConstants.maximumPivotPosition)
-          .forwardSoftLimitEnabled(true)
-          .reverseSoftLimit(AlgaeConstants.minimumPivotPosition)
-          .reverseSoftLimitEnabled(true))
-      .apply(
-        new ClosedLoopConfig()
-          .pid(AlgaeConstants.kP,AlgaeConstants.kI,AlgaeConstants.kD))
-      .idleMode(IdleMode.kBrake), 
-    ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); */
+     * // Configure pivot motor
+     * pivotMotor.configure(
+     * new SparkFlexConfig()
+     * .apply(
+     * new SoftLimitConfig()
+     * .forwardSoftLimit(AlgaeConstants.maximumPivotPosition)
+     * .forwardSoftLimitEnabled(true)
+     * .reverseSoftLimit(AlgaeConstants.minimumPivotPosition)
+     * .reverseSoftLimitEnabled(true))
+     * .apply(
+     * new ClosedLoopConfig()
+     * .pid(AlgaeConstants.kP,AlgaeConstants.kI,AlgaeConstants.kD))
+     * .idleMode(IdleMode.kBrake),
+     * ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+     */
   }
 
   public void setIntakeSpeed(double speed) {
@@ -73,11 +74,15 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
   }
 
   public void setDesiredPivotHeight(double height) {
-    desiredPivotHeight = height;
+    desiredPivotHeight = 
+      Math.min(Math.max(height, 
+        AlgaeConstants.minimumPivotPosition),
+        AlgaeConstants.maximumPivotPosition);
   }
 
   public void disableAutoPivot() {
     desiredPivotHeight = null;
+    stopPivot();
   }
 
   public double getPivotHeight() {
@@ -95,7 +100,7 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
       }
 
       aboveMaxHeight = true;
-      
+
     } else {
       aboveMaxHeight = false;
     }
@@ -127,7 +132,7 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Algae Pivot Error", pivotError);
 
       // Run or don't run
-      if (Math.abs(pivotError) < AlgaeConstants.pivotTolerence) {
+      if (Math.abs(pivotError) < AlgaeConstants.pivotTolerence || Math.abs(autoSpeed) < 0.001) {
         disableAutoPivot();
       } else {
         setPivotSpeed(autoSpeed);
