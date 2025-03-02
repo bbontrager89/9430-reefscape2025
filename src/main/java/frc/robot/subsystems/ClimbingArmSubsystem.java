@@ -27,6 +27,14 @@ public class ClimbingArmSubsystem extends SubsystemBase {
     motor2.set(speed);
   }
 
+  /**
+   * Stops the climbing arm
+   */
+  public void stopMotors() {
+    motor1.stopMotor();
+    motor2.stopMotor();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
