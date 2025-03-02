@@ -7,8 +7,6 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -44,7 +42,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     private static final String[] CAMERA_NAMES = {
         "Arducam_3",  // index 0 => front
         "Arducam_1",  // index 1 => left
-        "Arducam_2"   // index 2 => right
+        "Arducam_2",   // index 2 => right
+        "Arducam_4"  // index 4 => front
     };
     
     // Camera indices for side cameras used in intake operations
@@ -57,12 +56,11 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
      * Rotation3d(roll, pitch, yaw) in radians.
      */
     private final Transform3d[] robotToCams = {
-        // Front camera
+        // Front Left camera
         new Transform3d(
-            new Translation3d(0.279, 0.0, 0.1096),
+            new Translation3d(0.288, -0.1397, 0.119),
             new Rotation3d(0.0, -0.2617, 0.0)
         ),
-        
        
     // Right camera (index 1)
     new Transform3d(
@@ -74,7 +72,12 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     new Transform3d(
         new Translation3d(-0.196, 0.26, 0.140),
         new Rotation3d(0, -1.16, 0.434)   // Adjust yaw as needed
-    )
+    ),
+    //Front Right Camera
+    new Transform3d(
+        new Translation3d(0.288, 0.1397, 0.119),
+        new Rotation3d(0.0, -0.2617, 0.0)
+    ), 
     };
 
     // For AlignCommand
