@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.Constants.AlgaeConstants;
 import frc.robot.Constants.CoralManipulatorConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DoScorePositionCommand;
@@ -483,15 +484,21 @@ public class RobotContainer {
 
                 // Y button -
                 c_driverController.y()
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand(() -> {
+                                algaeManipulatorSubsystem.setDesiredPivotHeight(AlgaeConstants.transitHeight);
+                        }));
 
                 // X button -
                 c_driverController.x()
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand(() -> {
+                                algaeManipulatorSubsystem.setDesiredPivotHeight(AlgaeConstants.intakeHeight);
+                        }));
 
                 // B button -
                 c_driverController.b()
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand(() -> {
+                                algaeManipulatorSubsystem.disableAutoPivot();
+                        }));
 
                 // A button -
                 c_driverController.a()
