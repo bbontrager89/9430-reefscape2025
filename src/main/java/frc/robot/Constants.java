@@ -103,15 +103,16 @@ public final class Constants {
 
     public static final double kTriggerThreshold = 0.1;
 
-    public static final double scoringDistance = 0.395;
-    public static final double coralIntakeDistance = 0.395;
+    public static final double scoringDistanceRight = 0.62;
+    public static final double scoringDistanceLeft = 0.54;
+    public static final double coralIntakeDistance = 0.375;
 
-    public static final double leftScoringOffset = -0.165;
+    public static final double leftScoringOffset = -0.164;
     public static final double rightScoringOffset = 0.165;
 
     // TODO tune these offsets to align with the grooves on the intake station
-    public static final double intakePositionLeft = -0.58;
-    public static final double intakePositionRight = 0.3;
+    public static final double intakePositionLeft = -0.5;
+    public static final double intakePositionRight = 0.5;
 
     public static final double doublePressBuffer = 0.5;
   }
@@ -182,8 +183,36 @@ public final class Constants {
 
     public static final double intakePivotPosition = 0.375;
     public static final double levelOnePivotPosition = 0.3;
-    public static final double levelTwoPivotPosition = 0.091; // Motor Off: low hard limit
-    public static final double levelThreePivotPosition = 0.091;
+    public static final double levelTwoPivotPosition = 0.24; // Motor Off: low hard limit
+    public static final double levelThreePivotPosition = 0.24;
+  }
+  
+  public static final class ClimbingArmConstants {
+
+    public static final int motor1CanId = 51;
+    public static final int motor2CanId = 52;
+    
+  }
+
+  public static final class AlgaeConstants {
+
+    public static final int pivotMotorCANid = 31;
+    public static final int intakeMotorCANid = 32;
+    
+    public static final double minimumPivotPosition = 0.68;
+    public static final double maximumPivotPosition = 0.945; // Furthest possible is 0.951
+
+    public static final double intakeHeight = 0.7;
+    public static final double transitHeight = 0.94;
+
+    public static final double maximumAutoSpeed = 0.3;
+
+    public static final double pivotTolerence = 0.001;
+    
+    public static final double kP = -10;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    
   }
 
   public static final class AprilTagConstants {

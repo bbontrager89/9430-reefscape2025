@@ -34,7 +34,6 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
         
         addRequirements(drive, elevator);
         
-        if (hasTag())
         addCommands(
                 new ConditionalCommand(
                         // If we see a tag, execute the full alignment sequence
@@ -58,8 +57,7 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
                         // If we don't see a tag, do nothing
                         new InstantCommand(),
                         () -> hasTag()));
-        else
-        addCommands();
+
     }
 
     private boolean hasTag() {

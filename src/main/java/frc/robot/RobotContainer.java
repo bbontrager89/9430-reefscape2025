@@ -15,6 +15,7 @@ import frc.robot.commands.DoScorePositionCommand;
 import frc.robot.commands.DoIntakeCoralFromStationCommand;
 import frc.robot.commands.MoveElevator;
 import frc.robot.commands.TransitModeCommand;
+import frc.robot.subsystems.AlgaeManipulatorSubsystem;
 import frc.robot.subsystems.CoralManipulatorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -46,6 +47,8 @@ public class RobotContainer {
         private ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
         private CoralManipulatorSubsystem coralManipulatorSubsystem = new CoralManipulatorSubsystem();
+
+        private AlgaeManipulatorSubsystem algaeManipulatorSubsystem = new AlgaeManipulatorSubsystem();
 
 
         // The driver's controller
@@ -90,7 +93,7 @@ public class RobotContainer {
                         m_robotDrive,
                         2, 
                         OIConstants.leftScoringOffset, 
-                        OIConstants.scoringDistance, 
+                        OIConstants.scoringDistanceRight, 
                         CoralManipulatorConstants.levelTwoPivotPosition));
                 NamedCommands.registerCommand("Elevator to SP1", new MoveElevator(elevatorSubsystem, 1));
         }
@@ -131,7 +134,7 @@ public class RobotContainer {
         Double operatorPOVRecency = null;
         POV operatorLatestPOVButton = POV.None;
 
-        ControlMode activeMode = ControlMode.Manual;
+        ControlMode activeMode = ControlMode.SemiAuto;
 
         double operatorStartButtonTimestamp = Double.NEGATIVE_INFINITY;
 
@@ -259,7 +262,7 @@ public class RobotContainer {
 
                 // A button - Algae intake mode
                 c_operatorController.a()
-                        .onTrue(new TransitModeCommand(elevatorSubsystem, coralManipulatorSubsystem));
+                        .onTrue(new TransitModeCommand(elevatorSubsystem, coralManipulatorSubsystem, algaeManipulatorSubsystem));
 
                 // Right Stick button - Transit mode
                 c_operatorController.rightStick()
@@ -316,7 +319,7 @@ public class RobotContainer {
                                                                 m_robotDrive,
                                                                 2, 
                                                                 OIConstants.rightScoringOffset, 
-                                                                OIConstants.scoringDistance, 
+                                                                OIConstants.scoringDistanceRight, 
                                                                 CoralManipulatorConstants.levelTwoPivotPosition)
                                                         .schedule();
                                                 } else if (activeMode.manual()) {
@@ -332,7 +335,7 @@ public class RobotContainer {
                                                                 m_robotDrive,
                                                                 3, 
                                                                 OIConstants.rightScoringOffset, 
-                                                                OIConstants.scoringDistance, 
+                                                                OIConstants.scoringDistanceRight, 
                                                                 CoralManipulatorConstants.levelThreePivotPosition)
                                                         .schedule();
                                                 } else if (activeMode.manual()) {
@@ -366,7 +369,7 @@ public class RobotContainer {
                                                                 m_robotDrive,
                                                                 1, 
                                                                 0.0, 
-                                                                OIConstants.scoringDistance, 
+                                                                OIConstants.scoringDistanceRight, 
                                                                 CoralManipulatorConstants.levelOnePivotPosition)
                                                         .schedule();
                                                 } else if (activeMode.manual()) {
@@ -402,7 +405,7 @@ public class RobotContainer {
                                                                 m_robotDrive,
                                                                 2, 
                                                                 OIConstants.leftScoringOffset, 
-                                                                OIConstants.scoringDistance, 
+                                                                OIConstants.scoringDistanceLeft, 
                                                                 CoralManipulatorConstants.levelTwoPivotPosition)
                                                         .schedule();
                                                 } else if (activeMode.manual()) {
@@ -418,7 +421,7 @@ public class RobotContainer {
                                                                 m_robotDrive,
                                                                 3, 
                                                                 OIConstants.leftScoringOffset, 
-                                                                OIConstants.scoringDistance, 
+                                                                OIConstants.scoringDistanceLeft, 
                                                                 CoralManipulatorConstants.levelThreePivotPosition)
                                                         .schedule();
                                                 } else if (activeMode.manual()) {
@@ -439,25 +442,24 @@ public class RobotContainer {
                         .onTrue(new InstantCommand());
 
                 SmartDashboard.putBoolean("Manual Mode", activeMode.manual());
+
                 // Start Button button - Manual mode on 0.5 second hold
                 c_operatorController.start()
                         .onTrue(new InstantCommand(() -> {
                                 operatorStartButtonTimestamp = Timer.getFPGATimestamp();
 
                         })).onFalse(new InstantCommand(() -> {
-                                operatorStartButtonTimestamp = Double.NEGATIVE_INFINITY;
+                                if (Timer.getFPGATimestamp() > operatorStartButtonTimestamp + 0.5) {
 
-                        })).whileTrue(new InstantCommand(() -> {
-                                if (operatorStartButtonTimestamp + 0.5 < Timer.getFPGATimestamp()) {
-                                        if (activeMode == ControlMode.SemiAuto)
-                                                activeMode = ControlMode.Manual;
-                                        else 
-                                                activeMode = ControlMode.SemiAuto;
-
+                                        activeMode = (activeMode == ControlMode.SemiAuto) ? 
+                                                ControlMode.Manual : ControlMode.SemiAuto;
+                                                
                                         ControllerUtils.Rumble(c_operatorController.getHID(), 0.5);
                                         SmartDashboard.putBoolean("Manual Mode", activeMode.manual());
                                         operatorStartButtonTimestamp = Double.NEGATIVE_INFINITY;
+
                                 }
+
                         }));
 
                 // Back Button button - Cancel all actions

@@ -44,18 +44,12 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                                     }),
                                 new PivotCoral(coralSubsystem, pivotHeight),
                                 new MoveElevator(elevator, scoringPosition),
-                                new StrafeToAlignCommand(drive, desiredLateralOffset),
+                                new WaitCommand(0.3),
+                               // new StrafeToAlignCommand(drive, desiredLateralOffset),
                                 new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, false),
                                 new SetCoralSpeed(coralSubsystem, (scoringPosition == 1)? 0.4 : 1),
                                 new WaitCommand(0.7),
                                 new SetCoralSpeed(coralSubsystem, 0),
-                                new InstantCommand(() -> {
-                                    drive.drive(-0.2, 0, 0, false);
-                                }),
-                                new WaitCommand(0.25),
-                                new InstantCommand(() -> {
-                                    drive.drive(0, 0, 0, false);
-                                }),
                                 new TransitModeCommand(elevator, coralSubsystem)),
                         // If we don't see a tag, do nothing
                         new InstantCommand(),
@@ -66,12 +60,24 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
     }
 
     private boolean hasTag() {
+        int selectedCameraIndex = -1;
+        if (desiredLateralOffset > 0) {
+            selectedCameraIndex = 0;  // Front camera for right-side approach
+            System.out.println("Non-intake mode: Using front camera index 0 for right-side approach");
+        } else if (desiredLateralOffset < 0) {
+            selectedCameraIndex = 3;  // Front camera for left-side approach
+            System.out.println("Non-intake mode: Using front camera index 3 for left-side approach");
+        } else {
+            selectedCameraIndex = -1; // No specific camera selected; use any available detection
+            System.out.println("Non-intake mode: No lateral offset specified, using any available camera");
+        }
+        if(selectedCameraIndex == -1)return false;
         int detectedTag = drive.getPoseEstimatorSubsystem().getLastDetectedTagId();
         List<Integer> scoringTagsList = Arrays.stream(AprilTagConstants.scoringAprilTags)
                 .boxed()
                 .toList();
         return scoringTagsList.contains(detectedTag)
-                && drive.getPoseEstimatorSubsystem().hasFrontCameraDetection();
+                && drive.getPoseEstimatorSubsystem().hasCameraDetectedTag(selectedCameraIndex);
     }
     
 }
