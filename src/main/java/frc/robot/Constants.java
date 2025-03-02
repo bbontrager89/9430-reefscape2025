@@ -180,6 +180,13 @@ public final class Constants {
     public static final double levelTwoPivotPosition = 0.24; // Motor Off: low hard limit
     public static final double levelThreePivotPosition = 0.24;
   }
+  
+  public static final class ClimbingArmConstants {
+
+    public static final int motor1CanId = 51;
+    public static final int motor2CanId = 52;
+    
+  }
 
   public static final class AprilTagConstants {
     public static final int[] scoringAprilTags = new int[] {
