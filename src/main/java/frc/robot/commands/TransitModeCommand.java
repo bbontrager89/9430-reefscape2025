@@ -6,6 +6,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CoralManipulatorConstants;
+import frc.robot.subsystems.AlgaeManipulatorSubsystem;
+import frc.robot.subsystems.AlgaeManipulatorSubsystem.AP;
 import frc.robot.subsystems.CoralManipulatorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.SP;
@@ -15,16 +17,16 @@ public class TransitModeCommand extends Command {
 
   ElevatorSubsystem elevator;
   CoralManipulatorSubsystem coral;
-  // AlgaeManipulatorSubsystem algae
+  AlgaeManipulatorSubsystem algae;
 
   /** Creates a new TransitModeCommand. */
-  public TransitModeCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coral /*, AlgaeManipulatorSubsystem algae */) {
+  public TransitModeCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coral, AlgaeManipulatorSubsystem algae ) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator, coral);
 
     this.elevator = elevator;
     this.coral = coral;
-    // this.algae = algae
+    this.algae = algae;
   }
 
   // Called when the command is initially scheduled.
@@ -36,7 +38,7 @@ public class TransitModeCommand extends Command {
   public void execute() {
     elevator.moveToScoringPosition(SP.min); 
     coral.movePivotTo(CoralManipulatorConstants.maximumPivotPosition);
-    // algae.retract();
+    algae.setDesiredPivotHeight(AP.transit);
   }
 
   // Called once the command ends or is interrupted.
