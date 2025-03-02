@@ -99,18 +99,18 @@ public final class Constants {
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
-    public static final double kDriveDeadband = 0.05;
+    public static final double kDriveDeadband = 0.08;
 
     public static final double kTriggerThreshold = 0.1;
 
-    public static final double scoringDistance = 0.02;
-    public static final double coralIntakeDistance = 0.12;
+    public static final double scoringDistance = 0.395;
+    public static final double coralIntakeDistance = 0.395;
 
     public static final double leftScoringOffset = -0.165;
     public static final double rightScoringOffset = 0.165;
 
     // TODO tune these offsets to align with the grooves on the intake station
-    public static final double intakePositionLeft = -0.3;
+    public static final double intakePositionLeft = -0.58;
     public static final double intakePositionRight = 0.3;
 
     public static final double doublePressBuffer = 0.5;
@@ -149,8 +149,8 @@ public final class Constants {
     public static final double minimumElevatorHeight = (newRobot)? 0.17 : 0.175; // Furthest possible is 0.166
     public static final double maximumElevatorHeight = (newRobot)? 0.975 : 0.675; // Furthest possible is 0.99
 
-    public static final double coralStationPosition = (newRobot)? 0.535 : 0.398; // Scoring position 0
-    public static final double level1ScoringPosition = (newRobot)? 0.405 : 0.316;
+    public static final double coralStationPosition = (newRobot)? 0.535 : 0.405; // Scoring position 0
+    public static final double level1ScoringPosition = (newRobot)? 0.405 : 0.32;
     public static final double level2ScoringPosition = (newRobot)? 0.714 : 0.51;
     public static final double level3ScoringPosition = (newRobot)? 0.687 : 0.669;
 
@@ -181,7 +181,7 @@ public final class Constants {
     public static final double minimumPivotPosition = 0.095;
 
     public static final double intakePivotPosition = 0.375;
-    public static final double levelOnePivotPosition = 0.25;
+    public static final double levelOnePivotPosition = 0.3;
     public static final double levelTwoPivotPosition = 0.091; // Motor Off: low hard limit
     public static final double levelThreePivotPosition = 0.091;
   }

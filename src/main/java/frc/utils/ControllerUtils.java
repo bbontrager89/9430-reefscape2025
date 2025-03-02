@@ -4,6 +4,14 @@
 
 package frc.utils;
 
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+
 /** Util for Xbox controllers */
 public class ControllerUtils {
     /**Represents the D-pad on an Xbox controller */
@@ -55,6 +63,39 @@ public class ControllerUtils {
         AXIS(int value) {
             this.value = value;
         }
+    }
+
+    public static void Rumble(XboxController controller) {
+        new SequentialCommandGroup(
+            new InstantCommand(() -> {
+             controller.setRumble(RumbleType.kBothRumble, 1);
+            }), 
+            new WaitCommand(1), 
+            new InstantCommand(() -> {
+                controller.setRumble(RumbleType.kBothRumble, 0);
+            })).handleInterrupt(() -> {controller.setRumble(RumbleType.kBothRumble, 0);}).schedule();
+    }
+
+    public static void Rumble(XboxController controller, double time) {
+        new SequentialCommandGroup(
+            new InstantCommand(() -> {
+             controller.setRumble(RumbleType.kBothRumble, 1);
+            }), 
+            new WaitCommand(time), 
+            new InstantCommand(() -> {
+                controller.setRumble(RumbleType.kBothRumble, 0);
+            })).handleInterrupt(() -> {controller.setRumble(RumbleType.kBothRumble, 0);}).schedule();
+    }
+
+    public static void Rumble(XboxController controller, double time, double intencity) {
+        new SequentialCommandGroup(
+            new InstantCommand(() -> {
+             controller.setRumble(RumbleType.kBothRumble, intencity);
+            }), 
+            new WaitCommand(time), 
+            new InstantCommand(() -> {
+                controller.setRumble(RumbleType.kBothRumble, 0);
+            })).handleInterrupt(() -> {controller.setRumble(RumbleType.kBothRumble, 0);}).schedule();
     }
 
 }
