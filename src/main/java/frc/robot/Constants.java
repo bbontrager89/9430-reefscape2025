@@ -186,14 +186,17 @@ public final class Constants {
     public static final int intakeMotorCANid = 32;
     
     // TODO Determine actual limits 
-    public static final double minimumPivotPosition= 0.68;
-    public static final double maximumPivotPosition = 0.92; // Furthest possible is 0.595
+    public static final double minimumPivotPosition = 0.68;
+    public static final double maximumPivotPosition = 0.945; // Furthest possible is 0.595
 
-    public static final double maximumAutoSpeed = 0;
+    public static final double intakeHeight = 0.7;
+    public static final double transitHeight = 0.94;
 
-    public static final double pivotTolerence = 0;
+    public static final double maximumAutoSpeed = 0.3;
+
+    public static final double pivotTolerence = 0.001;
     
-    public static final double kP = 1;
+    public static final double kP = -10;
     public static final double kI = 0;
     public static final double kD = 0;
     
