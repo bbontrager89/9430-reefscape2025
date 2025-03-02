@@ -107,7 +107,7 @@ public final class Constants {
 
     // TODO tune these offsets to align with the grooves on the intake station
     public static final double intakePositionLeft = -0.5;
-    public static final double intakePositionRight = 0.3;
+    public static final double intakePositionRight = 0.5;
 
     public static final double doublePressBuffer = 0.5;
   }
