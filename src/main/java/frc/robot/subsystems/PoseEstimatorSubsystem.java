@@ -40,10 +40,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
     // Camera names from your PhotonVision config
     private static final String[] CAMERA_NAMES = {
-        "Arducam_3",  // index 0 => front
-        "Arducam_1",  // index 1 => left
-        "Arducam_2",   // index 2 => right
-        "Arducam_4"  // index 4 => front
+        "Arducam_5",  // index 0 => front
+        "Arducam_2",  // index 1 => left
+        "Arducam OV9782 USB Camera",   // index 2 => right
+        "Arducam_6"  // index 4 => front
     };
     
     // Camera indices for side cameras used in intake operations
@@ -62,22 +62,22 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             new Rotation3d(0.0, -0.2617, 0.0)
         ),
        
-    // Right camera (index 1)
-    new Transform3d(
-        new Translation3d(-0.196, -0.26, 0.140),
-        new Rotation3d(0, -1.16, -0.434)  // Adjust yaw as needed
-    ),
-    
-    // Left camera (index 2)
-    new Transform3d(
-        new Translation3d(-0.196, 0.26, 0.140),
-        new Rotation3d(0, -1.16, 0.434)   // Adjust yaw as needed
-    ),
-    //Front Right Camera
-    new Transform3d(
-        new Translation3d(0.288, -0.1397, 0.119),
-        new Rotation3d(0.0, -0.2617, 0.0)
-    ), 
+        // Right camera (index 1)
+        new Transform3d(
+            new Translation3d(-0.196, -0.26, 0.140),
+            new Rotation3d(0, -1.16, -0.434)  // Adjust yaw as needed
+        ),
+
+        // Left camera (index 2)
+        new Transform3d(
+            new Translation3d(-0.196, 0.26, 0.140),
+            new Rotation3d(0, -1.16, 0.434)   // Adjust yaw as needed
+        ),
+        //Front Right Camera
+        new Transform3d(
+            new Translation3d(0.288, -0.1397, 0.119),
+            new Rotation3d(0.0, -0.2617, 0.0)
+        ), 
     };
 
     // For AlignCommand
