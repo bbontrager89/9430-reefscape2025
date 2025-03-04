@@ -222,11 +222,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     // Upper soft limit check
     if (getHeight() < ElevatorConstants.minimumElevatorHeight) {
       if (currentSpeed < 0) {
-        stopMotor();
+        // stopMotor();
       }
 
       if (autoSpeed < 0 && desiredHeight != null) {
-        turnOffAutoMode();
+        // turnOffAutoMode();
       }
 
       belowMinHeight = true;
@@ -277,6 +277,8 @@ public class ElevatorSubsystem extends SubsystemBase {
    * movement calls
    */
   public static enum SP {
+    /** Coral Station */
+    coral(0),
     /** SP1 */
     one(1),
     /** SP2 */
