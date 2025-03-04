@@ -52,7 +52,7 @@ public class ApproachTagCommand extends Command {
         lateralController.setTolerance(LATERAL_TOLERANCE_METERS);
 
         // PID for rotation to face the desired offset position
-        rotationController = new PIDController(0.1, 0.0, 0.005);
+        rotationController = new PIDController(0.2, 0.0, 0.005);
         rotationController.setTolerance(ROTATION_TOLERANCE_DEG);
         rotationController.enableContinuousInput(-180, 180); // angle wrap-around
     }
@@ -117,8 +117,8 @@ public class ApproachTagCommand extends Command {
         }
 
         if (validTagDetection) {
-            double currentDistance = poseEstimator.getDistanceToTag();
-            double currentLateralOffset = poseEstimator.getLateralOffsetToTag();
+            double currentDistance = poseEstimator.getDistanceToTag(selectedCameraIndex);
+            double currentLateralOffset = poseEstimator.getLateralOffsetToTag(selectedCameraIndex);
             double currentRotation = poseEstimator.getTagOrientationErrorDeg();
 
             // Compute corrections using PID controllers
@@ -160,16 +160,16 @@ public class ApproachTagCommand extends Command {
             
             if (detectedTag != -1 && (currentTime - lastDetectionTime) < LOST_TAG_TIMEOUT) {
                 validTagDetection = true;
-                currentDistance = poseEstimator.getDistanceToTag();
-                currentLateralOffset = poseEstimator.getLateralOffsetToTag();
-                currentRotation = poseEstimator.getTagOrientationErrorDeg();
+                currentDistance = poseEstimator.getDistanceToTag(selectedCameraIndex);
+                currentLateralOffset = poseEstimator.getLateralOffsetToTag(selectedCameraIndex);
+                currentRotation = poseEstimator.getTagOrientationErrorDeg(selectedCameraIndex);
             }
         } else {
             if (poseEstimator.getLastDetectedTagId() != -1) {
                 validTagDetection = true;
-                currentDistance = poseEstimator.getDistanceToTag();
-                currentLateralOffset = poseEstimator.getLateralOffsetToTag();
-                currentRotation = poseEstimator.getTagOrientationErrorDeg();
+                currentDistance = poseEstimator.getDistanceToTag(selectedCameraIndex);
+                currentLateralOffset = poseEstimator.getLateralOffsetToTag(selectedCameraIndex);
+                currentRotation = poseEstimator.getTagOrientationErrorDeg(selectedCameraIndex);
             }
         }
 
