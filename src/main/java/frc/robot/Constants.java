@@ -150,10 +150,10 @@ public final class Constants {
     public static final double minimumElevatorHeight = (newRobot)? 0.165 : 0.175; // Furthest possible is 0.164
     public static final double maximumElevatorHeight = (newRobot)? 0.975 : 0.675; // Furthest possible is 0.99
 
-    public static final double coralStationPosition = (newRobot)? 0.535 : 0.405; // Scoring position 0
-    public static final double level1ScoringPosition = (newRobot)? 0.405 : 0.32;
-    public static final double level2ScoringPosition = (newRobot)? 0.714 : 0.51;
-    public static final double level3ScoringPosition = (newRobot)? 0.687 : 0.669;
+    public static final double coralStationPosition = (newRobot)? 0.523 : 0.405; // Scoring position 0
+    public static final double level1ScoringPosition = (newRobot)? 0.411 : 0.32;
+    public static final double level2ScoringPosition = (newRobot)? 0.57 : 0.51;
+    public static final double level3ScoringPosition = (newRobot)? 0.841 : 0.669;
 
     public static final boolean elevatorMotorInverted = false;
 
