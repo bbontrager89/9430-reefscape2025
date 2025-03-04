@@ -140,11 +140,11 @@ public final class Constants {
 
     public static final int elevatorMotorCanId = 27;
 
-    public static final double kP = 10;
+    public static final double kP = 20;
     public static final double kI = 0;
-    public static final double kD = 0;
+    public static final double kD = 0.05;
 
-    public static final double positionTolerence = 0.005;
+    public static final double positionTolerence = 0.0001;
 
 
     public static final double minimumElevatorHeight = (newRobot)? 0.165 : 0.175; // Furthest possible is 0.164
@@ -152,7 +152,7 @@ public final class Constants {
 
     public static final double coralStationPosition = (newRobot)? 0.523 : 0.405; // Scoring position 0
     public static final double level1ScoringPosition = (newRobot)? 0.411 : 0.32;
-    public static final double level2ScoringPosition = (newRobot)? 0.483 : 0.51;
+    public static final double level2ScoringPosition = (newRobot)? 0.484 : 0.51;
     public static final double level3ScoringPosition = (newRobot)? 0.841 : 0.669;
 
     public static final boolean elevatorMotorInverted = true;
