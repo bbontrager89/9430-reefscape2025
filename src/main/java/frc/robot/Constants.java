@@ -104,7 +104,7 @@ public final class Constants {
     public static final double kTriggerThreshold = 0.1;
 
     public static final double scoringDistanceRight = 0.62;
-    public static final double scoringDistanceLeft = 0.54;
+    public static final double scoringDistanceLeft = 0.62;
     public static final double coralIntakeDistance = 0.375;
 
     public static final double leftScoringOffset = -0.164;
@@ -140,11 +140,11 @@ public final class Constants {
 
     public static final int elevatorMotorCanId = 27;
 
-    public static final double kP = -20;
+    public static final double kP = 10;
     public static final double kI = 0;
     public static final double kD = 0;
 
-    public static final double positionTolerence = 0.01;
+    public static final double positionTolerence = 0.005;
 
 
     public static final double minimumElevatorHeight = (newRobot)? 0.165 : 0.175; // Furthest possible is 0.164
@@ -152,10 +152,10 @@ public final class Constants {
 
     public static final double coralStationPosition = (newRobot)? 0.523 : 0.405; // Scoring position 0
     public static final double level1ScoringPosition = (newRobot)? 0.411 : 0.32;
-    public static final double level2ScoringPosition = (newRobot)? 0.57 : 0.51;
+    public static final double level2ScoringPosition = (newRobot)? 0.483 : 0.51;
     public static final double level3ScoringPosition = (newRobot)? 0.841 : 0.669;
 
-    public static final boolean elevatorMotorInverted = false;
+    public static final boolean elevatorMotorInverted = true;
 
     public static final double encoderToRevolutionRatio = 200.0;
 
@@ -203,7 +203,7 @@ public final class Constants {
     public static final double maximumPivotPosition = 0.945; // Furthest possible is 0.951
 
     public static final double intakeHeight = 0.7;
-    public static final double transitHeight = 0.94;
+    public static final double transitHeight = 0.925;
 
     public static final double maximumAutoSpeed = 0.3;
 
