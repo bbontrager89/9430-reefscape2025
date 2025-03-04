@@ -254,7 +254,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         double currentTime = Timer.getFPGATimestamp();
        
         double timestamp = lastCameraDetectionTimestamps[cameraIndex];
-        boolean valid = timestamp != -1.0 && (currentTime - timestamp) < 0.3;
+        boolean valid = timestamp != -1.0 && (currentTime - timestamp) < 0.6;
         return valid;
     }
 
