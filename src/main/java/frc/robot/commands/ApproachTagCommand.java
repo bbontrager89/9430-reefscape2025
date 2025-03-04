@@ -16,10 +16,10 @@ public class ApproachTagCommand extends Command {
     // Tolerances and speed limits
     private static final double DISTANCE_TOLERANCE_METERS = 0.015; // 1.5cm tolerance (example)
     private static final double LATERAL_TOLERANCE_METERS = 0.015; // 1.5cm
-    private static final double ROTATION_TOLERANCE_DEG = 2.0; // degrees tolerance
+    private static final double ROTATION_TOLERANCE_DEG = 5.0; // degrees tolerance
     private static final double MAX_FORWARD_SPEED = 1.5; // m/s
     private static final double MAX_LATERAL_SPEED = 1.0; // m/s
-    private static final double MAX_ROTATION_SPEED = 1.0; // rad/s
+    private static final double MAX_ROTATION_SPEED = 0.5; // rad/s
     private static final double LOST_TAG_TIMEOUT = 0.5; // seconds
 
     // Camera indices matching those in PoseEstimatorSubsystem
@@ -44,15 +44,15 @@ public class ApproachTagCommand extends Command {
         addRequirements(drive);
 
         // PID for forward (distance) control
-        distanceController = new PIDController(3.5, 0.0, 0.00);
+        distanceController = new PIDController(3.0, 0.0, 0.00);
         distanceController.setTolerance(DISTANCE_TOLERANCE_METERS);
 
         // PID for lateral offset correction
-        lateralController = new PIDController(2.5, 0.0, 0.05);
+        lateralController = new PIDController(3.0, 0.0, 0.05);
         lateralController.setTolerance(LATERAL_TOLERANCE_METERS);
 
         // PID for rotation to face the desired offset position
-        rotationController = new PIDController(0.2, 0.0, 0.005);
+        rotationController = new PIDController(0.1, 0.0, 0.005);
         rotationController.setTolerance(ROTATION_TOLERANCE_DEG);
         rotationController.enableContinuousInput(-180, 180); // angle wrap-around
     }
@@ -129,7 +129,7 @@ public class ApproachTagCommand extends Command {
             // Clamp speeds to maximum limits
             forwardSpeed = Math.min(Math.max(forwardSpeed, -MAX_FORWARD_SPEED), MAX_FORWARD_SPEED);
             lateralSpeed = Math.min(Math.max(lateralSpeed, -MAX_LATERAL_SPEED), MAX_LATERAL_SPEED);
-            // rotationSpeed = Math.min(Math.max(rotationSpeed, -MAX_ROTATION_SPEED), MAX_ROTATION_SPEED);
+            rotationSpeed = Math.min(Math.max(rotationSpeed, -MAX_ROTATION_SPEED), MAX_ROTATION_SPEED);
             
             // Drive the robot with computed speeds
             drive.driveRobotRelative(new ChassisSpeeds(forwardSpeed, lateralSpeed, rotationSpeed));
