@@ -152,8 +152,8 @@ public final class Constants {
 
     public static final double coralStationPosition = (newRobot)? 0.523 : 0.405; // Scoring position 0
     public static final double level1ScoringPosition = (newRobot)? 0.411 : 0.32;
-    public static final double level2ScoringPosition = (newRobot)? 0.484 : 0.51;
-    public static final double level3ScoringPosition = (newRobot)? 0.841 : 0.669;
+    public static final double level2ScoringPosition = (newRobot)? 0.540 : 0.51;
+    public static final double level3ScoringPosition = (newRobot)? 0.790 : 0.669;
 
     public static final boolean elevatorMotorInverted = true;
 
