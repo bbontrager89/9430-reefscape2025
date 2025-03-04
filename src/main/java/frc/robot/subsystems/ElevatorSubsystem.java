@@ -10,6 +10,8 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
-import frc.utils.Elastic;
+// import frc.utils.Elastic;
 
 /** Subsystem for interfacing with motors and logic for the Robot's elevator */
 public class ElevatorSubsystem extends SubsystemBase {
@@ -27,9 +29,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private SparkMaxConfig elevatorMotorConfig = new SparkMaxConfig();
 
-  private double desiredHeight;
+  private PIDController elevatorController;
+
+  private Double desiredHeight = null;
   private double autoSpeed = 0.0;
-  private boolean autoMode = false;
 
   private boolean aboveMaxHeight = false;
   private boolean belowMinHeight = false;
@@ -43,6 +46,9 @@ public class ElevatorSubsystem extends SubsystemBase {
       elevatorMotorConfig.inverted(ElevatorConstants.elevatorMotorInverted);
   
       elevatorMotor.configure(elevatorMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+
+      elevatorController = new PIDController(ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD);
+      elevatorController.setTolerance(ElevatorConstants.positionTolerence);
   
       configureDashboardControls();
   
@@ -94,7 +100,7 @@ public class ElevatorSubsystem extends SubsystemBase {
    */
   public void setMotorSpeed(double speed) {
     currentSpeed = speed;
-    if (!(aboveMaxHeight && (speed < 0)) && !(belowMinHeight && (speed > 0))) {
+    if (!(aboveMaxHeight && (speed > 0)) && !(belowMinHeight && (speed < 0))) {
       elevatorMotor.set(speed);
     }
   }
@@ -133,15 +139,13 @@ public class ElevatorSubsystem extends SubsystemBase {
         break;
       default:
         System.out.println("Invalid Scoring Position requested in ElevatorSubsystem");
-        Elastic.sendError("Invalid Scoring Position", "requested in ElevatorSubsystem");
+        // Elastic.sendError("Invalid Scoring Position", "requested in ElevatorSubsystem");
         break;
     }
 
     SmartDashboard.putNumber("Desired Height", desiredHeight);
 
     // ;;;;;;;;desiredHeight=(scoringPosition==0)?ElevatorConstants.coralStationPosition:desiredHeight=(scoringPosition==1)?ElevatorConstants.level1ScoringPosition:(scoringPosition==2)?ElevatorConstants.level3ScoringPosition:(scoringPosition==3)?ElevatorConstants.level3ScoringPosition/*IWouldNotRecommend-Titus(ButItIsFunny)*/:(scoringPosition==4)?ElevatorConstants.level4ScoringPosition:-1.0;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-    autoMode = true;
 
   }
 
@@ -161,7 +165,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     // Ensure that the desired postion is within bounds of the elevator
     desiredHeight = Math.min(Math.max(position, ElevatorConstants.minimumElevatorHeight), ElevatorConstants.maximumElevatorHeight);
-    autoMode = true;
 
     SmartDashboard.putNumber("Desired Height", desiredHeight);
 
@@ -169,7 +172,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   /** Disable autonomous PID movement */
   public void turnOffAutoMode() {
-    autoMode = false;
+    desiredHeight = null;
     stopMotor();
   }
 
@@ -202,10 +205,10 @@ public class ElevatorSubsystem extends SubsystemBase {
      
     // Lower soft limit check
     if (getHeight() > ElevatorConstants.maximumElevatorHeight) {
-      if (currentSpeed < 0) {
+      if (currentSpeed > 0) {
         stopMotor();
       }
-      if (autoSpeed < 0 && autoMode) {
+      if (autoSpeed > 0 && desiredHeight != null) {
         turnOffAutoMode();
       }
       aboveMaxHeight = true;
@@ -215,11 +218,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     // Upper soft limit check
     if (getHeight() < ElevatorConstants.minimumElevatorHeight) {
-      if (currentSpeed > 0) {
+      if (currentSpeed < 0) {
         stopMotor();
       }
 
-      if (autoSpeed > 0 && autoMode) {
+      if (autoSpeed < 0 && desiredHeight != null) {
         turnOffAutoMode();
       }
 
@@ -231,25 +234,26 @@ public class ElevatorSubsystem extends SubsystemBase {
     
 
     // Run auto movement
-    if (autoMode) {
+    if (desiredHeight != null) {
 
+       
       // Calculate error
-      double elevatorError = (desiredHeight - getHeight());
+      // double elevatorError = (desiredHeight - getHeight());
 
+      /*
       // Adjust speed to error
       double autoSpeed = ElevatorConstants.kP * elevatorError;
       autoSpeed = (autoSpeed > ElevatorConstants.maximumAutoSpeed) ? ElevatorConstants.maximumAutoSpeed
           : (autoSpeed < -ElevatorConstants.maximumAutoSpeed) ? -ElevatorConstants.maximumAutoSpeed : autoSpeed;
 
+      */
+
+      autoSpeed = elevatorController.calculate(getHeight(), desiredHeight);
+      setMotorSpeed(autoSpeed);
+
       // Log data
       SmartDashboard.putNumber("AutoSpeed", autoSpeed);
 
-      // Run or don't run
-      if (Math.abs(elevatorError) < ElevatorConstants.positionTolerence) {
-        turnOffAutoMode();
-      } else {
-        setMotorSpeed(autoSpeed);
-      }
 
     }
 
