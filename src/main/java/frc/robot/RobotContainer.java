@@ -162,9 +162,11 @@ public class RobotContainer {
                 // Left Stick Vetical Absolute Value Greater Than Threshold
                 c_operatorController.axisGreaterThan(AXIS.LeftVertical.value, OIConstants.kTriggerThreshold).or(
                 c_operatorController.axisLessThan(AXIS.LeftVertical.value, -OIConstants.kTriggerThreshold))
-                        .whileTrue(new RepeatCommand(new InstantCommand(() -> {
+                        .onTrue(new InstantCommand(() -> {
+                                elevatorSubsystem.turnOffAutoMode();
+                        })).whileTrue(new RepeatCommand(new InstantCommand(() -> {
                                 if (activeMode == ControlMode.Manual) {
-                                      elevatorSubsystem.setMotorSpeed(c_operatorController.getLeftY());  
+                                      elevatorSubsystem.setMotorSpeed(-c_operatorController.getLeftY());  
                                 }
                         }))).onFalse(new InstantCommand(() -> {
                                 elevatorSubsystem.setMotorSpeed(0); 
