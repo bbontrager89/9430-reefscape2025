@@ -449,15 +449,17 @@ public class RobotContainer {
                 c_operatorController.start()
                         .onTrue(new InstantCommand(() -> {
                                 operatorStartButtonTimestamp = Timer.getFPGATimestamp();
-
-                        })).onFalse(new InstantCommand(() -> {
-                                if (Timer.getFPGATimestamp() > operatorStartButtonTimestamp + 0.5) {
-
-                                        activeMode = (activeMode == ControlMode.SemiAuto) ? 
+                                
+                                activeMode = (activeMode == ControlMode.SemiAuto) ? 
                                                 ControlMode.Manual : ControlMode.SemiAuto;
                                                 
                                         ControllerUtils.Rumble(c_operatorController.getHID(), 0.5);
                                         SmartDashboard.putBoolean("Manual Mode", activeMode.manual());
+
+                        })).onFalse(new InstantCommand(() -> {
+                                if (Timer.getFPGATimestamp() > operatorStartButtonTimestamp + 0.5) {
+
+                                        
                                         operatorStartButtonTimestamp = Double.NEGATIVE_INFINITY;
 
                                 }
