@@ -42,8 +42,8 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                                 new InstantCommand(() -> {
                                         drive.drive(0, 0, 0, false);
                                     }),
-                                new MoveElevator(elevator, scoringPosition),
                                 new PivotCoral(coralSubsystem, pivotHeight),
+                                new MoveElevator(elevator, scoringPosition),
                                 new WaitCommand(0.4),
                                // new StrafeToAlignCommand(drive, desiredLateralOffset),
                                 new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, false),
