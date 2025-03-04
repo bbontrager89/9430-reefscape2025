@@ -35,8 +35,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     // Camera names from your PhotonVision config
     private static final String[] CAMERA_NAMES = {
             "Arducam_5", // index 0: front left (or front)
-            "Arducam_2", // index 1: right
-            "Arducam OV9782 USB Camera", // index 2: left (used for intake)
+            "Arducam_7", // index 1: right
+            "Arducam 2", // index 2: left (used for intake)
             "Arducam_6" // index 3: front right (or front)
     };
 
