@@ -36,7 +36,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     private static final String[] CAMERA_NAMES = {
             "Arducam_5", // index 0: front left (or front)
             "Arducam_7", // index 1: right
-            "Arducam 2", // index 2: left (used for intake)
+            "Arducam_2", // index 2: left (used for intake)
             "Arducam_6" // index 3: front right (or front)
     };
 
