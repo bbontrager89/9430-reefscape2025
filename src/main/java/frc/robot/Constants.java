@@ -144,7 +144,7 @@ public final class Constants {
     public static final double kI = 0;
     public static final double kD = 0.05;
 
-    public static final double positionTolerence = 0.0001;
+    public static final double positionTolerence = 0.001;
 
 
     public static final double minimumElevatorHeight = (newRobot)? 0.165 : 0.175; // Furthest possible is 0.164

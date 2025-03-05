@@ -48,7 +48,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorMotor.configure(elevatorMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     elevatorController = new PIDController(ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD);
-    elevatorController.setTolerance(ElevatorConstants.positionTolerence);
+    elevatorController.setTolerance((1/10) * ElevatorConstants.positionTolerence);
 
     configureDashboardControls();
 
