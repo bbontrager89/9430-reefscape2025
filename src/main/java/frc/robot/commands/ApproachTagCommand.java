@@ -119,7 +119,7 @@ public class ApproachTagCommand extends Command {
         if (validTagDetection) {
             double currentDistance = poseEstimator.getDistanceToTag(selectedCameraIndex);
             double currentLateralOffset = poseEstimator.getLateralOffsetToTag(selectedCameraIndex);
-            double currentRotation = poseEstimator.getTagOrientationErrorDeg();
+            double currentRotation = poseEstimator.getTagOrientationErrorDeg(selectedCameraIndex);
 
             // Compute corrections using PID controllers
             double forwardSpeed = -distanceController.calculate(currentDistance, desiredDistance);
