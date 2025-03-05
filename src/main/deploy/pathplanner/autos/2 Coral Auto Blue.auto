@@ -19,7 +19,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Score LP2 Right"
+            "name": "Score LP3 Right"
           }
         },
         {
@@ -43,7 +43,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Score LP2 Left"
+            "name": "Score LP3 Left"
           }
         }
       ]

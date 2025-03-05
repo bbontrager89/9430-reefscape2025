@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -27,10 +28,12 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
         public DoIntakeCoralFromStationCommand(ElevatorSubsystem elevator, CoralManipulatorSubsystem coralSubsystem,
                         DriveSubsystem drive) {
                 this.drive = drive;
-                this.desiredLateralOffset = (drive.getPoseEstimatorSubsystem().getLastDetectionCameraIndex() == 2)
+                this.desiredLateralOffset = (drive.getPoseEstimatorSubsystem().getLastDetectionCameraIndex() == 1)
                                 ? OIConstants.intakePositionLeft
                                 : OIConstants.intakePositionRight;
-                this.desiredDistance = OIConstants.coralIntakeDistance;
+                this.desiredDistance = (drive.getPoseEstimatorSubsystem().getLastDetectionCameraIndex() == 1)
+                                ? OIConstants.rightCoralIntakeDistance
+                                : OIConstants.leftCoralIntakeDistance;
 
                 System.out.printf("ElevatorCommand created - Target lateral offset: %.2f m, Target distance: %.2f m%n",
                                 desiredLateralOffset, desiredDistance);
@@ -38,37 +41,38 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
                 addRequirements(drive, elevator);
 
                 addCommands(
-                                new ConditionalCommand(
-                                                // If we see a tag, execute the full alignment sequence
-                                                new SequentialCommandGroup(
-                                                                new InstantCommand(() -> {
-                                                                        drive.drive(0, 0, 0, false);
-                                                                }),
-                                                                new MoveElevator(elevator, 0),
-                                                                new PivotCoral(coralSubsystem,
-                                                                                CoralManipulatorConstants.intakePivotPosition),
-                                                                new ApproachTagCommand(drive,
-                                                                                OIConstants.coralIntakeDistance,
-                                                                                desiredLateralOffset, true),
-                                                                new IntakeCoral(coralSubsystem, -1, 1.5),
-                                                                new SetCoralSpeed(coralSubsystem, 0),
-                                                                new InstantCommand(() -> {
-                                                                        drive.drive(-0.2, 0, 0, false);
-                                                                }),
-                                                                new WaitCommand(0.25),
-                                                                new InstantCommand(() -> {
-                                                                        drive.drive(0, 0, 0, false);
-                                                                }),
-                                                                new TransitModeCommand(elevator, coralSubsystem)),
-                                                // If we don't see a tag, do nothing
-                                                new InstantCommand(() -> {
-                                                        ControllerUtils.Rumble(
-                                                                RobotContainer.c_driverController.getHID(), 0.2, 1);
+                        new ConditionalCommand(
+                                // If we see a tag, execute the full alignment sequence
+                                new SequentialCommandGroup(
+                                        new InstantCommand(() -> {
+                                                drive.drive(0, 0, 0, false);
+                                        }),
+                                        new MoveElevator(elevator, 0),
+                                        new PivotCoral(coralSubsystem,
+                                                        CoralManipulatorConstants.intakePivotPosition),
+                                        Commands.either(
+                                                new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, true), 
+                                                new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, true).withTimeout(2),
+                                                () -> !DriverStation.isAutonomous()),
+                                        new IntakeCoral(coralSubsystem, -1, 1.5),
+                                        new SetCoralSpeed(coralSubsystem, 0),
+                                        new InstantCommand(() -> {
+                                                drive.drive(-0.2, 0, 0, false);
+                                        }),
+                                        new WaitCommand(0.25),
+                                        new InstantCommand(() -> {
+                                                drive.drive(0, 0, 0, false);
+                                        }),
+                                        new TransitModeCommand(elevator, coralSubsystem)),
+                        // If we don't see a tag, do nothing
+                        new InstantCommand(() -> {
+                                ControllerUtils.Rumble(
+                                        RobotContainer.c_driverController.getHID(), 0.2, 1);
 
-                                                        ControllerUtils.Rumble(
-                                                                RobotContainer.c_operatorController.getHID(), 0.2, 1);
-                                                }),
-                                                () -> hasTag()));
+                                ControllerUtils.Rumble(
+                                        RobotContainer.c_operatorController.getHID(), 0.2, 1);
+                        }),
+                        () -> hasTag()));
 
         }
 

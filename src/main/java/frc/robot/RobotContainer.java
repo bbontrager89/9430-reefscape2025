@@ -274,7 +274,7 @@ public class RobotContainer {
                 // Right bumper - Manual mode: Coral manipulator wheels intake
                 c_operatorController.rightBumper()
                         .onTrue(new InstantCommand(() -> {
-                                algaeManipulatorSubsystem.setIntakeSpeed(1);
+                                algaeManipulatorSubsystem.setIntakeSpeed(-1);
                         })).onFalse(new InstantCommand(() -> {
                                 algaeManipulatorSubsystem.stopIntake();
                         }));
@@ -293,7 +293,7 @@ public class RobotContainer {
                 // Left bumper - Coral manipulator wheels out
                 c_operatorController.leftBumper()
                         .onTrue(new InstantCommand(() -> {
-                                algaeManipulatorSubsystem.setIntakeSpeed(-1);
+                                algaeManipulatorSubsystem.setIntakeSpeed(1);
                         })).onFalse(new InstantCommand(() -> {
                                 algaeManipulatorSubsystem.stopIntake();
                         }));
@@ -554,6 +554,7 @@ public class RobotContainer {
                 // Right trigger -
                 c_driverController.rightTrigger(OIConstants.kTriggerThreshold)
                         .onTrue(new InstantCommand(() -> {
+                                if (activeMode.manual())
                                 climbingArmSubsystem.setMotorSpeeds(c_driverController.getRightTriggerAxis());
                         })).onFalse(new InstantCommand(() -> {
                                 climbingArmSubsystem.stopMotors();
