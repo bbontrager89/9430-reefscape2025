@@ -46,7 +46,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   private boolean abovePivotMaxHeight = false;
   private boolean belowPivotMinHeight = false;
 
-  private double desiredPivotPosition = 0.25;
+  private double desiredPivotPosition = CoralManipulatorConstants.maximumPivotPosition;
 
   private static SendableChooser<Command> pivotCommands;
 
