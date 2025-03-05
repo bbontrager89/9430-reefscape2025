@@ -4,6 +4,7 @@ import java.io.Console;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -36,7 +37,6 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
         
         addRequirements(drive, elevator);
 
-        if (hasTag())
         addCommands(
                 new ConditionalCommand(
                         // If we see a tag, execute the full alignment sequence
@@ -48,7 +48,10 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                                 new PivotCoral(coralSubsystem, pivotHeight),
                                 new MoveElevator(elevator, scoringPosition),
                                 // new StrafeToAlignCommand(drive, desiredLateralOffset),
-                                new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, false),
+                                Commands.either(
+                                    new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, false), 
+                                    new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, false).withTimeout(2),
+                                    () -> !DriverStation.isAutonomous()),
                                 new WaitUntilCommand(() -> elevator.atHeight()).withTimeout(0.8),
                                 // Eject if tag is seen, else rumble
                                 Commands.either(
@@ -77,8 +80,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                                     RobotContainer.c_operatorController.getHID(), 0.2, 1);
                             }),
                         () -> hasTag()));
-        else 
-        addCommands();
+
 
     }
 
