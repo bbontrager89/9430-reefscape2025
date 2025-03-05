@@ -52,7 +52,7 @@ public class ApproachTagCommand extends Command {
         lateralController.setTolerance(LATERAL_TOLERANCE_METERS);
 
         // PID for rotation to face the desired offset position
-        rotationController = new PIDController(0.1, 0.0, 0.005);
+        rotationController = new PIDController(0.1, 0.005, 0.005);
         rotationController.setTolerance(ROTATION_TOLERANCE_DEG);
         rotationController.enableContinuousInput(-180, 180); // angle wrap-around
     }
