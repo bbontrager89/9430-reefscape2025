@@ -53,9 +53,11 @@ public class RobotContainer {
 
         // The driver's controller
         CommandXboxController c_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
+        public static CommandXboxController c_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
         // The operator's controller
         CommandXboxController c_operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
+        public static CommandXboxController c_operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
 
 
         /**
