@@ -5,8 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CoralManipulatorConstants;
 import frc.robot.Constants.ElevatorConstants;
@@ -31,6 +34,7 @@ import frc.utils.ControllerUtils.POV;
 import frc.utils.ControllerUtils;
 import frc.utils.ControllerUtils.AXIS;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
@@ -49,7 +53,7 @@ public class RobotContainer {
         private CoralManipulatorSubsystem coralManipulatorSubsystem = new CoralManipulatorSubsystem();
 
         private AlgaeManipulatorSubsystem algaeManipulatorSubsystem = new AlgaeManipulatorSubsystem();
-
+        private final SendableChooser<Command> autoChooser;
 
         // The driver's controller
         CommandXboxController c_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -68,6 +72,10 @@ public class RobotContainer {
                 // Configure the button bindings
                 configureButtonBindings();
 
+                autoChooser = AutoBuilder.buildAutoChooser("2 Coral Auto "
+                                + (DriverStation.getAlliance().get() == Alliance.Blue ? "Blue" : "Red"));
+
+                SmartDashboard.putData("Auto Chooser", autoChooser);
                 // Configure default commands
                 m_robotDrive.setDefaultCommand(
                                 // The left stick controls translation of the robot.
@@ -636,6 +644,6 @@ public class RobotContainer {
          * @return the command to run in autonomous
          */
         public Command getAutonomousCommand() {
-                return new PathPlannerAuto("Default Auto");
+                return autoChooser.getSelected();
         }
 }
