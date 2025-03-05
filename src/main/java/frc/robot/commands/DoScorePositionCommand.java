@@ -72,7 +72,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
             System.out.println("Non-intake mode: No lateral offset specified, using any available camera");
         }
         if(selectedCameraIndex == -1)return false;
-        int detectedTag = drive.getPoseEstimatorSubsystem().getLastDetectedTagId();
+        int detectedTag = drive.getPoseEstimatorSubsystem().getLastTagDetectedByCamera(selectedCameraIndex);
         List<Integer> scoringTagsList = Arrays.stream(AprilTagConstants.scoringAprilTags)
                 .boxed()
                 .toList();
