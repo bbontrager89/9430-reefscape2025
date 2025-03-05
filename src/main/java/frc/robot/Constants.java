@@ -105,14 +105,16 @@ public final class Constants {
 
     public static final double scoringDistanceRight = 0.62;
     public static final double scoringDistanceLeft = 0.65;
-    public static final double coralIntakeDistance = 0.53;
+
+    public static final double rightCoralIntakeDistance = 0.53;
+    public static final double leftCoralIntakeDistance = 0.48;
 
     public static final double leftScoringOffset = -0.164;
     public static final double rightScoringOffset = 0.165;
 
     // TODO tune these offsets to align with the grooves on the intake station
     public static final double intakePositionLeft = -0.74;
-    public static final double intakePositionRight = 0.74;
+    public static final double intakePositionRight = 0.54;
 
     public static final double doublePressBuffer = 0.5;
   }
