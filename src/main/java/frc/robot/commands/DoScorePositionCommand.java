@@ -10,9 +10,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AprilTagConstants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.CoralManipulatorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.utils.ControllerUtils;
 
 public class DoScorePositionCommand extends SequentialCommandGroup {
     private final DriveSubsystem drive;
@@ -52,7 +54,13 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                                 new SetCoralSpeed(coralSubsystem, 0),
                                 new TransitModeCommand(elevator, coralSubsystem)),
                         // If we don't see a tag, do nothing
-                        new InstantCommand(),
+                        new InstantCommand(() -> {
+                            ControllerUtils.Rumble(
+                                    RobotContainer.c_driverController.getHID(), 0.2, 1);
+
+                            ControllerUtils.Rumble(
+                                    RobotContainer.c_operatorController.getHID(), 0.2, 1);
+                            }),
                         () -> hasTag()));
         else 
         addCommands();

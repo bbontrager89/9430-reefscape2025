@@ -19,9 +19,11 @@ import frc.robot.commands.DoIntakeCoralFromStationCommand;
 import frc.robot.commands.MoveElevator;
 import frc.robot.commands.TransitModeCommand;
 import frc.robot.subsystems.AlgaeManipulatorSubsystem;
+import frc.robot.subsystems.ClimbingArmSubsystem;
 import frc.robot.subsystems.CoralManipulatorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.AlgaeManipulatorSubsystem.AP;
 import frc.robot.subsystems.ElevatorSubsystem.SP;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -55,11 +57,14 @@ public class RobotContainer {
         private AlgaeManipulatorSubsystem algaeManipulatorSubsystem = new AlgaeManipulatorSubsystem();
         private final SendableChooser<Command> autoChooser;
 
+        private ClimbingArmSubsystem climbingArmSubsystem = new ClimbingArmSubsystem();
+
+
         // The driver's controller
-        CommandXboxController c_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
+        public static CommandXboxController c_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
         // The operator's controller
-        CommandXboxController c_operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
+        public static CommandXboxController c_operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
 
 
         /**
@@ -269,7 +274,9 @@ public class RobotContainer {
                 // Right bumper - Manual mode: Coral manipulator wheels intake
                 c_operatorController.rightBumper()
                         .onTrue(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.movePivotTo(coralManipulatorSubsystem.getPivotMotorPosition() - 0.05);
+                                algaeManipulatorSubsystem.setIntakeSpeed(1);
+                        })).onFalse(new InstantCommand(() -> {
+                                algaeManipulatorSubsystem.stopIntake();
                         }));
 
                 // Right trigger -
@@ -286,7 +293,9 @@ public class RobotContainer {
                 // Left bumper - Coral manipulator wheels out
                 c_operatorController.leftBumper()
                         .onTrue(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.movePivotTo(coralManipulatorSubsystem.getPivotMotorPosition() + 0.05);
+                                algaeManipulatorSubsystem.setIntakeSpeed(-1);
+                        })).onFalse(new InstantCommand(() -> {
+                                algaeManipulatorSubsystem.stopIntake();
                         }));
 
                 // Left trigger -
@@ -318,9 +327,11 @@ public class RobotContainer {
 
                 // B button - Algae intake mode
                 c_operatorController.b()
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand(() -> {
+                                algaeManipulatorSubsystem.setDesiredPivotHeight(AP.intaking);
+                        }));
 
-                // A button - Algae intake mode
+                // A button - 
                 c_operatorController.a()
                         .onTrue(new TransitModeCommand(elevatorSubsystem, coralManipulatorSubsystem, algaeManipulatorSubsystem));
 
@@ -544,7 +555,11 @@ public class RobotContainer {
 
                 // Right trigger -
                 c_driverController.rightTrigger(OIConstants.kTriggerThreshold)
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand(() -> {
+                                climbingArmSubsystem.setMotorSpeeds(c_driverController.getRightTriggerAxis());
+                        })).onFalse(new InstantCommand(() -> {
+                                climbingArmSubsystem.stopMotors();
+                        }));
 
                 // Left bumper -
                 c_driverController.leftBumper()
@@ -552,7 +567,12 @@ public class RobotContainer {
 
                 // Left trigger -
                 c_driverController.leftTrigger(OIConstants.kTriggerThreshold)
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand(() -> {
+                                if (activeMode.manual())
+                                climbingArmSubsystem.setMotorSpeeds(-c_driverController.getLeftTriggerAxis());
+                        })).onFalse(new InstantCommand(() -> {
+                                climbingArmSubsystem.stopMotors();
+                        }));
 
                 // Y button -
                 c_driverController.y()

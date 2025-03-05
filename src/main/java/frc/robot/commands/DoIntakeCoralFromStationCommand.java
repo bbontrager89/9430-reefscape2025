@@ -9,12 +9,14 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.AprilTagConstants;
 import frc.robot.Constants.CoralManipulatorConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.CoralManipulatorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.utils.ControllerUtils;
 
 public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
         private final DriveSubsystem drive;
@@ -59,7 +61,13 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
                                                                 }),
                                                                 new TransitModeCommand(elevator, coralSubsystem)),
                                                 // If we don't see a tag, do nothing
-                                                new InstantCommand(),
+                                                new InstantCommand(() -> {
+                                                        ControllerUtils.Rumble(
+                                                                RobotContainer.c_driverController.getHID(), 0.2, 1);
+
+                                                        ControllerUtils.Rumble(
+                                                                RobotContainer.c_operatorController.getHID(), 0.2, 1);
+                                                }),
                                                 () -> hasTag()));
 
         }
