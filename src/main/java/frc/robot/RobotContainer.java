@@ -85,18 +85,68 @@ public class RobotContainer {
         }
 
         /** Configures NamedCommands for pathplanner  */
+        
+        /** Configures NamedCommands for pathplanner */
         private void configureNamedCommands() {
-                NamedCommands.registerCommand("Score LP2", 
-                new DoScorePositionCommand(
-                        elevatorSubsystem, 
-                        coralManipulatorSubsystem, 
-                        m_robotDrive,
-                        2, 
-                        OIConstants.leftScoringOffset, 
-                        OIConstants.scoringDistanceRight, 
-                        CoralManipulatorConstants.levelTwoPivotPosition));
-                NamedCommands.registerCommand("Elevator to SP1", new MoveElevator(elevatorSubsystem, 1));
+
+                // Register Intake Coral Station
+                NamedCommands.registerCommand("Intake Coral Station",
+                                new DoIntakeCoralFromStationCommand(
+                                                elevatorSubsystem,
+                                                coralManipulatorSubsystem,
+                                                m_robotDrive));
+                // Register Intake Coral Station
+                NamedCommands.registerCommand("Transit Mode",
+                                new TransitModeCommand(
+                                                elevatorSubsystem,
+                                                coralManipulatorSubsystem));
+                                                
+                // Register Score LP2 Left
+                NamedCommands.registerCommand("Score LP2 Left",
+                                new DoScorePositionCommand(
+                                                elevatorSubsystem,
+                                                coralManipulatorSubsystem,
+                                                m_robotDrive,
+                                                2, // Level 2 scoring position
+                                                OIConstants.leftScoringOffset,
+                                                OIConstants.scoringDistanceLeft,
+                                                CoralManipulatorConstants.levelTwoPivotPosition));
+
+                // Register Score LP3 Left
+                NamedCommands.registerCommand("Score LP3 Left",
+                                new DoScorePositionCommand(
+                                                elevatorSubsystem,
+                                                coralManipulatorSubsystem,
+                                                m_robotDrive,
+                                                3, // Level 3 scoring position
+                                                OIConstants.leftScoringOffset,
+                                                OIConstants.scoringDistanceLeft,
+                                                CoralManipulatorConstants.levelThreePivotPosition));
+
+                // Register Score LP2 Right
+                NamedCommands.registerCommand("Score LP2 Right",
+                                new DoScorePositionCommand(
+                                                elevatorSubsystem,
+                                                coralManipulatorSubsystem,
+                                                m_robotDrive,
+                                                2, // Level 2 scoring position
+                                                OIConstants.rightScoringOffset,
+                                                OIConstants.scoringDistanceRight,
+                                                CoralManipulatorConstants.levelTwoPivotPosition));
+
+                // Register Score LP3 Right
+                NamedCommands.registerCommand("Score LP3 Right",
+                                new DoScorePositionCommand(
+                                                elevatorSubsystem,
+                                                coralManipulatorSubsystem,
+                                                m_robotDrive,
+                                                3, // Level 3 scoring position
+                                                OIConstants.rightScoringOffset,
+                                                OIConstants.scoringDistanceRight,
+                                                CoralManipulatorConstants.levelThreePivotPosition));
+
         }
+
         
 
         /** Represents modes for different controls */
