@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.AprilTagConstants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.CoralManipulatorSubsystem;
@@ -46,12 +47,26 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                                     }),
                                 new PivotCoral(coralSubsystem, pivotHeight),
                                 new MoveElevator(elevator, scoringPosition),
-                                new WaitCommand(0.4),
-                               // new StrafeToAlignCommand(drive, desiredLateralOffset),
+                                // new StrafeToAlignCommand(drive, desiredLateralOffset),
                                 new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, false),
-                                new SetCoralSpeed(coralSubsystem, (scoringPosition == 1)? 0.4 : 1),
-                                new WaitCommand(0.7),
-                                new SetCoralSpeed(coralSubsystem, 0),
+                                new WaitUntilCommand(() -> elevator.atHeight()).withTimeout(0.8),
+                                // Eject if tag is seen, else rumble
+                                Commands.either(
+                                    new SequentialCommandGroup(
+                                        new SetCoralSpeed(coralSubsystem, (scoringPosition == 1)? 0.4 : 1),
+                                        new WaitCommand(0.7),
+                                        new SetCoralSpeed(coralSubsystem, 0)),
+
+                                    new InstantCommand(() -> {
+                                        ControllerUtils.Rumble(
+                                                RobotContainer.c_driverController.getHID(), 0.2, 1);
+            
+                                        ControllerUtils.Rumble(
+                                                RobotContainer.c_operatorController.getHID(), 0.2, 1);
+                                        }), 
+
+                                    () -> (hasTag() && elevator.atHeight())),
+
                                 new TransitModeCommand(elevator, coralSubsystem)),
                         // If we don't see a tag, do nothing
                         new InstantCommand(() -> {
