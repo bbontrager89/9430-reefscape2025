@@ -311,19 +311,17 @@ public class RobotContainer {
 
                 // Y button - Toggle Coral Mode
                 c_operatorController.y()
-                        .whileTrue(new InstantCommand(() -> {
-                                if (c_operatorController.getLeftY() > 0.1)
-                                        elevatorSubsystem.setMotorSpeed(-c_operatorController.getLeftY());
-                                else 
-                                        elevatorSubsystem.setMotorSpeed(0);
-
-                        })).onFalse(new InstantCommand(() -> {
-                                elevatorSubsystem.setMotorSpeed(0);
+                        .onTrue(new InstantCommand(() -> {
+                                elevatorSubsystem.moveToPosition(ElevatorConstants.highAlgaeClear);
+                                coralManipulatorSubsystem.movePivotTo(CoralManipulatorConstants.clearPivotHeight);
                         }));
 
                 // X button - Algae Reef Clear Mode
                 c_operatorController.x()
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand(() -> {
+                                elevatorSubsystem.moveToPosition(ElevatorConstants.lowAlgaeClear);
+                                coralManipulatorSubsystem.movePivotTo(CoralManipulatorConstants.clearPivotHeight);
+                        }));
 
                 // B button - Algae intake mode
                 c_operatorController.b()

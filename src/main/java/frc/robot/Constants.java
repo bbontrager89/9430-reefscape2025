@@ -155,6 +155,9 @@ public final class Constants {
     public static final double level2ScoringPosition = (newRobot)? 0.540 : 0.51;
     public static final double level3ScoringPosition = (newRobot)? 0.790 : 0.669;
 
+    public static final double lowAlgaeClear = 0.610;
+    public static final double highAlgaeClear = 0.894;
+
     public static final boolean elevatorMotorInverted = true;
 
     public static final double encoderToRevolutionRatio = 200.0;
@@ -185,6 +188,8 @@ public final class Constants {
     public static final double levelOnePivotPosition = 0.3;
     public static final double levelTwoPivotPosition = 0.24; // Motor Off: low hard limit
     public static final double levelThreePivotPosition = 0.24;
+
+    public static final double clearPivotHeight = 0.191;
   }
   
   public static final class ClimbingArmConstants {
