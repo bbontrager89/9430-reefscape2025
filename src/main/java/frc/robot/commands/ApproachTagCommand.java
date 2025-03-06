@@ -15,7 +15,7 @@ public class ApproachTagCommand extends Command {
 
     // Tolerances and speed limits
     private static final double DISTANCE_TOLERANCE_METERS = 0.015; // 1.5cm tolerance (example)
-    private static final double LATERAL_TOLERANCE_METERS = 0.015; // 1.5cm
+    private static final double LATERAL_TOLERANCE_METERS = 0.02; // 2cm
     private static final double ROTATION_TOLERANCE_DEG = 5.0; // degrees tolerance
     private static final double MAX_FORWARD_SPEED = 1.5; // m/s
     private static final double MAX_LATERAL_SPEED = 1.0; // m/s
