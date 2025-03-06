@@ -154,8 +154,8 @@ public final class Constants {
 
     public static final double coralStationPosition = (newRobot)? 0.488 : 0.405; // Scoring position 0
     public static final double level1ScoringPosition = (newRobot)? 0.411 : 0.32;
-    public static final double level2ScoringPosition = (newRobot)? 0.540 : 0.51;
-    public static final double level3ScoringPosition = (newRobot)? 0.790 : 0.669;
+    public static final double level2ScoringPosition = (newRobot)? 0.511 : 0.51;
+    public static final double level3ScoringPosition = (newRobot)? 0.777 : 0.669;
 
     public static final double lowAlgaeClear = 0.610;
     public static final double highAlgaeClear = 0.894;
@@ -179,7 +179,7 @@ public final class Constants {
     public static final double pivotKi = 0.75;
     public static final double pivotKd = 0.05;
   
-    public static final double scoringKp = 4.0;
+    public static final double scoringKp = 3.0;
     public static final double scoringKi = 0.0;
     public static final double scoringKd = 0.10;
 

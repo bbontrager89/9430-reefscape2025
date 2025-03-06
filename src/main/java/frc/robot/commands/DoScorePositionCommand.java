@@ -68,7 +68,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                                                 RobotContainer.c_operatorController.getHID(), 0.2, 1);
                                         }), 
 
-                                    () -> (hasTag() && elevator.atHeight())),
+                                    () -> (hasTag() && elevator.atHeight()) || DriverStation.isAutonomous()),
 
                                 new TransitModeCommand(elevator, coralSubsystem)),
                         // If we don't see a tag, do nothing

@@ -77,7 +77,7 @@ public class RobotContainer {
                 // Configure the button bindings
                 configureButtonBindings();
 
-                autoChooser = AutoBuilder.buildAutoChooser("2 Coral Auto Top");
+                autoChooser = AutoBuilder.buildAutoChooser();
 
                 SmartDashboard.putData("Auto Chooser", autoChooser);
                 // Configure default commands
