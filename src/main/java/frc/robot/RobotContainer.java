@@ -201,6 +201,8 @@ public class RobotContainer {
 
         double operatorStartButtonTimestamp = Double.NEGATIVE_INFINITY;
 
+        boolean climbingMode = false;
+
         /**
          * ~~Use this method to define your button->command mappings. Buttons can be
          * created by instantiating a {@link edu.wpi.first.wpilibj.GenericHID} 
@@ -552,8 +554,8 @@ public class RobotContainer {
                 // Right trigger -
                 c_driverController.rightTrigger(OIConstants.kTriggerThreshold)
                         .onTrue(new InstantCommand(() -> {
-                                if (activeMode.manual())
-                                climbingArmSubsystem.setMotorSpeeds(c_driverController.getRightTriggerAxis());
+                                if (climbingMode)
+                                climbingArmSubsystem.setMotorSpeeds(-c_driverController.getRightTriggerAxis());
                         })).onFalse(new InstantCommand(() -> {
                                 climbingArmSubsystem.stopMotors();
                         }));
@@ -565,15 +567,25 @@ public class RobotContainer {
                 // Left trigger -
                 c_driverController.leftTrigger(OIConstants.kTriggerThreshold)
                         .onTrue(new InstantCommand(() -> {
-                                if (activeMode.manual())
-                                climbingArmSubsystem.setMotorSpeeds(-c_driverController.getLeftTriggerAxis());
+                                if (climbingMode)
+                                climbingArmSubsystem.setMotorSpeeds(c_driverController.getLeftTriggerAxis());
                         })).onFalse(new InstantCommand(() -> {
                                 climbingArmSubsystem.stopMotors();
                         }));
 
-                // Y button -
+                // Y button - Climbing mode
                 c_driverController.y()
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand(() -> {
+                                if(climbingMode) {
+                                        climbingMode = false;
+                                } else {
+                                        climbingMode = true;
+                                        ControllerUtils.Rumble(c_driverController.getHID(), 0.5, 1);
+                                        new TransitModeCommand(elevatorSubsystem, coralManipulatorSubsystem).schedule();
+                                        coralManipulatorSubsystem.movePivotTo(0.25);
+                                        algaeManipulatorSubsystem.setDesiredPivotHeight(AP.maximum);
+                                }
+                        }));
 
                 // X button -
                 c_driverController.x()
