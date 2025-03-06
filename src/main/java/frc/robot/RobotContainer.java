@@ -262,7 +262,7 @@ public class RobotContainer {
                                 .whileTrue(new RepeatCommand(new InstantCommand(() -> {
                                         if (activeMode == ControlMode.Manual) {
                                                 coralManipulatorSubsystem.movePivotTo(
-                                                                coralManipulatorSubsystem.getPivotMotorPosition()
+                                                                coralManipulatorSubsystem.getDesiredPosition()
                                                                                 + -0.025 * c_operatorController
                                                                                                 .getRightY());
                                         }

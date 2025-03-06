@@ -283,6 +283,10 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     return (isIntakeMotorOn) ? Timer.getFPGATimestamp() - intakeOnTimestamp : 0.0;
   }
 
+  public double getDesiredPosition() {
+    return desiredPivotPosition;
+  }
+
   @Override
   public void periodic() {
 
