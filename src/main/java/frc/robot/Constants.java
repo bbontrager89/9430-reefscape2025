@@ -103,13 +103,13 @@ public final class Constants {
 
     public static final double kTriggerThreshold = 0.1;
 
-    public static final double scoringDistanceRight = 0.62;
-    public static final double scoringDistanceLeft = 0.60;
+    public static final double scoringDistanceRight = 0.64;
+    public static final double scoringDistanceLeft = 0.62;
 
     public static final double rightCoralIntakeDistance = 0.53;
     public static final double leftCoralIntakeDistance = 0.47;
 
-    public static final double leftScoringOffset = -0.164;
+    public static final double leftScoringOffset = -0.161;
     public static final double rightScoringOffset = 0.165;
 
     // TODO tune these offsets to align with the grooves on the intake station
@@ -179,9 +179,9 @@ public final class Constants {
     public static final double pivotKi = 0.75;
     public static final double pivotKd = 0.05;
   
-    public static final double scoringKp = 2.25;
-    public static final double scoringKi = 0.5;
-    public static final double scoringKd = 0.11;
+    public static final double scoringKp = 4.0;
+    public static final double scoringKi = 0.0;
+    public static final double scoringKd = 0.10;
 
     public static final double maxPivotSpeed = 0.1;
 

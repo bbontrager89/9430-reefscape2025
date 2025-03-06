@@ -19,7 +19,7 @@ public class ApproachTagCommand extends Command {
     private static final double ROTATION_TOLERANCE_DEG = 5.0; // degrees tolerance
     private static final double MAX_FORWARD_SPEED = 1.5; // m/s
     private static final double MAX_LATERAL_SPEED = 1.0; // m/s
-    private static final double MAX_ROTATION_SPEED = 0.5; // rad/s
+    private static final double MAX_ROTATION_SPEED = 5.0; // rad/s
     private static final double LOST_TAG_TIMEOUT = 0.5; // seconds
 
     // Camera indices matching those in PoseEstimatorSubsystem
@@ -48,11 +48,11 @@ public class ApproachTagCommand extends Command {
         distanceController.setTolerance(DISTANCE_TOLERANCE_METERS);
 
         // PID for lateral offset correction
-        lateralController = new PIDController(3.0, 0.0, 0.05);
+        lateralController = new PIDController(2.5, 0.0, 0.5);
         lateralController.setTolerance(LATERAL_TOLERANCE_METERS);
 
         // PID for rotation to face the desired offset position
-        rotationController = new PIDController(0.1, 0.005, 0.005);
+        rotationController = new PIDController(0.125, 0.0, 0.005);
         rotationController.setTolerance(ROTATION_TOLERANCE_DEG);
         rotationController.enableContinuousInput(-180, 180); // angle wrap-around
     }
@@ -75,6 +75,7 @@ public class ApproachTagCommand extends Command {
                 selectedCameraIndex = RIGHT_CAMERA_INDEX;
                 System.out.println("Intake mode: Using right camera (index " + RIGHT_CAMERA_INDEX + ") for left-side approach");
             }
+            rotationController.setP(0.125);
         } else {
             // In non-intake mode: if there is a lateral offset, use a front camera.
             if (desiredLateralOffset > 0) {
@@ -87,8 +88,13 @@ public class ApproachTagCommand extends Command {
                 selectedCameraIndex = -1; // No specific camera selected; use any available detection
                 System.out.println("Non-intake mode: No lateral offset specified, using any available camera");
             }
+            double curDistance = drive.getPoseEstimatorSubsystem().getDistanceToTag(selectedCameraIndex);
+
+            if (curDistance > 1) {
+                rotationController.setP(0.04);
+            }
         }
-        
+
         System.out.printf("ApproachTagCommand initialized - Target distance: %.2f m, Lateral offset: %.2f m, Intake mode: %b%n", 
             desiredDistance, desiredLateralOffset, isIntake);
     }
