@@ -52,7 +52,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                                     new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, false), 
                                     new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, false).withTimeout(2),
                                     () -> !DriverStation.isAutonomous()),
-                                new WaitUntilCommand(() -> elevator.atHeight()).withTimeout(1.25),
+                                new WaitUntilCommand(() -> elevator.atHeight()).withTimeout(1.75),
                                 // Eject if tag is seen, else rumble
                                 Commands.either(
                                     new SequentialCommandGroup(
