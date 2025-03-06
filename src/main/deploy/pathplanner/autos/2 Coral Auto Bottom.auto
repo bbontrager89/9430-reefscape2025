@@ -13,19 +13,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2 Coral Auto Leave And Score Blue"
+            "pathName": "2 Coral Auto Leave And Score Red"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Score LP3 Right"
+            "name": "Score LP3 Left"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "2 Coral Auto Intake Blue"
+            "pathName": "2 Coral Auto Intake Red"
           }
         },
         {
@@ -37,13 +37,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2 Coral Auto 2nd Score Blue"
+            "pathName": "2 Coral Auto 2nd Score Red"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Score LP3 Left"
+            "name": "Score LP3 Right"
           }
         }
       ]
