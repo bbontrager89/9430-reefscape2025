@@ -55,14 +55,16 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   /** Creates a new CoralManipulatorSubsystem. */
   public CoralManipulatorSubsystem() {
 
-    pivotEncoder = pivotMotor.getAbsoluteEncoder();
-    pivotController = new PIDController(CoralManipulatorConstants.pivotKp, CoralManipulatorConstants.pivotKi, CoralManipulatorConstants.pivotKd);
-    pivotController.reset();
-
     configureDashboardControls();
 
+    pivotEncoder = pivotMotor.getAbsoluteEncoder();
+
+    pivotController = new PIDController(CoralManipulatorConstants.pivotKp, CoralManipulatorConstants.pivotKi, CoralManipulatorConstants.pivotKd);
     pivotController.setTolerance(0.001);
-    pivotController.setIntegratorRange(0.13, 0.47);
+    // pivotController.setIntegratorRange(0.13, 0.47);
+
+    pivotController.reset();
+    
   }
 
   public void configureDashboardControls() {
