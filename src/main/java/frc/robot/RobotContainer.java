@@ -77,8 +77,7 @@ public class RobotContainer {
                 // Configure the button bindings
                 configureButtonBindings();
 
-                autoChooser = AutoBuilder.buildAutoChooser("2 Coral Auto "
-                                + (DriverStation.getAlliance().get() == Alliance.Blue ? "Blue" : "Red"));
+                autoChooser = AutoBuilder.buildAutoChooser("2 Coral Auto Top");
 
                 SmartDashboard.putData("Auto Chooser", autoChooser);
                 // Configure default commands
