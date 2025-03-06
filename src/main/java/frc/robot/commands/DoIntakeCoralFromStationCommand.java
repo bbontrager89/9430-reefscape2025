@@ -52,7 +52,7 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
                                                         CoralManipulatorConstants.intakePivotPosition),
                                         Commands.either(
                                                 new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, true), 
-                                                new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, true).withTimeout(2),
+                                                new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, true).withTimeout(1.75),
                                                 () -> !DriverStation.isAutonomous()),
                                         new IntakeCoral(coralSubsystem, -1, 1.5),
                                         new SetCoralSpeed(coralSubsystem, 0),
