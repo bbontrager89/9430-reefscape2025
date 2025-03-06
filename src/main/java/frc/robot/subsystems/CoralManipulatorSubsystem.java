@@ -113,12 +113,14 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
    */
   private void setPivotMotorSpeed(double speed) {
     if (speed == 0) {
-      stopIntakeMotor(); 
+      stopPivotMotor(); 
       return;
     }
-    if (!(abovePivotMaxHeight && (speed > 0)) && !(belowPivotMinHeight && (speed < 0))) {
+    if (!(abovePivotMaxHeight && (speed < 0)) && !(belowPivotMinHeight && (speed > 0))) {
      pivotMotor.set(speed);
      pivotSpeed = speed;
+    } else {
+      stopPivotMotor();
     }
     isPivotMotorOn = true;
   }
