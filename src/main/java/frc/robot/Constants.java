@@ -178,6 +178,10 @@ public final class Constants {
     public static final double pivotKp = 3.0;
     public static final double pivotKi = 0.75;
     public static final double pivotKd = 0.05;
+  
+    public static final double scoringKp = 2.25;
+    public static final double scoringKi = 0.5;
+    public static final double scoringKd = 0.11;
 
     public static final double maxPivotSpeed = 0.1;
 
