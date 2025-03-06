@@ -581,7 +581,7 @@ public class RobotContainer {
                                 } else {
                                         climbingMode = true;
                                         ControllerUtils.Rumble(c_driverController.getHID(), 0.5, 1);
-                                        new TransitModeCommand(elevatorSubsystem, coralManipulatorSubsystem).schedule();
+                                        new TransitModeCommand(elevatorSubsystem).schedule();
                                         coralManipulatorSubsystem.movePivotTo(0.25);
                                         algaeManipulatorSubsystem.setDesiredPivotHeight(AP.maximum);
                                 }
