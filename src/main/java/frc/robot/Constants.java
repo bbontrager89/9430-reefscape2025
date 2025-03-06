@@ -182,6 +182,10 @@ public final class Constants {
     public static final double scoringKp = 3.0;
     public static final double scoringKi = 0.0;
     public static final double scoringKd = 0.10;
+  
+    public static final double transitKp = 2.0;
+    public static final double transitKi = 0.75;
+    public static final double transitKd = 0.1;
 
     public static final double maxPivotSpeed = 0.1;
 

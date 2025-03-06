@@ -27,6 +27,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
   private PIDController pivotController;
   private PIDController scoringController;
+  private PIDController transitController;
 
   private boolean doAutoCurrentLimit = true;
   private double autoStopTime = Double.POSITIVE_INFINITY;
@@ -68,6 +69,9 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
     scoringController = new PIDController(CoralManipulatorConstants.scoringKp, CoralManipulatorConstants.scoringKi, CoralManipulatorConstants.scoringKd);
     scoringController.setTolerance(0.001);
+
+    transitController = new PIDController(CoralManipulatorConstants.transitKp, CoralManipulatorConstants.transitKi, CoralManipulatorConstants.transitKd);
+    transitController.setTolerance(0.001);
     
   }
 
@@ -331,6 +335,8 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
       Math.max(
         -((desiredPivotPosition == CoralManipulatorConstants.intakePivotPosition)
           ? pivotController 
+          : (desiredPivotPosition == CoralManipulatorConstants.maximumPivotPosition)
+          ? transitController 
           : scoringController)
             .calculate(getPivotMotorPosition(), desiredPivotPosition), 
       -CoralManipulatorConstants.maxPivotSpeed),
