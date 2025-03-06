@@ -536,9 +536,7 @@ public class RobotContainer {
                 // Back Button button - Cancel all actions
                 c_operatorController.back()
                         .onTrue(new InstantCommand(() -> {
-                                CommandScheduler.getInstance().cancelAll();
-                                elevatorSubsystem.turnOffAutoMode();
-                                coralManipulatorSubsystem.stopIntakeMotor();
+                                stopRobot();
                         }));
 
                 /* * * * * * * * * * * * *\
@@ -650,11 +648,19 @@ public class RobotContainer {
                 // Back Button button -
                 c_driverController.back()
                         .onTrue(new InstantCommand(() -> {
-                                CommandScheduler.getInstance().cancelAll();
-                                elevatorSubsystem.turnOffAutoMode();
-                                coralManipulatorSubsystem.stopIntakeMotor();
+                                stopRobot();
                         }));
 
+        }
+
+        public void stopRobot() {
+                CommandScheduler.getInstance().cancelAll();
+                elevatorSubsystem.turnOffAutoMode();
+                coralManipulatorSubsystem.stopIntakeMotor();
+                coralManipulatorSubsystem.stopPivotMotor();
+                climbingArmSubsystem.stopMotors();
+                algaeManipulatorSubsystem.stopIntake();
+                algaeManipulatorSubsystem.stopPivot();
         }
 
         /**
