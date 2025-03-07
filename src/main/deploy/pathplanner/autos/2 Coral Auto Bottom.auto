@@ -1,0 +1,55 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Transit Mode"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2 Coral Auto Leave And Score Red"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score LP3 Left"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2 Coral Auto Intake Red"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral Station"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2 Coral Auto 2nd Score Red"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score LP3 Right"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

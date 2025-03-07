@@ -25,6 +25,11 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  // Easy value to change between the limits
+  private static final boolean newRobot = true;
+
+
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
@@ -99,15 +104,17 @@ public final class Constants {
     public static final double kTriggerThreshold = 0.1;
 
     public static final double scoringDistanceRight = 0.62;
-    public static final double scoringDistanceLeft = 0.54;
-    public static final double coralIntakeDistance = 0.375;
+    public static final double scoringDistanceLeft = 0.65;
+
+    public static final double rightCoralIntakeDistance = 0.53;
+    public static final double leftCoralIntakeDistance = 0.48;
 
     public static final double leftScoringOffset = -0.164;
     public static final double rightScoringOffset = 0.165;
 
     // TODO tune these offsets to align with the grooves on the intake station
-    public static final double intakePositionLeft = -0.5;
-    public static final double intakePositionRight = 0.5;
+    public static final double intakePositionLeft = -0.74;
+    public static final double intakePositionRight = 0.54;
 
     public static final double doublePressBuffer = 0.5;
   }
@@ -135,21 +142,25 @@ public final class Constants {
 
     public static final int elevatorMotorCanId = 27;
 
-    public static final double kP = -20;
+    public static final double kP = 20;
     public static final double kI = 0;
-    public static final double kD = 0;
+    public static final double kD = 0.05;
 
-    public static final double positionTolerence = 0.01;
+    public static final double positionTolerence = 0.001;
 
-    public static final double minimumElevatorHeight = 0.175; // Furthest possible is 0.166
-    public static final double maximumElevatorHeight = 0.675; // Furthest possible is 0.683
 
-    public static final double coralStationPosition = 0.39; // Scoring position 0
-    public static final double level1ScoringPosition = 0.32;
-    public static final double level2ScoringPosition = 0.42;
-    public static final double level3ScoringPosition = 0.59;
+    public static final double minimumElevatorHeight = (newRobot)? 0.165 : 0.175; // Furthest possible is 0.164
+    public static final double maximumElevatorHeight = (newRobot)? 0.975 : 0.675; // Furthest possible is 0.99
 
-    public static final boolean elevatorMotorInverted = false;
+    public static final double coralStationPosition = (newRobot)? 0.488 : 0.405; // Scoring position 0
+    public static final double level1ScoringPosition = (newRobot)? 0.411 : 0.32;
+    public static final double level2ScoringPosition = (newRobot)? 0.540 : 0.51;
+    public static final double level3ScoringPosition = (newRobot)? 0.790 : 0.669;
+
+    public static final double lowAlgaeClear = 0.610;
+    public static final double highAlgaeClear = 0.894;
+
+    public static final boolean elevatorMotorInverted = true;
 
     public static final double encoderToRevolutionRatio = 200.0;
 
@@ -179,6 +190,8 @@ public final class Constants {
     public static final double levelOnePivotPosition = 0.3;
     public static final double levelTwoPivotPosition = 0.24; // Motor Off: low hard limit
     public static final double levelThreePivotPosition = 0.24;
+
+    public static final double clearPivotHeight = 0.191;
   }
   
   public static final class ClimbingArmConstants {
@@ -197,7 +210,7 @@ public final class Constants {
     public static final double maximumPivotPosition = 0.945; // Furthest possible is 0.951
 
     public static final double intakeHeight = 0.7;
-    public static final double transitHeight = 0.94;
+    public static final double transitHeight = 0.925;
 
     public static final double maximumAutoSpeed = 0.3;
 

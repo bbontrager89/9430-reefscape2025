@@ -4,15 +4,19 @@ import java.io.Console;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.AprilTagConstants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.CoralManipulatorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.utils.ControllerUtils;
 
 public class DoScorePositionCommand extends SequentialCommandGroup {
     private final DriveSubsystem drive;
@@ -33,7 +37,6 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
         
         addRequirements(drive, elevator);
 
-        if (hasTag())
         addCommands(
                 new ConditionalCommand(
                         // If we see a tag, execute the full alignment sequence
@@ -44,18 +47,40 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                                     }),
                                 new PivotCoral(coralSubsystem, pivotHeight),
                                 new MoveElevator(elevator, scoringPosition),
-                                new WaitCommand(0.3),
-                               // new StrafeToAlignCommand(drive, desiredLateralOffset),
-                                new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, false),
-                                new SetCoralSpeed(coralSubsystem, (scoringPosition == 1)? 0.4 : 1),
-                                new WaitCommand(0.7),
-                                new SetCoralSpeed(coralSubsystem, 0),
+                                // new StrafeToAlignCommand(drive, desiredLateralOffset),
+                                Commands.either(
+                                    new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, false), 
+                                    new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, false).withTimeout(2),
+                                    () -> !DriverStation.isAutonomous()),
+                                new WaitUntilCommand(() -> elevator.atHeight()).withTimeout(0.8),
+                                // Eject if tag is seen, else rumble
+                                Commands.either(
+                                    new SequentialCommandGroup(
+                                        new SetCoralSpeed(coralSubsystem, (scoringPosition == 1)? 0.4 : 1),
+                                        new WaitCommand(0.7),
+                                        new SetCoralSpeed(coralSubsystem, 0)),
+
+                                    new InstantCommand(() -> {
+                                        ControllerUtils.Rumble(
+                                                RobotContainer.c_driverController.getHID(), 0.2, 1);
+            
+                                        ControllerUtils.Rumble(
+                                                RobotContainer.c_operatorController.getHID(), 0.2, 1);
+                                        }), 
+
+                                    () -> (hasTag() && elevator.atHeight())),
+
                                 new TransitModeCommand(elevator, coralSubsystem)),
                         // If we don't see a tag, do nothing
-                        new InstantCommand(),
+                        new InstantCommand(() -> {
+                            ControllerUtils.Rumble(
+                                    RobotContainer.c_driverController.getHID(), 0.2, 1);
+
+                            ControllerUtils.Rumble(
+                                    RobotContainer.c_operatorController.getHID(), 0.2, 1);
+                            }),
                         () -> hasTag()));
-        else 
-        addCommands();
+
 
     }
 
@@ -72,7 +97,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
             System.out.println("Non-intake mode: No lateral offset specified, using any available camera");
         }
         if(selectedCameraIndex == -1)return false;
-        int detectedTag = drive.getPoseEstimatorSubsystem().getLastDetectedTagId();
+        int detectedTag = drive.getPoseEstimatorSubsystem().getLastTagDetectedByCamera(selectedCameraIndex);
         List<Integer> scoringTagsList = Arrays.stream(AprilTagConstants.scoringAprilTags)
                 .boxed()
                 .toList();

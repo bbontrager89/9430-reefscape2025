@@ -16,10 +16,10 @@ public class ApproachTagCommand extends Command {
     // Tolerances and speed limits
     private static final double DISTANCE_TOLERANCE_METERS = 0.015; // 1.5cm tolerance (example)
     private static final double LATERAL_TOLERANCE_METERS = 0.015; // 1.5cm
-    private static final double ROTATION_TOLERANCE_DEG = 2.0; // degrees tolerance
+    private static final double ROTATION_TOLERANCE_DEG = 5.0; // degrees tolerance
     private static final double MAX_FORWARD_SPEED = 1.5; // m/s
     private static final double MAX_LATERAL_SPEED = 1.0; // m/s
-    private static final double MAX_ROTATION_SPEED = 0.3; // rad/s
+    private static final double MAX_ROTATION_SPEED = 0.5; // rad/s
     private static final double LOST_TAG_TIMEOUT = 0.5; // seconds
 
     // Camera indices matching those in PoseEstimatorSubsystem
@@ -44,15 +44,15 @@ public class ApproachTagCommand extends Command {
         addRequirements(drive);
 
         // PID for forward (distance) control
-        distanceController = new PIDController(3.5, 0.0, 0.00);
+        distanceController = new PIDController(3.0, 0.0, 0.00);
         distanceController.setTolerance(DISTANCE_TOLERANCE_METERS);
 
         // PID for lateral offset correction
-        lateralController = new PIDController(2.5, 0.0, 0.05);
+        lateralController = new PIDController(3.0, 0.0, 0.05);
         lateralController.setTolerance(LATERAL_TOLERANCE_METERS);
 
         // PID for rotation to face the desired offset position
-        rotationController = new PIDController(0.4, 0.0, 0.005);
+        rotationController = new PIDController(0.1, 0.005, 0.005);
         rotationController.setTolerance(ROTATION_TOLERANCE_DEG);
         rotationController.enableContinuousInput(-180, 180); // angle wrap-around
     }
@@ -117,9 +117,9 @@ public class ApproachTagCommand extends Command {
         }
 
         if (validTagDetection) {
-            double currentDistance = poseEstimator.getDistanceToTag();
-            double currentLateralOffset = poseEstimator.getLateralOffsetToTag();
-            double currentRotation = poseEstimator.getTagOrientationErrorDeg();
+            double currentDistance = poseEstimator.getDistanceToTag(selectedCameraIndex);
+            double currentLateralOffset = poseEstimator.getLateralOffsetToTag(selectedCameraIndex);
+            double currentRotation = poseEstimator.getTagOrientationErrorDeg(selectedCameraIndex);
 
             // Compute corrections using PID controllers
             double forwardSpeed = -distanceController.calculate(currentDistance, desiredDistance);
@@ -160,16 +160,16 @@ public class ApproachTagCommand extends Command {
             
             if (detectedTag != -1 && (currentTime - lastDetectionTime) < LOST_TAG_TIMEOUT) {
                 validTagDetection = true;
-                currentDistance = poseEstimator.getDistanceToTag();
-                currentLateralOffset = poseEstimator.getLateralOffsetToTag();
-                currentRotation = poseEstimator.getTagOrientationErrorDeg();
+                currentDistance = poseEstimator.getDistanceToTag(selectedCameraIndex);
+                currentLateralOffset = poseEstimator.getLateralOffsetToTag(selectedCameraIndex);
+                currentRotation = poseEstimator.getTagOrientationErrorDeg(selectedCameraIndex);
             }
         } else {
             if (poseEstimator.getLastDetectedTagId() != -1) {
                 validTagDetection = true;
-                currentDistance = poseEstimator.getDistanceToTag();
-                currentLateralOffset = poseEstimator.getLateralOffsetToTag();
-                currentRotation = poseEstimator.getTagOrientationErrorDeg();
+                currentDistance = poseEstimator.getDistanceToTag(selectedCameraIndex);
+                currentLateralOffset = poseEstimator.getLateralOffsetToTag(selectedCameraIndex);
+                currentRotation = poseEstimator.getTagOrientationErrorDeg(selectedCameraIndex);
             }
         }
 

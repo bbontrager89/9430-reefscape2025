@@ -5,8 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CoralManipulatorConstants;
 import frc.robot.Constants.ElevatorConstants;
@@ -15,9 +18,12 @@ import frc.robot.commands.DoScorePositionCommand;
 import frc.robot.commands.DoIntakeCoralFromStationCommand;
 import frc.robot.commands.MoveElevator;
 import frc.robot.commands.TransitModeCommand;
+import frc.robot.subsystems.AlgaeManipulatorSubsystem;
+import frc.robot.subsystems.ClimbingArmSubsystem;
 import frc.robot.subsystems.CoralManipulatorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.AlgaeManipulatorSubsystem.AP;
 import frc.robot.subsystems.ElevatorSubsystem.SP;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -30,6 +36,7 @@ import frc.utils.ControllerUtils.POV;
 import frc.utils.ControllerUtils;
 import frc.utils.ControllerUtils.AXIS;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
@@ -47,12 +54,17 @@ public class RobotContainer {
 
         private CoralManipulatorSubsystem coralManipulatorSubsystem = new CoralManipulatorSubsystem();
 
+        private AlgaeManipulatorSubsystem algaeManipulatorSubsystem = new AlgaeManipulatorSubsystem();
+        private final SendableChooser<Command> autoChooser;
+
+        private ClimbingArmSubsystem climbingArmSubsystem = new ClimbingArmSubsystem();
+
 
         // The driver's controller
-        CommandXboxController c_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
+        public static CommandXboxController c_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
         // The operator's controller
-        CommandXboxController c_operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
+        public static CommandXboxController c_operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
 
 
         /**
@@ -65,6 +77,9 @@ public class RobotContainer {
                 // Configure the button bindings
                 configureButtonBindings();
 
+                autoChooser = AutoBuilder.buildAutoChooser("2 Coral Auto Top");
+
+                SmartDashboard.putData("Auto Chooser", autoChooser);
                 // Configure default commands
                 m_robotDrive.setDefaultCommand(
                                 // The left stick controls translation of the robot.
@@ -82,18 +97,68 @@ public class RobotContainer {
         }
 
         /** Configures NamedCommands for pathplanner  */
+        
+        /** Configures NamedCommands for pathplanner */
         private void configureNamedCommands() {
-                NamedCommands.registerCommand("Score LP2", 
-                new DoScorePositionCommand(
-                        elevatorSubsystem, 
-                        coralManipulatorSubsystem, 
-                        m_robotDrive,
-                        2, 
-                        OIConstants.leftScoringOffset, 
-                        OIConstants.scoringDistanceRight, 
-                        CoralManipulatorConstants.levelTwoPivotPosition));
-                NamedCommands.registerCommand("Elevator to SP1", new MoveElevator(elevatorSubsystem, 1));
+
+                // Register Intake Coral Station
+                NamedCommands.registerCommand("Intake Coral Station",
+                                new DoIntakeCoralFromStationCommand(
+                                                elevatorSubsystem,
+                                                coralManipulatorSubsystem,
+                                                m_robotDrive));
+                // Register Intake Coral Station
+                NamedCommands.registerCommand("Transit Mode",
+                                new TransitModeCommand(
+                                                elevatorSubsystem,
+                                                coralManipulatorSubsystem));
+                                                
+                // Register Score LP2 Left
+                NamedCommands.registerCommand("Score LP2 Left",
+                                new DoScorePositionCommand(
+                                                elevatorSubsystem,
+                                                coralManipulatorSubsystem,
+                                                m_robotDrive,
+                                                2, // Level 2 scoring position
+                                                OIConstants.leftScoringOffset,
+                                                OIConstants.scoringDistanceLeft,
+                                                CoralManipulatorConstants.levelTwoPivotPosition));
+
+                // Register Score LP3 Left
+                NamedCommands.registerCommand("Score LP3 Left",
+                                new DoScorePositionCommand(
+                                                elevatorSubsystem,
+                                                coralManipulatorSubsystem,
+                                                m_robotDrive,
+                                                3, // Level 3 scoring position
+                                                OIConstants.leftScoringOffset,
+                                                OIConstants.scoringDistanceLeft,
+                                                CoralManipulatorConstants.levelThreePivotPosition));
+
+                // Register Score LP2 Right
+                NamedCommands.registerCommand("Score LP2 Right",
+                                new DoScorePositionCommand(
+                                                elevatorSubsystem,
+                                                coralManipulatorSubsystem,
+                                                m_robotDrive,
+                                                2, // Level 2 scoring position
+                                                OIConstants.rightScoringOffset,
+                                                OIConstants.scoringDistanceRight,
+                                                CoralManipulatorConstants.levelTwoPivotPosition));
+
+                // Register Score LP3 Right
+                NamedCommands.registerCommand("Score LP3 Right",
+                                new DoScorePositionCommand(
+                                                elevatorSubsystem,
+                                                coralManipulatorSubsystem,
+                                                m_robotDrive,
+                                                3, // Level 3 scoring position
+                                                OIConstants.rightScoringOffset,
+                                                OIConstants.scoringDistanceRight,
+                                                CoralManipulatorConstants.levelThreePivotPosition));
+
         }
+
         
 
         /** Represents modes for different controls */
@@ -159,9 +224,11 @@ public class RobotContainer {
                 // Left Stick Vetical Absolute Value Greater Than Threshold
                 c_operatorController.axisGreaterThan(AXIS.LeftVertical.value, OIConstants.kTriggerThreshold).or(
                 c_operatorController.axisLessThan(AXIS.LeftVertical.value, -OIConstants.kTriggerThreshold))
-                        .whileTrue(new RepeatCommand(new InstantCommand(() -> {
+                        .onTrue(new InstantCommand(() -> {
+                                elevatorSubsystem.turnOffAutoMode();
+                        })).whileTrue(new RepeatCommand(new InstantCommand(() -> {
                                 if (activeMode == ControlMode.Manual) {
-                                      elevatorSubsystem.setMotorSpeed(c_operatorController.getLeftY());  
+                                      elevatorSubsystem.setMotorSpeed(-c_operatorController.getLeftY());  
                                 }
                         }))).onFalse(new InstantCommand(() -> {
                                 elevatorSubsystem.setMotorSpeed(0); 
@@ -206,7 +273,9 @@ public class RobotContainer {
                 // Right bumper - Manual mode: Coral manipulator wheels intake
                 c_operatorController.rightBumper()
                         .onTrue(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.movePivotTo(coralManipulatorSubsystem.getPivotMotorPosition() - 0.05);
+                                algaeManipulatorSubsystem.setIntakeSpeed(-1);
+                        })).onFalse(new InstantCommand(() -> {
+                                algaeManipulatorSubsystem.stopIntake();
                         }));
 
                 // Right trigger -
@@ -223,7 +292,9 @@ public class RobotContainer {
                 // Left bumper - Coral manipulator wheels out
                 c_operatorController.leftBumper()
                         .onTrue(new InstantCommand(() -> {
-                                coralManipulatorSubsystem.movePivotTo(coralManipulatorSubsystem.getPivotMotorPosition() + 0.05);
+                                algaeManipulatorSubsystem.setIntakeSpeed(1);
+                        })).onFalse(new InstantCommand(() -> {
+                                algaeManipulatorSubsystem.stopIntake();
                         }));
 
                 // Left trigger -
@@ -239,27 +310,27 @@ public class RobotContainer {
 
                 // Y button - Toggle Coral Mode
                 c_operatorController.y()
-                        .whileTrue(new InstantCommand(() -> {
-                                if (c_operatorController.getLeftY() > 0.1)
-                                        elevatorSubsystem.setMotorSpeed(-c_operatorController.getLeftY());
-                                else 
-                                        elevatorSubsystem.setMotorSpeed(0);
-
-                        })).onFalse(new InstantCommand(() -> {
-                                elevatorSubsystem.setMotorSpeed(0);
+                        .onTrue(new InstantCommand(() -> {
+                                elevatorSubsystem.moveToPosition(ElevatorConstants.highAlgaeClear);
+                                coralManipulatorSubsystem.movePivotTo(CoralManipulatorConstants.clearPivotHeight);
                         }));
 
                 // X button - Algae Reef Clear Mode
                 c_operatorController.x()
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand(() -> {
+                                elevatorSubsystem.moveToPosition(ElevatorConstants.lowAlgaeClear);
+                                coralManipulatorSubsystem.movePivotTo(CoralManipulatorConstants.clearPivotHeight);
+                        }));
 
                 // B button - Algae intake mode
                 c_operatorController.b()
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand(() -> {
+                                algaeManipulatorSubsystem.setDesiredPivotHeight(AP.intaking);
+                        }));
 
-                // A button - Algae intake mode
+                // A button - 
                 c_operatorController.a()
-                        .onTrue(new TransitModeCommand(elevatorSubsystem, coralManipulatorSubsystem));
+                        .onTrue(new TransitModeCommand(elevatorSubsystem, coralManipulatorSubsystem, algaeManipulatorSubsystem));
 
                 // Right Stick button - Transit mode
                 c_operatorController.rightStick()
@@ -444,15 +515,17 @@ public class RobotContainer {
                 c_operatorController.start()
                         .onTrue(new InstantCommand(() -> {
                                 operatorStartButtonTimestamp = Timer.getFPGATimestamp();
-
-                        })).onFalse(new InstantCommand(() -> {
-                                if (Timer.getFPGATimestamp() > operatorStartButtonTimestamp + 0.5) {
-
-                                        activeMode = (activeMode == ControlMode.SemiAuto) ? 
+                                
+                                activeMode = (activeMode == ControlMode.SemiAuto) ? 
                                                 ControlMode.Manual : ControlMode.SemiAuto;
                                                 
                                         ControllerUtils.Rumble(c_operatorController.getHID(), 0.5);
                                         SmartDashboard.putBoolean("Manual Mode", activeMode.manual());
+
+                        })).onFalse(new InstantCommand(() -> {
+                                if (Timer.getFPGATimestamp() > operatorStartButtonTimestamp + 0.5) {
+
+                                        
                                         operatorStartButtonTimestamp = Double.NEGATIVE_INFINITY;
 
                                 }
@@ -479,7 +552,12 @@ public class RobotContainer {
 
                 // Right trigger -
                 c_driverController.rightTrigger(OIConstants.kTriggerThreshold)
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand(() -> {
+                                if (activeMode.manual())
+                                climbingArmSubsystem.setMotorSpeeds(c_driverController.getRightTriggerAxis());
+                        })).onFalse(new InstantCommand(() -> {
+                                climbingArmSubsystem.stopMotors();
+                        }));
 
                 // Left bumper -
                 c_driverController.leftBumper()
@@ -487,7 +565,12 @@ public class RobotContainer {
 
                 // Left trigger -
                 c_driverController.leftTrigger(OIConstants.kTriggerThreshold)
-                        .onTrue(new InstantCommand());
+                        .onTrue(new InstantCommand(() -> {
+                                if (activeMode.manual())
+                                climbingArmSubsystem.setMotorSpeeds(-c_driverController.getLeftTriggerAxis());
+                        })).onFalse(new InstantCommand(() -> {
+                                climbingArmSubsystem.stopMotors();
+                        }));
 
                 // Y button -
                 c_driverController.y()
@@ -579,6 +662,6 @@ public class RobotContainer {
          * @return the command to run in autonomous
          */
         public Command getAutonomousCommand() {
-                return new PathPlannerAuto("Default Auto");
+                return autoChooser.getSelected();
         }
 }

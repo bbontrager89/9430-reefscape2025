@@ -17,8 +17,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CoralManipulatorConstants;
-import frc.robot.Constants.ElevatorConstants;
-import frc.utils.Elastic;
 
 public class CoralManipulatorSubsystem extends SubsystemBase {
 
@@ -48,7 +46,7 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   private boolean abovePivotMaxHeight = false;
   private boolean belowPivotMinHeight = false;
 
-  private double desiredPivotPosition = 0.25;
+  private double desiredPivotPosition = CoralManipulatorConstants.maximumPivotPosition;
 
   private static SendableChooser<Command> pivotCommands;
 
