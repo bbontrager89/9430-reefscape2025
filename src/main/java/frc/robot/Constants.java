@@ -103,8 +103,8 @@ public final class Constants {
 
     public static final double kTriggerThreshold = 0.1;
 
-    public static final double scoringDistanceRight = 0.64;
-    public static final double scoringDistanceLeft = 0.62;
+    public static final double scoringDistanceRight = 0.58;
+    public static final double scoringDistanceLeft = 0.48;
 
     public static final double rightCoralIntakeDistance = 0.53;
     public static final double leftCoralIntakeDistance = 0.47;
@@ -113,8 +113,8 @@ public final class Constants {
     public static final double rightScoringOffset = 0.165;
 
     // TODO tune these offsets to align with the grooves on the intake station
-    public static final double intakePositionLeft = -0.74;
-    public static final double intakePositionRight = 0.54;
+    public static final double intakePositionLeft = -0.71;
+    public static final double intakePositionRight = 0.51;
 
     public static final double doublePressBuffer = 0.5;
   }
@@ -152,7 +152,7 @@ public final class Constants {
     public static final double minimumElevatorHeight = (newRobot)? 0.165 : 0.175; // Furthest possible is 0.164
     public static final double maximumElevatorHeight = (newRobot)? 0.975 : 0.675; // Furthest possible is 0.99
 
-    public static final double coralStationPosition = (newRobot)? 0.488 : 0.405; // Scoring position 0
+    public static final double coralStationPosition = (newRobot)? 0.495 : 0.405; // Scoring position 0
     public static final double level1ScoringPosition = (newRobot)? 0.411 : 0.32;
     public static final double level2ScoringPosition = (newRobot)? 0.511 : 0.51;
     public static final double level3ScoringPosition = (newRobot)? 0.777 : 0.669;
