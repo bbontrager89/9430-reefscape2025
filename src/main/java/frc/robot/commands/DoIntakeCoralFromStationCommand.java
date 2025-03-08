@@ -47,14 +47,15 @@ public class DoIntakeCoralFromStationCommand extends SequentialCommandGroup {
                                         new InstantCommand(() -> {
                                                 this.drive.drive(0, 0, 0, false);
                                         }),
+                                        new StrafeToAlignCommand(drive, desiredLateralOffset, true).withTimeout(1.5),
                                         new MoveElevator(elevator, 0),
                                         new PivotCoral(coralSubsystem,
                                                         CoralManipulatorConstants.intakePivotPosition),
                                         Commands.either(
                                                 new ApproachTagCommand(this.drive, desiredDistance, desiredLateralOffset, true), 
-                                                new ApproachTagCommand(this.drive, desiredDistance, desiredLateralOffset, true).withTimeout(1.75),
+                                                new ApproachTagCommand(this.drive, desiredDistance, desiredLateralOffset, true).withTimeout(3),
                                                 () -> !DriverStation.isAutonomous()),
-                                        new IntakeCoral(coralSubsystem, -1, 1.5),
+                                        new IntakeCoral(coralSubsystem, -1, 3),
                                         new SetCoralSpeed(coralSubsystem, 0),
                                         new InstantCommand(() -> {
                                                 this.drive.drive(-0.2, 0, 0, false);
