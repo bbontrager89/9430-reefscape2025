@@ -52,7 +52,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                                     new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, false), 
                                     new ApproachTagCommand(drive, desiredDistance, desiredLateralOffset, false).withTimeout(2),
                                     () -> !DriverStation.isAutonomous()),
-                                new WaitUntilCommand(() -> elevator.atHeight()).withTimeout(0.8),
+                                new WaitUntilCommand(() -> elevator.atHeight()).withTimeout(1.75),
                                 // Eject if tag is seen, else rumble
                                 Commands.either(
                                     new SequentialCommandGroup(
@@ -68,7 +68,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                                                 RobotContainer.c_operatorController.getHID(), 0.2, 1);
                                         }), 
 
-                                    () -> (hasTag() && elevator.atHeight())),
+                                    () -> (hasTag() && elevator.atHeight()) || DriverStation.isAutonomous()),
 
                                 new TransitModeCommand(elevator, coralSubsystem)),
                         // If we don't see a tag, do nothing

@@ -86,6 +86,10 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    // Stop robot movement that may have been happening when disabling
+    m_robotContainer.stopRobot();
+    
   }
 
   /** This function is called periodically during operator control. */

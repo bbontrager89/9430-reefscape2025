@@ -103,18 +103,18 @@ public final class Constants {
 
     public static final double kTriggerThreshold = 0.1;
 
-    public static final double scoringDistanceRight = 0.62;
-    public static final double scoringDistanceLeft = 0.65;
+    public static final double scoringDistanceRight = 0.58;
+    public static final double scoringDistanceLeft = 0.48;
 
-    public static final double rightCoralIntakeDistance = 0.53;
-    public static final double leftCoralIntakeDistance = 0.48;
+    public static final double rightCoralIntakeDistance = 0.40;
+    public static final double leftCoralIntakeDistance = 0.40;
 
-    public static final double leftScoringOffset = -0.164;
+    public static final double leftScoringOffset = -0.161;
     public static final double rightScoringOffset = 0.165;
 
     // TODO tune these offsets to align with the grooves on the intake station
-    public static final double intakePositionLeft = -0.74;
-    public static final double intakePositionRight = 0.54;
+    public static final double intakePositionLeft = -0.71;
+    public static final double intakePositionRight = 0.51;
 
     public static final double doublePressBuffer = 0.5;
   }
@@ -152,10 +152,10 @@ public final class Constants {
     public static final double minimumElevatorHeight = (newRobot)? 0.165 : 0.175; // Furthest possible is 0.164
     public static final double maximumElevatorHeight = (newRobot)? 0.975 : 0.675; // Furthest possible is 0.99
 
-    public static final double coralStationPosition = (newRobot)? 0.488 : 0.405; // Scoring position 0
+    public static final double coralStationPosition = (newRobot)? 0.500 : 0.405; // Scoring position 0
     public static final double level1ScoringPosition = (newRobot)? 0.411 : 0.32;
-    public static final double level2ScoringPosition = (newRobot)? 0.540 : 0.51;
-    public static final double level3ScoringPosition = (newRobot)? 0.790 : 0.669;
+    public static final double level2ScoringPosition = (newRobot)? 0.511 : 0.51;
+    public static final double level3ScoringPosition = (newRobot)? 0.777 : 0.669;
 
     public static final double lowAlgaeClear = 0.610;
     public static final double highAlgaeClear = 0.894;
@@ -175,11 +175,19 @@ public final class Constants {
     public static final int PivotMotorCanId = 42;
     public static final int IntakeMotorCanId = 41;
 
-    public static final double pivotKp = 2.25;
-    public static final double pivotKi = 0.5;
-    public static final double pivotKd = 0.11;
+    public static final double pivotKp = 3.0;
+    public static final double pivotKi = 0.75;
+    public static final double pivotKd = 0.05;
+  
+    public static final double scoringKp = 3.0;
+    public static final double scoringKi = 0.0;
+    public static final double scoringKd = 0.10;
+  
+    public static final double transitKp = 2.0;
+    public static final double transitKi = 0.75;
+    public static final double transitKd = 0.1;
 
-    public static final double maxPivotSpeed = 0.15;
+    public static final double maxPivotSpeed = 0.1;
 
     public static final double autoStopCurrent = 30;
 

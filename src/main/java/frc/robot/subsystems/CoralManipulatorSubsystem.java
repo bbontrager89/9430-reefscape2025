@@ -26,6 +26,8 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   private SparkAbsoluteEncoder pivotEncoder;
 
   private PIDController pivotController;
+  private PIDController scoringController;
+  private PIDController transitController;
 
   private boolean doAutoCurrentLimit = true;
   private double autoStopTime = Double.POSITIVE_INFINITY;
@@ -55,14 +57,22 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
   /** Creates a new CoralManipulatorSubsystem. */
   public CoralManipulatorSubsystem() {
 
-    pivotEncoder = pivotMotor.getAbsoluteEncoder();
-    pivotController = new PIDController(CoralManipulatorConstants.pivotKp, CoralManipulatorConstants.pivotKi, CoralManipulatorConstants.pivotKd);
-    pivotController.reset();
-
     configureDashboardControls();
 
+    pivotEncoder = pivotMotor.getAbsoluteEncoder();
+
+    pivotController = new PIDController(CoralManipulatorConstants.pivotKp, CoralManipulatorConstants.pivotKi, CoralManipulatorConstants.pivotKd);
     pivotController.setTolerance(0.001);
-    pivotController.setIntegratorRange(0.13, 0.47);
+    // pivotController.setIntegratorRange(0.13, 0.47);
+
+    pivotController.reset();
+
+    scoringController = new PIDController(CoralManipulatorConstants.scoringKp, CoralManipulatorConstants.scoringKi, CoralManipulatorConstants.scoringKd);
+    scoringController.setTolerance(0.001);
+
+    transitController = new PIDController(CoralManipulatorConstants.transitKp, CoralManipulatorConstants.transitKi, CoralManipulatorConstants.transitKd);
+    transitController.setTolerance(0.001);
+    
   }
 
   public void configureDashboardControls() {
@@ -107,12 +117,14 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
    */
   private void setPivotMotorSpeed(double speed) {
     if (speed == 0) {
-      stopIntakeMotor(); 
+      stopPivotMotor(); 
       return;
     }
-    if (!(abovePivotMaxHeight && (speed > 0)) && !(belowPivotMinHeight && (speed < 0))) {
+    if (!(abovePivotMaxHeight && (speed < 0)) && !(belowPivotMinHeight && (speed > 0))) {
      pivotMotor.set(speed);
      pivotSpeed = speed;
+    } else {
+      stopPivotMotor();
     }
     isPivotMotorOn = true;
   }
@@ -137,16 +149,17 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
 
   public void movePivotTo(double pos) {
     pivotController.reset();
+    scoringController.reset();
 
-    desiredPivotPosition = pos;
-    pivotController = new PIDController(CoralManipulatorConstants.pivotKp, CoralManipulatorConstants.pivotKi, CoralManipulatorConstants.pivotKd);
-    
+    desiredPivotPosition = pos; 
+
     if (desiredPivotPosition > CoralManipulatorConstants.maximumPivotPosition) {
       desiredPivotPosition = CoralManipulatorConstants.maximumPivotPosition;
     }
     if (desiredPivotPosition < CoralManipulatorConstants.minimumPivotPosition) {
       desiredPivotPosition = CoralManipulatorConstants.minimumPivotPosition;
     }
+
     SmartDashboard.putNumber("Desired Pivot Height", desiredPivotPosition);
   }
 
@@ -274,6 +287,10 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
     return (isIntakeMotorOn) ? Timer.getFPGATimestamp() - intakeOnTimestamp : 0.0;
   }
 
+  public double getDesiredPosition() {
+    return desiredPivotPosition;
+  }
+
   @Override
   public void periodic() {
 
@@ -311,7 +328,19 @@ public class CoralManipulatorSubsystem extends SubsystemBase {
       belowPivotMinHeight = false;
     }
 
-    pivotMotor.set(Math.min(Math.max(-pivotController.calculate(getPivotMotorPosition(), desiredPivotPosition), -CoralManipulatorConstants.maxPivotSpeed),CoralManipulatorConstants.maxPivotSpeed));
+    // Clamp the speed of one of the PID controllers
+    // PID controller changed based on desired height
+    setPivotMotorSpeed(
+      Math.min(
+      Math.max(
+        -((desiredPivotPosition == CoralManipulatorConstants.intakePivotPosition)
+          ? pivotController 
+          : (desiredPivotPosition == CoralManipulatorConstants.maximumPivotPosition)
+          ? transitController 
+          : scoringController)
+            .calculate(getPivotMotorPosition(), desiredPivotPosition), 
+      -CoralManipulatorConstants.maxPivotSpeed),
+      CoralManipulatorConstants.maxPivotSpeed));
     
 
     // Check if motor is stuck to prevent over straining it
