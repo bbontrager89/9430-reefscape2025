@@ -11,25 +11,26 @@ import frc.robot.Constants.ClimbingArmConstants;
 
 public class ClimbingArmSubsystem extends SubsystemBase {
 
-  private SparkFlex motor = new SparkFlex(ClimbingArmConstants.motorCanId, MotorType.kBrushless);
+  private SparkFlex climbingMotor = new SparkFlex(ClimbingArmConstants.climbingMotorCanId, MotorType.kBrushless);
 
   /** Creates a new ClimbingArmSubsystem. */
   public ClimbingArmSubsystem() {}
 
   /**
    * Sets the speed of the motors controlling the climbing arm
+   * The speed will always be negative because the motor should always turn in that direction
    * 
    * @param speed the speed of the motors
    */
-  public void setMotorSpeeds(double speed) {
-    motor.set(speed);
+  public void setMotorSpeed(double speed) {
+    climbingMotor.set(-Math.abs(speed)); // The climbing motor must always be **negative**
   }
 
   /**
    * Stops the climbing arm
    */
-  public void stopMotors() {
-    motor.stopMotor();
+  public void stopMotor() {
+    climbingMotor.stopMotor();
   }
 
   @Override

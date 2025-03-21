@@ -567,10 +567,10 @@ public class RobotContainer {
                 c_driverController.rightTrigger(OIConstants.kTriggerThreshold)
                                 .onTrue(new InstantCommand(() -> {
                                         if (climbingMode)
-                                                climbingArmSubsystem.setMotorSpeeds(
+                                                climbingArmSubsystem.setMotorSpeed(
                                                                 -c_driverController.getRightTriggerAxis());
                                 })).onFalse(new InstantCommand(() -> {
-                                        climbingArmSubsystem.stopMotors();
+                                        climbingArmSubsystem.stopMotor();
                                 }));
 
                 // Left bumper -
@@ -581,10 +581,10 @@ public class RobotContainer {
                 c_driverController.leftTrigger(OIConstants.kTriggerThreshold)
                                 .onTrue(new InstantCommand(() -> {
                                         if (climbingMode)
-                                                climbingArmSubsystem.setMotorSpeeds(
-                                                                c_driverController.getLeftTriggerAxis());
+                                                climbingArmSubsystem.setMotorSpeed(
+                                                                -c_driverController.getLeftTriggerAxis());
                                 })).onFalse(new InstantCommand(() -> {
-                                        climbingArmSubsystem.stopMotors();
+                                        climbingArmSubsystem.stopMotor();
                                 }));
 
                 // Y button - Climbing mode
@@ -684,7 +684,7 @@ public class RobotContainer {
                 elevatorSubsystem.turnOffAutoMode();
                 coralManipulatorSubsystem.stopIntakeMotor();
                 coralManipulatorSubsystem.stopPivotMotor();
-                climbingArmSubsystem.stopMotors();
+                climbingArmSubsystem.stopMotor();
                 algaeManipulatorSubsystem.stopIntake();
                 algaeManipulatorSubsystem.stopPivot();
         }
