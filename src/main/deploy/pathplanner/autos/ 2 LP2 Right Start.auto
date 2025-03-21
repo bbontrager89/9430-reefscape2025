@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Transit Mode"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Start To BR Reef"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score LP2 Left"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BR Reef to Right Intake Station"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral Station"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Intake Station to BR Reef"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score LP2 Right"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
