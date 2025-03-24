@@ -46,7 +46,7 @@ public class TransitModeCommand extends Command {
 
     this.elevator = elevator;
     this.coral = coral;
-    this.algae = algae;
+    this.algae = null;
   }
 
   // Called when the command is initially scheduled.
@@ -60,8 +60,8 @@ public class TransitModeCommand extends Command {
       elevator.moveToScoringPosition(SP.min); 
     if (coral != null)
       coral.movePivotTo(CoralManipulatorConstants.transitPivotPosition);
-    if (algae != null)
-      algae.setDesiredPivotHeight(AP.transit);
+    if (algae != null) {}
+      // algae.setDesiredPivotHeight(AP.transit);
   }
 
   // Called once the command ends or is interrupted.

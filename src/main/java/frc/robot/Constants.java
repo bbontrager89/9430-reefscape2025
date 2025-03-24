@@ -153,11 +153,11 @@ public final class Constants {
   }
 
   public static final class ReefConstants {
-    public static final double REEF_SCORING_DIST = 0.365;
+    public static final double REEF_SCORING_DIST = 0.340;
 
     // Tolerances and speed limits
     public static final double DISTANCE_TOLERANCE_METERS = 0.02; // 2cm tolerance
-    public static final double LATERAL_TOLERANCE_METERS = 0.010; // 1cm
+    public static final double LATERAL_TOLERANCE_METERS = 0.005; // 1cm
     public static final double ROTATION_TOLERANCE_DEG = 1.5; // degrees tolerance
     public static final double MAX_FORWARD_SPEED = 2.0; // m/s
     public static final double MAX_LATERAL_SPEED = 1.5; // m/s
@@ -203,10 +203,10 @@ public final class Constants {
     public static final double minimumElevatorHeight = (newRobot)? 0.160 : 0.175; // Furthest possible is 0.159
     public static final double maximumElevatorHeight = (newRobot)? 0.975 : 0.675; // Furthest possible is 0.99
 
-    public static final double coralStationPosition = (newRobot)? 0.525 : 0.405; // Scoring position 0
+    public static final double coralStationPosition = (newRobot)? 0.528 : 0.405; // Scoring position 0
     public static final double level1ScoringPosition = (newRobot)? 0.411 : 0.32;
-    public static final double level2ScoringPosition = (newRobot)? 0.535 : 0.51;
-    public static final double level3ScoringPosition = (newRobot)? 0.805 : 0.669;
+    public static final double level2ScoringPosition = (newRobot)? 0.550 : 0.51;
+    public static final double level3ScoringPosition = (newRobot)? 0.815 : 0.669;
 
     public static final double lowAlgaeClear = 0.610;
     public static final double highAlgaeClear = 0.894;

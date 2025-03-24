@@ -33,14 +33,14 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
    * @param speed
    */
   public void setIntakeSpeed(double speed) {
-    intakeMotor.set(speed);
+    // intakeMotor.set(speed);
   }
 
   /**
    * Stops the intake motor
    */
   public void stopIntake() {
-    intakeMotor.stopMotor();
+    // intakeMotor.stopMotor();
   }
 
   /**
@@ -51,7 +51,7 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
    */
   public void setPivotSpeed(double speed) {
     if (!(aboveMaxHeight && speed < 0) && !(belowMinHeight && speed > 0)) {
-      pivotMotor.set(speed);
+      // pivotMotor.set(speed);
       pivotSpeed = speed;
     }
   }
@@ -60,7 +60,7 @@ public class AlgaeManipulatorSubsystem extends SubsystemBase {
    * Stops the pivot motor
    */
   public void stopPivot() {
-    pivotMotor.stopMotor();
+    // pivotMotor.stopMotor();
     pivotSpeed = 0.0;
   }
 

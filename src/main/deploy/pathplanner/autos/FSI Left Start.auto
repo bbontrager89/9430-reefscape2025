@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Transit Mode"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left Start To BL Reef"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score LP2 Left"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pos"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "fsi BL Reef to Left Intake Station"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "fsi"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left Intake Station to BL Reef"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score LP2 Right"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

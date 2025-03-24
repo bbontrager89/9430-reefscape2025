@@ -46,7 +46,7 @@ public class DoScorePositionCommand extends SequentialCommandGroup {
                                     new ApproachReefCommand(drive, ReefConstants.REEF_SCORING_DIST, aligningCamera).withTimeout(2),
                                     () -> !DriverStation.isAutonomous()),
                                 new WaitUntilCommand(() -> elevator.atHeight()).withTimeout(1.75),
-                                new WaitCommand(0.25),
+                                new WaitCommand(0.4),
                                 // Eject if tag is seen, else rumble
                                 Commands.either(
                                     new SequentialCommandGroup(

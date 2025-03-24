@@ -16,6 +16,7 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.DoScorePositionCommand;
 import frc.robot.commands.DoIntakeCoralFromStationCommand;
 import frc.robot.commands.TransitModeCommand;
+import frc.robot.commands.fsi;
 import frc.robot.subsystems.AlgaeManipulatorSubsystem;
 import frc.robot.subsystems.ClimbingArmSubsystem;
 import frc.robot.subsystems.CoralManipulatorSubsystem;
@@ -55,7 +56,7 @@ public class RobotContainer {
 
         private CoralManipulatorSubsystem coralManipulatorSubsystem = new CoralManipulatorSubsystem();
 
-        private AlgaeManipulatorSubsystem algaeManipulatorSubsystem = new AlgaeManipulatorSubsystem();
+        // private AlgaeManipulatorSubsystem algaeManipulatorSubsystem = new AlgaeManipulatorSubsystem();
         private final SendableChooser<Command> autoChooser;
 
         private ClimbingArmSubsystem climbingArmSubsystem = new ClimbingArmSubsystem();
@@ -101,6 +102,15 @@ public class RobotContainer {
 
         /** Configures NamedCommands for pathplanner */
         private void configureNamedCommands() {
+
+                NamedCommands.registerCommand("pos", new InstantCommand(() -> {
+                        elevatorSubsystem.moveToPosition(
+                                                                                ElevatorConstants.coralStationPosition);
+                                                                coralManipulatorSubsystem.movePivotTo(
+                                                                                CoralManipulatorConstants.intakePivotPosition);
+                }));
+
+                NamedCommands.registerCommand("fsi", new fsi(coralManipulatorSubsystem, elevatorSubsystem));
 
                 // Register Intake Coral Station
                 NamedCommands.registerCommand("Transit Mode",
@@ -279,9 +289,9 @@ public class RobotContainer {
                 // Right bumper - Manual mode: Coral manipulator wheels intake
                 c_operatorController.rightBumper()
                                 .onTrue(new InstantCommand(() -> {
-                                        algaeManipulatorSubsystem.setIntakeSpeed(-1);
+                                        // algaeManipulatorSubsystem.setIntakeSpeed(-1);
                                 })).onFalse(new InstantCommand(() -> {
-                                        algaeManipulatorSubsystem.stopIntake();
+                                        // algaeManipulatorSubsystem.stopIntake();
                                 }));
 
                 // Right trigger -
@@ -300,9 +310,9 @@ public class RobotContainer {
                 // Left bumper - Coral manipulator wheels out
                 c_operatorController.leftBumper()
                                 .onTrue(new InstantCommand(() -> {
-                                        algaeManipulatorSubsystem.setIntakeSpeed(1);
+                                        // algaeManipulatorSubsystem.setIntakeSpeed(1);
                                 })).onFalse(new InstantCommand(() -> {
-                                        algaeManipulatorSubsystem.stopIntake();
+                                        // algaeManipulatorSubsystem.stopIntake();
                                 }));
 
                 // Left trigger -
@@ -337,13 +347,12 @@ public class RobotContainer {
                 // B button - Algae intake mode
                 c_operatorController.b()
                                 .onTrue(new InstantCommand(() -> {
-                                        algaeManipulatorSubsystem.setDesiredPivotHeight(AP.intaking);
+                                        // algaeManipulatorSubsystem.setDesiredPivotHeight(AP.intaking);
                                 }));
 
                 // A button -
                 c_operatorController.a()
-                                .onTrue(new TransitModeCommand(elevatorSubsystem, coralManipulatorSubsystem,
-                                                algaeManipulatorSubsystem));
+                                .onTrue(new TransitModeCommand(elevatorSubsystem, coralManipulatorSubsystem));
 
                 // Right Stick button - Transit mode
                 c_operatorController.rightStick()
@@ -363,11 +372,15 @@ public class RobotContainer {
                                                 // Coral mode: intake from Coral station
                                                 if (operatorLatestPOVButton == POV.Up) {
                                                         if (activeMode.semiAuto()) {
-                                                                new DoIntakeCoralFromStationCommand(
+                                                                /* new DoIntakeCoralFromStationCommand(
                                                                                 elevatorSubsystem,
                                                                                 coralManipulatorSubsystem,
                                                                                 m_robotDrive)
-                                                                                .schedule();
+                                                                                .schedule();*/
+                                                                elevatorSubsystem.moveToPosition(
+                                                                                ElevatorConstants.coralStationPosition);
+                                                                coralManipulatorSubsystem.movePivotTo(
+                                                                                CoralManipulatorConstants.intakePivotPosition);
                                                         } else if (activeMode.manual()) {
                                                                 elevatorSubsystem.moveToPosition(
                                                                                 ElevatorConstants.coralStationPosition);
@@ -597,7 +610,7 @@ public class RobotContainer {
                                                 ControllerUtils.Rumble(c_driverController.getHID(), 0.5, 1);
                                                 new TransitModeCommand(elevatorSubsystem).schedule();
                                                 coralManipulatorSubsystem.movePivotTo(0.25);
-                                                algaeManipulatorSubsystem.setDesiredPivotHeight(AP.maximum);
+                                                // algaeManipulatorSubsystem.setDesiredPivotHeight(AP.maximum);
                                         }
                                 }));
 
@@ -685,8 +698,8 @@ public class RobotContainer {
                 coralManipulatorSubsystem.stopIntakeMotor();
                 coralManipulatorSubsystem.stopPivotMotor();
                 climbingArmSubsystem.stopMotor();
-                algaeManipulatorSubsystem.stopIntake();
-                algaeManipulatorSubsystem.stopPivot();
+                // algaeManipulatorSubsystem.stopIntake();
+                // algaeManipulatorSubsystem.stopPivot();
         }
 
         /**
